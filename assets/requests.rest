@@ -1,0 +1,36 @@
+###
+POST http://localhost:4000/auth/signup
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password"
+}
+
+###
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password"
+}
+
+###
+
+DELETE http://localhost:4000/auth/logout
+Content-Type: application/json
+
+{
+  "token": ""
+}
+
+###
+POST http://localhost:4000/auth/token
+Content-Type: application/json
+
+{
+  "token": ""
+}
+
+###

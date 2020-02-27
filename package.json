@@ -1,0 +1,34 @@
+{
+  "name": "auth-server-nodejs-template",
+  "version": "1.0.0",
+  "description": "Auth Server Template in NodeJS Express.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node authServer.js",
+    "devStart": "nodemon authServer.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://furknyavuz@github.com/furknyavuz/auth-server-nodejs-template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/furknyavuz/auth-server-nodejs-template/issues"
+  },
+  "homepage": "https://github.com/furknyavuz/auth-server-nodejs-template#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^3.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "node-cron": "^2.0.3",
+    "pg": "^7.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
