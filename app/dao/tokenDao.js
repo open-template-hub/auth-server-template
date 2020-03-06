@@ -3,14 +3,14 @@ const db = require('./db');
 const dao = {
     insertToken: async (token) => {
         try {
-            return await db.query('INSERT INTO tokens(token, expire_date) VALUES($1, $2)', [token.token, token.expireAt]);
+            await db.query('INSERT INTO tokens(token, expire_date) VALUES($1, $2)', [token.token, token.expireAt]);
         } catch (e) {
             throw e;
         }
     },
     deleteToken: async (token) => {
         try {
-            return await db.query('DELETE FROM tokens WHERE token LIKE $1', [token]);
+            await db.query('DELETE FROM tokens WHERE token LIKE $1', [token]);
         } catch (e) {
             throw e;
         }
@@ -34,11 +34,11 @@ const dao = {
             throw error
         }
 
-        return res.rows;
+        return res.rows[0];
     },
     deleteExpiredTokens: async () => {
         try {
-            return await db.query('DELETE FROM tokens WHERE expire_date < (now() at time zone \'utc\')');
+            await db.query('DELETE FROM tokens WHERE expire_date < (now() at time zone \'utc\')');
         } catch (e) {
             console.error(e);
         }

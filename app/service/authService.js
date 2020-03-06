@@ -17,8 +17,7 @@ const service = {
     login: async (user) => {
         let dbUser = {password: ''};
         try {
-            const rows = await userDao.findUserByUsername(user.username);
-            dbUser = rows[0];
+            dbUser = await userDao.findUserByUsername(user.username);
         } catch (e) {
             throw e
         }

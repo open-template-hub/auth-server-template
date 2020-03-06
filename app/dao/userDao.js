@@ -3,7 +3,7 @@ const db = require('./db');
 const dao = {
     insertUser: async (user) => {
         try {
-            return await db.query('INSERT INTO users(username, password) VALUES($1, $2)', [user.username, user.password]);
+            await db.query('INSERT INTO users(username, password) VALUES($1, $2)', [user.username, user.password]);
         } catch (e) {
             throw e;
         }
@@ -27,7 +27,7 @@ const dao = {
             throw error
         }
 
-        return res.rows;
+        return res.rows[0];
     }
 };
 
