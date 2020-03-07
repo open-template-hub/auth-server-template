@@ -6,7 +6,18 @@ const service = {
     },
 
     generateRefreshToken: function (username) {
-        return jwt.sign({name: username}, process.env.REFRESH_TOKEN_SECRET);
+        const token = jwt.sign({name: username}, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30days'});
+        const { exp } = jwt.decode(token);
+        return {token: token, exp: exp};
+    },
+
+    verifyAccessToken: function (refreshToken) {
+        try {
+            return jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET);
+        } catch (e) {
+            e.statusCode = 403;
+            throw e;
+        }
     },
 
     verifyRefreshToken: function (refreshToken) {

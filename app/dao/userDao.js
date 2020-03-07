@@ -3,7 +3,7 @@ const db = require('./db');
 const dao = {
     insertUser: async (user) => {
         try {
-            await db.query('INSERT INTO users(username, password) VALUES($1, $2)', [user.username, user.password]);
+            await db.query('INSERT INTO users(username, password, email) VALUES($1, $2, $3)', [user.username, user.password, user.email]);
         } catch (e) {
             throw e;
         }
@@ -11,7 +11,7 @@ const dao = {
     findUserByUsername: async (username) => {
         let res;
         try {
-            res = await db.query('SELECT username, password FROM users WHERE username LIKE $1', [username]);
+            res = await db.query('SELECT username, password, verified FROM users WHERE username LIKE $1', [username]);
         } catch (e) {
             throw e;
         }
@@ -28,6 +28,14 @@ const dao = {
         }
 
         return res.rows[0];
+    },
+
+    verifyUser: async (username) => {
+        try {
+            await db.query('UPDATE users SET verified = true WHERE username LIKE $1', [username]);
+        } catch (e) {
+            throw e;
+        }
     }
 };
 

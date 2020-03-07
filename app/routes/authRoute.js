@@ -7,7 +7,7 @@ const router = new Router();
 router.post('/signup', async (req, res) => {
 
     try {
-        await authService.signup({username: req.body.username, password: req.body.password});
+        await authService.signup({username: req.body.username, password: req.body.password, email: req.body.email}, req.protocol + '://' + req.headers.host);
         res.sendStatus(201);
     } catch (e) {
         res.status(e.statusCode).json(e.detail);
@@ -40,6 +40,16 @@ router.post('/token', async (req, res) => {
         const accessToken = await authService.token(req.body.token);
         res.json({accessToken: accessToken})
 
+    } catch (e) {
+        res.status(e.statusCode).json(e.detail);
+    }
+});
+
+router.get('/verify', async (req, res) => {
+
+    try {
+        await authService.verify(req.query.token);
+        res.sendStatus(200);
     } catch (e) {
         res.status(e.statusCode).json(e.detail);
     }
