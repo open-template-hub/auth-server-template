@@ -11,7 +11,7 @@ const service = {
             const hashedPassword = await bcrypt.hash(user.password, 10);
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
-            const verificationToken = tokenService.generateAccessToken(user.username);
+            const verificationToken = tokenService.generateVerificationToken(user.username);
             await mailService.sendAccountVerificationMail(host, user.email, verificationToken);
         } catch (e) {
             throw e
@@ -72,7 +72,7 @@ const service = {
 
     verify: async (token) => {
         try {
-            const user = await tokenService.verifyAccessToken(token);
+            const user = await tokenService.verifyVerificationToken(token);
             await userDao.verifyUser(user.name);
         } catch (e) {
             throw e
