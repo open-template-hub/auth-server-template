@@ -1,7 +1,5 @@
 const dotenv = require('dotenv');
-const dotenvExpand = require('dotenv-expand');
-const dotenvConfig = dotenv.config();
-dotenvExpand(dotenvConfig);
+dotenv.config();
 
 const util = require('./app/util/util.js');
 const express = require('express');

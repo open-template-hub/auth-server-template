@@ -12,7 +12,8 @@ const service = {
             }
         });
 
-        const url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + token;
+        let url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + token;
+        url = url.replace('${CLIENT_URL}', process.env.CLIENT_URL);
 
         await transporter.sendMail({
             from: 'auth-server',
