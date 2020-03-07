@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
 const service = {
-    sendAccountVerificationMail: async function (host, email, token) {
+    sendAccountVerificationMail: async function (email, token) {
         let transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
             port: process.env.MAIL_PORT,
@@ -12,7 +12,7 @@ const service = {
             }
         });
 
-        const url = host + "/auth/verify?token=" + token;
+        const url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + token;
 
         await transporter.sendMail({
             from: 'auth-server',

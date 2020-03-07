@@ -6,13 +6,13 @@ const userDao = require('../dao/userDao');
 const tokenDao = require('../dao/tokenDao');
 
 const service = {
-    signup: async (user, host) => {
+    signup: async (user) => {
         try {
             const hashedPassword = await bcrypt.hash(user.password, 10);
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
             const verificationToken = tokenService.generateVerificationToken(user);
-            await mailService.sendAccountVerificationMail(host, user.email, verificationToken);
+            await mailService.sendAccountVerificationMail(user.email, verificationToken);
         } catch (e) {
             throw e
         }

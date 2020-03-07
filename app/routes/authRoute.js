@@ -7,7 +7,7 @@ const router = new Router();
 router.post('/signup', async (req, res) => {
 
     try {
-        await authService.signup({username: req.body.username, password: req.body.password, email: req.body.email}, req.protocol + '://' + req.headers.host);
+        await authService.signup({username: req.body.username, password: req.body.password, email: req.body.email});
         res.sendStatus(201);
     } catch (e) {
         res.status(e.statusCode).json(e.detail);
