@@ -11,7 +11,7 @@ const dao = {
     findUserByUsername: async (username) => {
         let res;
         try {
-            res = await db.query('SELECT username, password, verified FROM users WHERE username LIKE $1', [username]);
+            res = await db.query('SELECT username, password, verified, role FROM users WHERE username LIKE $1', [username]);
         } catch (e) {
             throw e;
         }

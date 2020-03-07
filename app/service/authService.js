@@ -11,7 +11,7 @@ const service = {
             const hashedPassword = await bcrypt.hash(user.password, 10);
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
-            const verificationToken = tokenService.generateVerificationToken(user.username);
+            const verificationToken = tokenService.generateVerificationToken(user);
             await mailService.sendAccountVerificationMail(host, user.email, verificationToken);
         } catch (e) {
             throw e
@@ -40,8 +40,8 @@ const service = {
             throw error;
         }
 
-        const accessToken = tokenService.generateAccessToken(dbUser.username);
-        const refreshToken = tokenService.generateRefreshToken(dbUser.username);
+        const accessToken = tokenService.generateAccessToken(dbUser);
+        const refreshToken = tokenService.generateRefreshToken(dbUser);
 
         try {
             await tokenDao.insertToken({token:refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
@@ -64,7 +64,7 @@ const service = {
         try {
             await tokenDao.findToken(token);
             const user = await tokenService.verifyRefreshToken(token);
-            return tokenService.generateAccessToken(user.username);
+            return tokenService.generateAccessToken(user);
         } catch (e) {
             throw e
         }

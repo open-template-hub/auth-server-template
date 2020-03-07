@@ -18,7 +18,9 @@ const util = {
         }
 
         return valid;
-    }
+    },
+
+    roles: {admin: "ADMIN", userManager: "USER_MANAGER", user: "USER"}
 };
 
 module.exports = util;
