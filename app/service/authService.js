@@ -64,7 +64,7 @@ const service = {
         try {
             await tokenDao.findToken(token);
             const user = await tokenService.verifyRefreshToken(token);
-            return tokenService.generateAccessToken(user.name);
+            return tokenService.generateAccessToken(user.username);
         } catch (e) {
             throw e
         }
@@ -73,7 +73,7 @@ const service = {
     verify: async (token) => {
         try {
             const user = await tokenService.verifyVerificationToken(token);
-            await userDao.verifyUser(user.name);
+            await userDao.verifyUser(user.username);
         } catch (e) {
             throw e
         }
