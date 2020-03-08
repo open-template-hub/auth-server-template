@@ -9,7 +9,7 @@ router.post('/signup', async (req, res) => {
     try {
         await authService.signup({username: req.body.username, password: req.body.password, email: req.body.email});
         res.status(201);
-        res.json({username: req.body.email});
+        res.json({email: req.body.email});
     } catch (e) {
         res.status(e.statusCode).json(e.detail);
     }
