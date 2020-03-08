@@ -3,6 +3,7 @@ dotenv.config();
 
 const util = require('./app/util/util.js');
 const express = require('express');
+const cors = require('cors');
 
 const cronService = require('./app/service/cronService.js');
 const mountRoutes = require('./app/routes');
@@ -15,6 +16,7 @@ if(!util.envVariablesCheck()) {
 // express init
 const app = express();
 app.use(express.json());
+app.use(cors());
 mountRoutes(app);
 
 // listen
