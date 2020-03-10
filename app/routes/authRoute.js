@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.delete('/logout', async (req, res) => {
+router.post('/logout', async (req, res) => {
 
     try {
         await authService.logout(req.body.token);
