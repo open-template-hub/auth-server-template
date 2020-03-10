@@ -17,6 +17,11 @@ const util = {
             valid = false;
         }
 
+        if (!process.env.RESET_PASSWORD_TOKEN_SECRET) {
+            console.error('Please define process.env.RESET_PASSWORD_TOKEN_SECRET');
+            valid = false;
+        }
+
         if (!process.env.DATABASE_URL) {
             console.error('Please define process.env.DATABASE_URL');
             valid = false;
@@ -49,6 +54,11 @@ const util = {
 
         if (!process.env.CLIENT_VERIFICATION_SUCCESS_URL) {
             console.error('Please define process.env.CLIENT_VERIFICATION_SUCCESS_URL');
+            valid = false;
+        }
+
+        if (!process.env.CLIENT_FORGET_PASSWORD_URL) {
+            console.error('Please define process.env.CLIENT_FORGET_PASSWORD_URL');
             valid = false;
         }
 
