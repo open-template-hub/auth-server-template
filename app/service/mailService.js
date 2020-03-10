@@ -28,7 +28,7 @@ const service = {
     sendPasswordResetMail: async (user, token) => {
         let transporter = nodemailer.createTransport(mailConf);
 
-        let url = process.env.CLIENT_FORGET_PASSWORD_URL + '?token=' + token + '&username=' + user.username;
+        let url = process.env.CLIENT_RESET_PASSWORD_URL + '?token=' + token + '&username=' + user.username;
         url = url.replace('${CLIENT_URL}', process.env.CLIENT_URL);
 
         await transporter.sendMail({

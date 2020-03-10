@@ -57,8 +57,8 @@ const util = {
             valid = false;
         }
 
-        if (!process.env.CLIENT_FORGET_PASSWORD_URL) {
-            console.error('Please define process.env.CLIENT_FORGET_PASSWORD_URL');
+        if (!process.env.CLIENT_RESET_PASSWORD_URL) {
+            console.error('Please define process.env.CLIENT_RESET_PASSWORD_URL');
             valid = false;
         }
 
