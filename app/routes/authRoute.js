@@ -57,4 +57,26 @@ router.get('/verify', async (req, res) => {
     }
 });
 
+router.post('/forget-password', async (req, res) => {
+
+    try {
+        await authService.forgetPassword(req.body.username);
+        res.status(200);
+        res.json({})
+    } catch (e) {
+        res.status(e.statusCode).json(e.detail);
+    }
+});
+
+router.post('/reset-password', async (req, res) => {
+
+    try {
+        await authService.resetPassword({username: req.body.username, password: req.body.password}, req.body.token);
+        res.status(200);
+        res.json({})
+    } catch (e) {
+        res.status(e.statusCode).json(e.detail);
+    }
+});
+
 module.exports = router;

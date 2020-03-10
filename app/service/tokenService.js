@@ -15,6 +15,23 @@ const service = {
         return jwt.sign({username: user.username}, process.env.VERIFICATION_TOKEN_SECRET);
     },
 
+    generatePasswordResetToken: function (user) {
+        try {
+            return jwt.sign({username: user.username}, process.env.RESET_PASSWORD_TOKEN_SECRET + user.password, { expiresIn: '1day'});
+        } catch (e) {
+            throw e
+        }
+    },
+
+    verifyRefreshToken: function (token) {
+        try {
+            return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+        } catch (e) {
+            e.statusCode = 403;
+            throw e;
+        }
+    },
+
     verifyVerificationToken: function (token) {
         try {
             return jwt.verify(token, process.env.VERIFICATION_TOKEN_SECRET);
@@ -24,9 +41,9 @@ const service = {
         }
     },
 
-    verifyRefreshToken: function (token) {
+    verifyPasswordResetToken: function (token, currentPassword) {
         try {
-            return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+            return jwt.verify(token, process.env.RESET_PASSWORD_TOKEN_SECRET + currentPassword);
         } catch (e) {
             e.statusCode = 403;
             throw e;

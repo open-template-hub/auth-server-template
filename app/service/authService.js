@@ -77,6 +77,28 @@ const service = {
         } catch (e) {
             throw e
         }
+    },
+
+    forgetPassword: async (username) => {
+        try {
+            const user = await userDao.findEmailAndPasswordByUsername(username);
+            const passwordResetToken = tokenService.generatePasswordResetToken(user);
+            await mailService.sendPasswordResetMail(user, passwordResetToken);
+        } catch (e) {
+            throw e
+        }
+    },
+
+    resetPassword: async (user, token) => {
+        try {
+            user.password = await bcrypt.hash(user.password, 10);
+
+            const dbUser = await userDao.findEmailAndPasswordByUsername(user.username);
+            await tokenService.verifyPasswordResetToken(token, dbUser.password);
+            await userDao.updateByUsername(user);
+        } catch (e) {
+            throw e
+        }
     }
 };
 
