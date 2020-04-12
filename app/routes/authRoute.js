@@ -11,7 +11,7 @@ router.post('/signup', async (req, res) => {
         res.status(201);
         res.json({email: req.body.email});
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
         const response = await authService.login({username: req.body.username, password: req.body.password});
         res.json({accessToken: response.accessToken, refreshToken: response.refreshToken})
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -32,7 +32,7 @@ router.post('/logout', async (req, res) => {
         res.status(204);
         res.json({});
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -42,7 +42,7 @@ router.post('/token', async (req, res) => {
         const accessToken = await authService.token(req.body.token);
         res.json({accessToken: accessToken})
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -53,7 +53,7 @@ router.get('/verify', async (req, res) => {
         res.status(200);
         res.json({});
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -64,7 +64,7 @@ router.post('/forget-password', async (req, res) => {
         res.status(200);
         res.json({})
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 
@@ -75,7 +75,7 @@ router.post('/reset-password', async (req, res) => {
         res.status(200);
         res.json({})
     } catch (e) {
-        res.status(e.statusCode).json(e.detail);
+        res.status(e.responseCode).json(e.message);
     }
 });
 

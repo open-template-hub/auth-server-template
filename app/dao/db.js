@@ -2,8 +2,20 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl:true
+    ssl: {
+        rejectUnauthorized: false,
+    }
 });
+
+const preloadTables = "CREATE TABLE IF NOT EXISTS users"
+                    + " (username text NOT NULL, password text NOT NULL,"
+                    + " email text NOT NULL, verified boolean, role text);"
+                    + " CREATE TABLE IF NOT EXISTS tokens"
+                    + " (token text NOT NULL, expire_date date);"
+
+async function preload() {
+    return query(preloadTables);
+}
 
 async function query(text, params) {
     const start = Date.now();
@@ -14,9 +26,9 @@ async function query(text, params) {
 
         // https://www.postgresql.org/docs/10/errcodes-appendix.html
         if (e.code && e.code.startsWith('23')) {
-            e.statusCode = 400;
+            e.responseCode = 400;
         } else {
-            e.statusCode = 500;
+            e.responseCode = 500;
         }
 
         throw e;
@@ -27,5 +39,6 @@ async function query(text, params) {
 }
 
 module.exports = {
-    query: query
+    query: query,
+    preload: preload
 };

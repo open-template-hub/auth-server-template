@@ -4,6 +4,7 @@ dotenv.config();
 const util = require('./app/util/util.js');
 const express = require('express');
 const cors = require('cors');
+const db = require('./app/dao/db');
 
 const cronService = require('./app/service/cronService.js');
 const mountRoutes = require('./app/routes');
@@ -18,6 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 mountRoutes(app);
+db.preload();
 
 // listen
 const port = process.env.PORT || 4000;

@@ -28,15 +28,15 @@ const service = {
 
         if (!await bcrypt.compare(user.password, dbUser.password)) {
             let error = new Error();
-            error.detail = "Bad credentials";
-            error.statusCode = 403;
+            error.message = "Bad credentials";
+            error.responseCode = 403;
             throw error;
         }
 
         if (!dbUser.verified) {
             let error = new Error();
-            error.detail = "Account not verified";
-            error.statusCode = 403;
+            error.message = "Account not verified";
+            error.responseCode = 403;
             throw error;
         }
 

@@ -25,12 +25,12 @@ const dao = {
 
         if (res.rows.length === 0) {
             let error = new Error();
-            error.statusCode = 403;
+            error.responseCode = 403;
             throw error
         } else if (res.rows.length > 1) {
             console.error('Ambiguous token');
             let error = new Error();
-            error.statusCode = 500;
+            error.responseCode = 500;
             throw error
         }
 
