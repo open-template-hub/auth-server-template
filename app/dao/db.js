@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const templateBuilder = require('../util/templateBuilder');
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -7,14 +8,11 @@ const pool = new Pool({
     }
 });
 
-const preloadTables = "CREATE TABLE IF NOT EXISTS users"
-                    + " (username text NOT NULL, password text NOT NULL,"
-                    + " email text NOT NULL, verified boolean, role text);"
-                    + " CREATE TABLE IF NOT EXISTS tokens"
-                    + " (token text NOT NULL, expire_date date);"
+const preloadTablesTemplatePath = "./assets/preloadTables.sql";
 
 async function preload() {
-    return query(preloadTables);
+    let tables = templateBuilder.buildTemplate(preloadTablesTemplatePath);
+    return query(tables);
 }
 
 async function query(text, params) {

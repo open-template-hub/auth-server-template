@@ -12,7 +12,7 @@ const service = {
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
             const verificationToken = tokenService.generateVerificationToken(user);
-            await mailService.sendAccountVerificationMail(user.email, verificationToken);
+            await mailService.sendAccountVerificationMail(user, verificationToken);
         } catch (e) {
             throw e
         }
