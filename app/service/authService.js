@@ -40,8 +40,11 @@ const service = {
             throw error;
         }
 
-        const accessToken = tokenService.generateAccessToken(dbUser);
-        const refreshToken = tokenService.generateRefreshToken(dbUser);
+        return await generateTokens(dbUser);
+    },
+    generateTokens: async(user) => {
+        const accessToken = tokenService.generateAccessToken(user);
+        const refreshToken = tokenService.generateRefreshToken(user);
 
         try {
             await tokenDao.insertToken({token:refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
@@ -51,7 +54,6 @@ const service = {
 
         return {accessToken: accessToken, refreshToken: refreshToken.token};
     },
-
     logout: async (token) => {
         try {
             await tokenDao.deleteToken(token);

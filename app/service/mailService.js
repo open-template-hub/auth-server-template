@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const templateBuilder = require("./../util/templateBuilder");
+const builder = require("./../util/builder");
 
 const emailTemplatePath = "./assets/mailTemplate.html";
 
@@ -24,7 +24,7 @@ const service = {
         params.set('${url}', url);
         params.set('${username}', user.username);
 
-        let mailBody = templateBuilder.buildTemplate(emailTemplatePath, params);
+        let mailBody = builder.buildTemplate(emailTemplatePath, params);
         
         await transporter.sendMail({
             from: 'auth-server',

@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS users
+(
+  username text NOT NULL PRIMARY KEY, 
+  password text NOT NULL,
+  email text NOT NULL, 
+  verified boolean, 
+  role text
+);
+
+CREATE TABLE IF NOT EXISTS tokens
+(
+  token text NOT NULL, 
+  expire_date date
+);
+
+CREATE TABLE IF NOT EXISTS social_logins
+(
+  social_login_key text NOT NULL,
+  client_id text NOT NULL,
+  state text NOT NULL,
+  client_secret text NOT NULL,
+  redirect_uri text NOT NULL,
+  login_uri text NOT NULL,
+  access_token_uri text NOT NULL,
+  access_token_json_field_path text NOT NULL,
+  user_data_uri text NOT NULL,
+  external_user_id_json_field_path text NOT NULL,
+  external_user_email_json_field_path text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS social_login_mappings
+(
+  social_login_key text NOT NULL,
+  username text NOT NULL, 
+  external_user_id text NOT NULL
+);

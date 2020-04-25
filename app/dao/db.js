@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const templateBuilder = require('../util/templateBuilder');
+const builder = require('../util/builder');
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -8,10 +8,10 @@ const pool = new Pool({
     }
 });
 
-const preloadTablesTemplatePath = "./assets/preloadTables.sql";
+const preloadTablesTemplatePath = "./assets/preloadTables.psql";
 
 async function preload() {
-    let tables = templateBuilder.buildTemplate(preloadTablesTemplatePath);
+    let tables = builder.buildTemplate(preloadTablesTemplatePath);
     return query(tables);
 }
 
