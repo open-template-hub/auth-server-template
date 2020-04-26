@@ -40,7 +40,7 @@ const service = {
             throw error;
         }
 
-        return await generateTokens(dbUser);
+        return await service.generateTokens(dbUser);
     },
     generateTokens: async(user) => {
         const accessToken = tokenService.generateAccessToken(user);
