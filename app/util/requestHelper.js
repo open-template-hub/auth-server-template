@@ -1,9 +1,13 @@
 const request = require("request");
 
 const helper = {
-  doGetRequest: async(url) => {
+  doGetRequest: async(url, headers) => {
     return new Promise(function (resolve, reject) {
-      request(url, function (error, res, body) {
+      const options = {
+        url: url,
+        headers: headers
+      };
+      request(options, function (error, res, body) {
         if (!error) {
           resolve(body);
         } else {

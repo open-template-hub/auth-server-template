@@ -21,16 +21,29 @@ const service = {
   login: async (data) => {
     try {
       const confidentialParams = await socialLoginDao.findConfidentialDataByKey(data.key);
+      headers = {
+        'Accept': 'application/json'
+      }
       // getting access token
-      const params = [confidentialParams.client_id, confidentialParams.client_secret, confidentialParams.redirect_uri, data.code];
+      const params = [confidentialParams.client_id, confidentialParams.client_secret, confidentialParams.redirect_uri, data.code, confidentialParams.state];
       const accessTokenUrl = builder.buildUrl(confidentialParams.access_token_uri, params);
-      const accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl);
+      const accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, headers);
       const accessToken = parser.getJsonValue(accessTokenResponse, confidentialParams.access_token_json_field_path);
+      const tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
 
       if (accessToken) {
         // getting user data with access token
-        const userDataUrl = builder.buildUrl(confidentialParams.user_data_uri, [accessToken]);
-        const userDataResponse = await requestHelper.doGetRequest(userDataUrl);
+        let userDataUrl = confidentialParams.user_data_uri;
+        if(confidentialParams.requested_with_auth_header && tokenType) {
+          headers = {
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
+            'Authorization': tokenType + ' ' + accessToken
+          }
+        } else {
+          userDataUrl = builder.buildUrl(confidentialParams.user_data_uri, [accessToken]);
+        }
+        const userDataResponse = await requestHelper.doGetRequest(userDataUrl, headers);
 
         const external_user_id = parser.getJsonValue(userDataResponse, confidentialParams.external_user_id_json_field_path);
         const external_user_email = parser.getJsonValue(userDataResponse, confidentialParams.external_user_email_json_field_path);
