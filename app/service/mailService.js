@@ -1,4 +1,7 @@
 const nodemailer = require("nodemailer");
+const builder = require("./../util/builder");
+
+const emailTemplatePath = "./assets/mailTemplate.html";
 
 const mailConf = {
     host: process.env.MAIL_HOST,
@@ -11,17 +14,23 @@ const mailConf = {
 };
 
 const service = {
-    sendAccountVerificationMail: async (email, token) => {
+    sendAccountVerificationMail: async (user, token) => {
         let transporter = nodemailer.createTransport(mailConf);
 
         let url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + '?token=' + token;
         url = url.replace('${CLIENT_URL}', process.env.CLIENT_URL);
+        
+        let params = new Map();
+        params.set('${url}', url);
+        params.set('${username}', user.username);
 
+        let mailBody = builder.buildTemplate(emailTemplatePath, params);
+        
         await transporter.sendMail({
             from: 'auth-server',
-            to: email,
+            to: user.email,
             subject: "Account verification",
-            html: `<a href='${url}'>Account verification link</a>`
+            html: mailBody
         });
     },
 

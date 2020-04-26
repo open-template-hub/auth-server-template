@@ -27,7 +27,7 @@ const service = {
         try {
             return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
         } catch (e) {
-            e.statusCode = 403;
+            e.responseCode = 403;
             throw e;
         }
     },
@@ -36,7 +36,7 @@ const service = {
         try {
             return jwt.verify(token, process.env.VERIFICATION_TOKEN_SECRET);
         } catch (e) {
-            e.statusCode = 403;
+            e.responseCode = 403;
             throw e;
         }
     },
@@ -45,7 +45,7 @@ const service = {
         try {
             return jwt.verify(token, process.env.RESET_PASSWORD_TOKEN_SECRET + currentPassword);
         } catch (e) {
-            e.statusCode = 403;
+            e.responseCode = 403;
             throw e;
         }
     }

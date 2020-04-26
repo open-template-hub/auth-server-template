@@ -12,7 +12,7 @@ const service = {
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
             const verificationToken = tokenService.generateVerificationToken(user);
-            await mailService.sendAccountVerificationMail(user.email, verificationToken);
+            await mailService.sendAccountVerificationMail(user, verificationToken);
         } catch (e) {
             throw e
         }
@@ -28,20 +28,23 @@ const service = {
 
         if (!await bcrypt.compare(user.password, dbUser.password)) {
             let error = new Error();
-            error.detail = "Bad credentials";
-            error.statusCode = 403;
+            error.message = "Bad credentials";
+            error.responseCode = 403;
             throw error;
         }
 
         if (!dbUser.verified) {
             let error = new Error();
-            error.detail = "Account not verified";
-            error.statusCode = 403;
+            error.message = "Account not verified";
+            error.responseCode = 403;
             throw error;
         }
 
-        const accessToken = tokenService.generateAccessToken(dbUser);
-        const refreshToken = tokenService.generateRefreshToken(dbUser);
+        return await generateTokens(dbUser);
+    },
+    generateTokens: async(user) => {
+        const accessToken = tokenService.generateAccessToken(user);
+        const refreshToken = tokenService.generateRefreshToken(user);
 
         try {
             await tokenDao.insertToken({token:refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
@@ -51,7 +54,6 @@ const service = {
 
         return {accessToken: accessToken, refreshToken: refreshToken.token};
     },
-
     logout: async (token) => {
         try {
             await tokenDao.deleteToken(token);

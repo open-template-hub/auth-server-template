@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/furknyavuz/auth-server-nodejs-template#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "bcrypt": "^4.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -28,7 +29,10 @@
     "jsonwebtoken": "^8.5.1",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.4",
-    "pg": "^7.18.2"
+    "object-path": "^0.11.4",
+    "pg": "^7.18.2",
+    "request": "^2.88.2",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
