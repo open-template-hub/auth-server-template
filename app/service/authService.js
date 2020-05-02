@@ -42,6 +42,7 @@ const service = {
 
         return await service.generateTokens(dbUser);
     },
+
     generateTokens: async(user) => {
         const accessToken = tokenService.generateAccessToken(user);
         const refreshToken = tokenService.generateRefreshToken(user);
@@ -54,6 +55,7 @@ const service = {
 
         return {accessToken: accessToken, refreshToken: refreshToken.token};
     },
+
     logout: async (token) => {
         try {
             await tokenDao.deleteToken(token);
