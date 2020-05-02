@@ -7,15 +7,15 @@ const uuid = require('uuid');
 
 const service = {
   loginUrl: async (data) => {
-    let socialLoginUrl = "";
+    let loginUrl = "";
     try {
       let socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
       const params = [socialLoginParams.client_id, socialLoginParams.state, socialLoginParams.redirect_uri];
-      socialLoginUrl = builder.buildUrl(socialLoginParams.login_uri, params);
+      loginUrl = builder.buildUrl(socialLoginParams.login_uri, params);
     } catch (e) {
       throw e;
     }
-    return socialLoginUrl;
+    return loginUrl;
   },
 
   login: async (data) => {

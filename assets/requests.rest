@@ -59,3 +59,23 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:4000/social/login-url
+Content-Type: application/json
+
+{
+  "key":  "GITHUB"
+}
+
+###
+
+POST http://localhost:4000/social/login
+Content-Type: application/json
+
+{
+  "key":  "GITHUB",
+  "code": "code",
+  "state": "state"
+}
+
+###
