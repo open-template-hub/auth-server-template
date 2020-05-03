@@ -34,6 +34,9 @@ const service = {
       const params = [confidentialParams.client_id, confidentialParams.client_secret, confidentialParams.redirect_uri, data.code, confidentialParams.state];
       const accessTokenUrl = builder.buildUrl(confidentialParams.access_token_uri, params);
       const accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, headers);
+
+      console.log('AccessTokenResponse obtained: ' + JSON.stringify(accessTokenResponse));
+
       const accessToken = parser.getJsonValue(accessTokenResponse, confidentialParams.access_token_json_field_path);
       const tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
 
@@ -50,6 +53,8 @@ const service = {
           userDataUrl = builder.buildUrl(confidentialParams.user_data_uri, [accessToken]);
         }
         const userDataResponse = await requestHelper.doGetRequest(userDataUrl, headers);
+
+        console.log('UserDataResponse obtained: ' + JSON.stringify(userDataResponse));
 
         const external_user_id = parser.getJsonValue(userDataResponse, confidentialParams.external_user_id_json_field_path);
         const external_user_email = parser.getJsonValue(userDataResponse, confidentialParams.external_user_email_json_field_path);
