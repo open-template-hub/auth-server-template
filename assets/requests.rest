@@ -73,7 +73,7 @@ POST http://localhost:4000/social/login
 Content-Type: application/json
 
 {
-  "key":  "GITHUB",
+  "key":  "FACEBOOK",
   "code": "code",
   "state": "state"
 }

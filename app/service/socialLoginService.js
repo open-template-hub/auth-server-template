@@ -55,7 +55,7 @@ const service = {
         const external_user_email = parser.getJsonValue(userDataResponse, confidentialParams.external_user_email_json_field_path);
         const external_username = parser.getJsonValue(userDataResponse, confidentialParams.external_username_json_field_path);
 
-        if (external_user_id && external_user_email) {
+        if (external_user_id) {
           // checking social login mapping to determine if signup or login
           let socialLoginUser = await socialLoginDao.findMappingDataByExternalUserId(data.key, external_user_id);
 
