@@ -31,9 +31,15 @@ const service = {
                 'Accept': 'application/json'
             }
             // getting access token
-            const params = [confidentialParams.client_id, confidentialParams.client_secret, confidentialParams.redirect_uri, data.code, confidentialParams.state];
+            const params = [confidentialParams.client_id, confidentialParams.client_secret, confidentialParams.redirect_uri, data.code, data.state];
             const accessTokenUrl = builder.buildUrl(confidentialParams.access_token_uri, params);
-            const accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, headers);
+
+            let accessTokenResponse;
+            if (confidentialParams.access_token_request_method === 'GET') {
+                accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, headers);
+            } else if (confidentialParams.access_token_request_method === 'POST') {
+                accessTokenResponse = await requestHelper.doPostRequest(accessTokenUrl, headers);
+            }
 
             const accessToken = parser.getJsonValue(accessTokenResponse, confidentialParams.access_token_json_field_path);
             const tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
