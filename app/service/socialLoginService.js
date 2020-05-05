@@ -42,7 +42,7 @@ const service = {
             }
 
             const accessToken = parser.getJsonValue(accessTokenResponse, confidentialParams.access_token_json_field_path);
-            const tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
+            let tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
 
             if (!accessToken) {
                 console.error('Access token couldn\'t obtained');
@@ -51,7 +51,9 @@ const service = {
 
             // getting user data with access token
             let userDataUrl = confidentialParams.user_data_uri;
-            if (confidentialParams.requested_with_auth_header && tokenType) {
+            if (confidentialParams.requested_with_auth_header) {
+                // default authorization token type
+                tokenType = tokenType ? tokenType : 'Bearer';
                 headers = {
                     'Accept': 'application/json',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
