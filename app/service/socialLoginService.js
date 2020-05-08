@@ -16,8 +16,12 @@ const service = {
         let loginUrl = "";
         try {
             let socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
-            const params = [socialLoginParams.client_id, socialLoginParams.state, socialLoginParams.redirect_uri];
-            loginUrl = builder.buildUrl(socialLoginParams.login_uri, params);
+
+            // if oauth version 2
+            if (socialLoginParams.v2Config) {
+                const params = [socialLoginParams.client_id, socialLoginParams.state, socialLoginParams.redirect_uri];
+                loginUrl = builder.buildUrl(socialLoginParams.login_uri, params);
+            }  
         } catch (e) {
             throw e;
         }
