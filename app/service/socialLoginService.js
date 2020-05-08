@@ -27,7 +27,7 @@ const service = {
     login: async (data) => {
         try {
             const confidentialParams = await socialLoginDao.findConfidentialDataByKey(data.key);
-            headers = {
+            let headers = {
                 'Accept': 'application/json'
             }
             // getting access token
@@ -96,6 +96,7 @@ const service = {
                 return await authService.generateTokens(socialLoginUser);
             }
         } catch (e) {
+            console.error(e);
             let error = new Error();
             error.message = "Bad credentials";
             error.responseCode = 403;
