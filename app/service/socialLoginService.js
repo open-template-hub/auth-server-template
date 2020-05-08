@@ -103,8 +103,8 @@ const service = {
         const headers = {
             'Accept': 'application/json'
         }
-        const params = [v2Config.client_id, v2Config.client_secret, v2Config.redirect_uri, params.code, params.state];
-        const accessTokenUrl = builder.buildUrl(v2Config.access_token_uri, params);
+        const accessTokenParams = [v2Config.client_id, v2Config.client_secret, v2Config.redirect_uri, params.code, params.state];
+        const accessTokenUrl = builder.buildUrl(v2Config.access_token_uri, accessTokenParams);
 
         let accessTokenResponse;
         if (v2Config.access_token_request_method === 'GET') {
