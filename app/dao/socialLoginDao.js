@@ -4,8 +4,8 @@ const dao = {
   findSocialLoginByKey: async (key) => {
     let res = [];
     try {
-        let v1Join = " LEFT OUTER JOIN oauth_v1_config_params CP ON CP.social_login_key = SL.social_login_key";
-        let v2Join = " LEFT OUTER JOIN oauth_v2_config_params CP ON CP.social_login_key = SL.social_login_key";
+        let v1Join = " INNER JOIN oauth_v1_config_params CP ON CP.social_login_key = SL.social_login_key";
+        let v2Join = " INNER JOIN oauth_v2_config_params CP ON CP.social_login_key = SL.social_login_key";
 
         let selectClause = "SELECT SL.*, CP.* FROM social_logins SL";
         let whereClause = " WHERE SL.social_login_key = '$1'";
