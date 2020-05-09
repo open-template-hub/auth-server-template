@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users
 (
   username text NOT NULL PRIMARY KEY, 
   password text NOT NULL,
-  email text NOT NULL, 
+  email text UNIQUE,
   verified boolean, 
   role text
 );
@@ -15,19 +15,18 @@ CREATE TABLE IF NOT EXISTS tokens
 
 CREATE TABLE IF NOT EXISTS social_logins
 (
-  social_login_key text NOT NULL,
-  oauth_version integer NOT NULL,
-  developer_notes text NULL
+  social_login_key text NOT NULL UNIQUE,
+  developer_notes text
 );
 
 CREATE TABLE IF NOT EXISTS oauth_v1_config_params
 (
-  social_login_key text NOT NULL
+  social_login_key text NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS oauth_v2_config_params
 (
-  social_login_key text NOT NULL,
+  social_login_key text NOT NULL UNIQUE,
   client_id text NOT NULL,
   client_secret text NOT NULL,
   redirect_uri text NOT NULL,
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS oauth_v2_config_params
   access_token_json_field_path text NOT NULL,
   user_data_uri text NOT NULL,
   external_user_id_json_field_path text NOT NULL,
-  external_user_email_json_field_path text NOT NULL,
+  external_user_email_json_field_path text,
   external_username_json_field_path text,
   token_type_json_field_path text,
   requested_with_auth_header boolean NOT NULL,
@@ -48,5 +47,6 @@ CREATE TABLE IF NOT EXISTS social_login_mappings
   social_login_key text NOT NULL,
   username text NOT NULL, 
   external_user_id text NOT NULL,
-  external_username text
+  external_username text,
+  external_user_email text
 );
