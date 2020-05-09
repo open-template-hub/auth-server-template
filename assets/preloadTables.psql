@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS oauth_v2_config_params
   external_user_email_json_field_path text NOT NULL,
   external_username_json_field_path text,
   token_type_json_field_path text,
-  requested_with_auth_header boolean NOT NULL
+  requested_with_auth_header boolean NOT NULL,
+  access_token_request_method text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS social_login_mappings

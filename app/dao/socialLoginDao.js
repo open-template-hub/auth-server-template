@@ -8,14 +8,14 @@ const dao = {
         let v2Join = " INNER JOIN oauth_v2_config_params CP ON CP.social_login_key = SL.social_login_key";
 
         let selectClause = "SELECT SL.*, CP.* FROM social_logins SL";
-        let whereClause = " WHERE SL.social_login_key = '$1'";
+        let whereClause = " WHERE SL.social_login_key = $1";
 
         let v1 = await db.query(selectClause + v1Join + whereClause, [key]);
         let v2 = await db.query(selectClause + v2Join + whereClause, [key]);
 
         res = {
-          v1Config: (v1.length > 0 ? v1.rows[0] : null),
-          v2Config: (v2.length > 0 ? v2.rows[0] : null)
+          v1Config: (v1.rowCount > 0 ? v1.rows[0] : null),
+          v2Config: (v2.rowCount > 0 ? v2.rows[0] : null)
         };
     } catch (e) {
         throw e;

@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const capitalize = require('capitalize');
 
 const builder = require('../util/builder');
 const requestHelper = require('../util/requestHelper');
@@ -20,7 +21,7 @@ const service = {
             // if oauth version 2
             if (socialLoginParams.v2Config) {
                 const params = [socialLoginParams.v2Config.client_id, data.state, socialLoginParams.v2Config.redirect_uri];
-                loginUrl = builder.buildUrl(socialLoginParams.login_uri, params);
+                loginUrl = builder.buildUrl(socialLoginParams.v2Config.login_uri, params);
             }  
         } catch (e) {
             throw e;
@@ -49,36 +50,34 @@ const service = {
     },
 
     loginForOauthV2: async(v2Config, params) => {
-        let accessToken = await service.getAccessToken(v2Config, params);
-        if (!accessToken) {
+        let accessTokenData = await service.getAccessTokenData(v2Config, params);
+        if (!accessTokenData.token) {
             console.error('Access token couldn\'t obtained');
             throw new Error();
         }
 
-        let tokenType = parser.getJsonValue(accessTokenResponse, confidentialParams.token_type_json_field_path);
-
-        let userData = await service.getUserDataWithAccessToken(accessToken, tokenType, v2Config);
+        let userData = await service.getUserDataWithAccessToken(accessTokenData, v2Config);
 
         return await service.loginUserWithUserData(params.key, userData);
     },
 
-    getUserDataWithAccessToken: async(accessToken, tokenType, v2Config) => {
+    getUserDataWithAccessToken: async(accessTokenData, v2Config) => {
         // getting user data with access token
         let userDataUrl = v2Config.user_data_uri;
-        let headers = headers = {
+        let headers = {
             'Accept': 'application/json',
         };
 
         if (v2Config.requested_with_auth_header) {
             // default authorization token type
-            tokenType = tokenType ? tokenType : 'Bearer';
+            const tokenType = accessTokenData.type ? capitalize(accessTokenData.type) : 'Bearer';
             headers = {
                 'Accept': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
-                'Authorization': tokenType + ' ' + accessToken
+                'Authorization': tokenType + ' ' + accessTokenData.token
             }
         } else {
-            userDataUrl = builder.buildUrl(v2Config.user_data_uri, [accessToken]);
+            userDataUrl = builder.buildUrl(v2Config.user_data_uri, [accessTokenData.token]);
         }
 
         const userDataResponse = await requestHelper.doGetRequest(userDataUrl, headers);
@@ -99,7 +98,7 @@ const service = {
         };
     },
 
-    getAccessToken: async(v2Config, params) => {
+    getAccessTokenData: async(v2Config, params) => {
         const headers = {
             'Accept': 'application/json'
         }
@@ -114,7 +113,19 @@ const service = {
         }
 
         const accessToken = parser.getJsonValue(accessTokenResponse, v2Config.access_token_json_field_path);
-        return accessToken;
+
+        let tokenType = params.tokenType;
+
+        if (!tokenType) {
+            tokenType = parser.getJsonValue(accessTokenResponse, v2Config.token_type_json_field_path);
+        }
+
+        const accessTokenData = {
+            token: accessToken,
+            type: tokenType
+        };
+
+        return accessTokenData;
     },
 
     loginUserWithUserData: async(key, userData) => {
