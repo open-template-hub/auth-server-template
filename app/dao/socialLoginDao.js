@@ -2,25 +2,26 @@ const db = require('./db');
 
 const dao = {
   findSocialLoginByKey: async (key) => {
-    let res;
+    let res = [];
     try {
-        res = await db.query('SELECT client_id, redirect_uri, login_uri, state FROM social_logins WHERE social_login_key LIKE $1', [key]);
+        let v1Join = " INNER JOIN oauth_v1_config_params CP ON CP.social_login_key = SL.social_login_key";
+        let v2Join = " INNER JOIN oauth_v2_config_params CP ON CP.social_login_key = SL.social_login_key";
+
+        let selectClause = "SELECT SL.*, CP.* FROM social_logins SL";
+        let whereClause = " WHERE SL.social_login_key = $1";
+
+        let v1 = await db.query(selectClause + v1Join + whereClause, [key]);
+        let v2 = await db.query(selectClause + v2Join + whereClause, [key]);
+
+        res = {
+          v1Config: (v1.rowCount > 0 ? v1.rows[0] : null),
+          v2Config: (v2.rowCount > 0 ? v2.rows[0] : null)
+        };
     } catch (e) {
         throw e;
     }
 
-    return res.rows[0];
-  },
-  // never use this to return client, use only internally, because response contains client secret
-  findConfidentialDataByKey: async (key) => {
-    let res;
-    try {
-        res = await db.query('SELECT * FROM social_logins WHERE social_login_key LIKE $1', [key]);
-    } catch (e) {
-        throw e;
-    }
-
-    return res.rows[0];
+    return res;
   },
   findMappingDataByExternalUserId: async (key, userId) => {
     let res;
