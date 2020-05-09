@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const capitalize = require('capitalize');
+const crypto = require('crypto');
+const OAuth = require('oauth-1.0a');
 
 const builder = require('../util/builder');
 const requestHelper = require('../util/requestHelper');
@@ -22,6 +24,9 @@ const service = {
             if (socialLoginParams.v2Config) {
                 const params = [socialLoginParams.v2Config.client_id, data.state, socialLoginParams.v2Config.redirect_uri];
                 loginUrl = builder.buildUrl(socialLoginParams.v2Config.login_uri, params);
+            } else if (socialLoginParams.v1Config) {
+                const oAuthRequestToken = await service.getOAuthRequestToken(socialLoginParams.v1Config);
+                loginUrl = builder.buildUrl(socialLoginParams.v1Config.login_uri, [oAuthRequestToken]);
             }
         } catch (e) {
             throw e;
@@ -32,13 +37,12 @@ const service = {
     login: async (data) => {
         try {
             const socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
-            
+
             // if oauth version 2
             if (socialLoginParams.v2Config) {
                 return await service.loginForOauthV2(socialLoginParams.v2Config, data);
-            } else {
-                console.error('Method Not Implemented');
-                throw new Error();
+            } else if (socialLoginParams.v1Config) {
+                return await service.loginForOauthV1(socialLoginParams.v1Config, data);
             }
         } catch (e) {
             console.error(e);
@@ -49,26 +53,46 @@ const service = {
         }
     },
 
-    loginForOauthV2: async(v2Config, params) => {
-        let accessTokenData = await service.getAccessTokenData(v2Config, params);
+    loginForOauthV1: async (config, params) => {
+        let accessTokenData = await service.getAccessTokenDataForOauthV1(config, params);
         if (!accessTokenData.token) {
             console.error('Access token couldn\'t obtained');
             throw new Error();
         }
 
-        let userData = await service.getUserDataWithAccessToken(accessTokenData, v2Config);
+        let userData = accessTokenData.userData;
+        if (!userData.external_user_id) {
+            console.error('User data couldn\'t obtained');
+            throw new Error();
+        }
 
         return await service.loginUserWithUserData(params.key, userData);
     },
 
-    getUserDataWithAccessToken: async(accessTokenData, v2Config) => {
+    loginForOauthV2: async (config) => {
+        let accessTokenData = await service.getAccessTokenDataForOauthV2(config);
+        if (!accessTokenData.token) {
+            console.error('Access token couldn\'t obtained');
+            throw new Error();
+        }
+
+        let userData = await service.getUserDataWithAccessToken(accessTokenData, config);
+        if (!userData.external_user_id) {
+            console.error('User data couldn\'t obtained');
+            throw new Error();
+        }
+
+        return await service.loginUserWithUserData(params.key, userData);
+    },
+
+    getUserDataWithAccessToken: async (accessTokenData, config) => {
         // getting user data with access token
-        let userDataUrl = v2Config.user_data_uri;
+        let userDataUrl = config.user_data_uri;
         let headers = {
             'Accept': 'application/json',
         };
 
-        if (v2Config.requested_with_auth_header) {
+        if (config.requested_with_auth_header) {
             // default authorization token type
             const tokenType = accessTokenData.type ? capitalize(accessTokenData.type) : 'Bearer';
             headers = {
@@ -77,19 +101,14 @@ const service = {
                 'Authorization': tokenType + ' ' + accessTokenData.token
             };
         } else {
-            userDataUrl = builder.buildUrl(v2Config.user_data_uri, [accessTokenData.token]);
+            userDataUrl = builder.buildUrl(config.user_data_uri, [accessTokenData.token]);
         }
 
         const userDataResponse = await requestHelper.doGetRequest(userDataUrl, headers);
 
-        const external_user_id = parser.getJsonValue(userDataResponse, v2Config.external_user_id_json_field_path);
-        const external_user_email = parser.getJsonValue(userDataResponse, v2Config.external_user_email_json_field_path);
-        const external_username = parser.getJsonValue(userDataResponse, v2Config.external_username_json_field_path);
-
-        if (!external_user_id) {
-            console.error('User data couldn\'t obtained');
-            throw new Error();
-        }
+        const external_user_id = parser.getJsonValue(userDataResponse, config.external_user_id_json_field_path);
+        const external_user_email = parser.getJsonValue(userDataResponse, config.external_user_email_json_field_path);
+        const external_username = parser.getJsonValue(userDataResponse, config.external_username_json_field_path);
 
         return {
             external_user_id: external_user_id,
@@ -98,37 +117,62 @@ const service = {
         };
     },
 
-    getAccessTokenData: async(v2Config, params) => {
+    getAccessTokenDataForOauthV1: async (config, params) => {
+        const accessTokenParams = [params.oauth_token, params.oauth_verifier];
+        const accessTokenUrl = builder.buildUrl(config.access_token_uri, accessTokenParams);
+
+        let accessTokenResponse;
+        if (config.access_token_request_method === 'GET') {
+            accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, {});
+        } else if (config.access_token_request_method === 'POST') {
+            accessTokenResponse = await requestHelper.doPostRequest(accessTokenUrl, {});
+        }
+
+        const urlParams = new URLSearchParams(accessTokenResponse);
+
+        let oAuthTokenParam = urlParams.get(config.access_token_query_param_field_path);
+
+        const userData = {
+            external_user_id: urlParams.get(config.external_user_id_query_param_field_path),
+            external_user_email: urlParams.get(config.external_user_email_query_param_field_path),
+            external_username: urlParams.get(config.external_username_query_param_field_path)
+        }
+
+        return {
+            token: oAuthTokenParam,
+            userData: userData
+        };
+    },
+
+    getAccessTokenDataForOauthV2: async (config, params) => {
         const headers = {
             'Accept': 'application/json'
         }
-        const accessTokenParams = [v2Config.client_id, v2Config.client_secret, v2Config.redirect_uri, params.code, params.state];
-        const accessTokenUrl = builder.buildUrl(v2Config.access_token_uri, accessTokenParams);
+        const accessTokenParams = [config.client_id, config.client_secret, config.redirect_uri, params.code, params.state];
+        const accessTokenUrl = builder.buildUrl(config.access_token_uri, accessTokenParams);
 
         let accessTokenResponse;
-        if (v2Config.access_token_request_method === 'GET') {
+        if (config.access_token_request_method === 'GET') {
             accessTokenResponse = await requestHelper.doGetRequest(accessTokenUrl, headers);
-        } else if (v2Config.access_token_request_method === 'POST') {
+        } else if (config.access_token_request_method === 'POST') {
             accessTokenResponse = await requestHelper.doPostRequest(accessTokenUrl, headers);
         }
 
-        const accessToken = parser.getJsonValue(accessTokenResponse, v2Config.access_token_json_field_path);
+        const accessToken = parser.getJsonValue(accessTokenResponse, config.access_token_json_field_path);
 
         let tokenType = params.tokenType;
 
         if (!tokenType) {
-            tokenType = parser.getJsonValue(accessTokenResponse, v2Config.token_type_json_field_path);
+            tokenType = parser.getJsonValue(accessTokenResponse, config.token_type_json_field_path);
         }
 
-        const accessTokenData = {
+        return {
             token: accessToken,
             type: tokenType
         };
-
-        return accessTokenData;
     },
 
-    loginUserWithUserData: async(key, userData) => {
+    loginUserWithUserData: async (key, userData) => {
         // checking social login mapping to determine if signup or login
         let socialLoginUser = await socialLoginDao.findMappingDataByExternalUserId(key, userData.external_user_id);
 
@@ -162,6 +206,38 @@ const service = {
             throw e
         }
     },
+
+    getOAuthRequestToken: async (config) => {
+        const oauth = OAuth({
+            consumer: {
+                key: config.client_id,
+                secret: config.client_secret
+            },
+            signature_method: 'HMAC-SHA1',
+            hash_function: service.hash_function_sha1,
+        });
+
+        const request_data = {
+            url: config.request_token_uri,
+            method: 'POST',
+            data: {oauth_callback: config.redirect_uri},
+        }
+
+        let headers = oauth.toHeader(oauth.authorize(request_data));
+
+        const oAuthRequestTokenResponse = await requestHelper.doPostRequest(config.request_token_uri, headers);
+        const urlParams = new URLSearchParams(oAuthRequestTokenResponse);
+
+        if (urlParams.has('oauth_token')) {
+            return urlParams.get('oauth_token');
+        }
+
+        return '';
+    },
+
+    hash_function_sha1(base_string, key) {
+        return crypto.createHmac('sha1', key).update(base_string).digest('base64');
+    }
 }
 
 module.exports = service;
