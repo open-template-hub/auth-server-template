@@ -69,8 +69,8 @@ const service = {
         return await service.loginUserWithUserData(params.key, userData);
     },
 
-    loginForOauthV2: async (config) => {
-        let accessTokenData = await service.getAccessTokenDataForOauthV2(config);
+    loginForOauthV2: async (config, params) => {
+        let accessTokenData = await service.getAccessTokenDataForOauthV2(config, params);
         if (!accessTokenData.token) {
             console.error('Access token couldn\'t obtained');
             throw new Error();
