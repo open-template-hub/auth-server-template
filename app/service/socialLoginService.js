@@ -75,7 +75,7 @@ const service = {
                 'Accept': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
                 'Authorization': tokenType + ' ' + accessTokenData.token
-            }
+            };
         } else {
             userDataUrl = builder.buildUrl(v2Config.user_data_uri, [accessTokenData.token]);
         }
