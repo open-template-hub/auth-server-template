@@ -53,6 +53,29 @@ const service = {
         }
     },
 
+    loginWithAccessToken: async (data) => {
+        try {
+            const socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
+
+            if (socialLoginParams.v2Config) {
+                let accessTokenData = {
+                    token: data.accessToken,
+                    type: data.tokenType
+                };
+
+                return await service.loginWithAccessTokenForOauthV2(accessTokenData, socialLoginParams.v2Config, data);
+            } else if (socialLoginParams.v1Config) {
+                throw new Error("Method Not Implemented");
+            }
+        } catch (e) {
+            console.error(e);
+            let error = new Error();
+            error.message = "Bad credentials";
+            error.responseCode = 403;
+            throw error;
+        }
+    },
+
     loginForOauthV1: async (config, params) => {
         let accessTokenData = await service.getAccessTokenDataForOauthV1(config, params);
         if (!accessTokenData.token) {
@@ -76,6 +99,10 @@ const service = {
             throw new Error();
         }
 
+        return await service.loginWithAccessTokenForOauthV2(accessTokenData, config, params);
+    },
+
+    loginWithAccessTokenForOauthV2: async(accessTokenData, config, params) => {
         let userData = await service.getUserDataWithAccessToken(accessTokenData, config);
         if (!userData.external_user_id) {
             console.error('User data couldn\'t obtained');
