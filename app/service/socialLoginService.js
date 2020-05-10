@@ -53,7 +53,7 @@ const service = {
         }
     },
 
-    mobileLogin: async (data) => {
+    loginWithAccessToken: async (data) => {
         try {
             const socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
 
