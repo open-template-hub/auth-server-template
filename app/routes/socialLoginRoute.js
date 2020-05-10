@@ -24,4 +24,14 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.post('/mobile/login', async (req, res) => {
+
+    try {
+        const response = await socialLoginService.mobileLogin(req.body);
+        res.json({accessToken: response.accessToken, refreshToken: response.refreshToken})
+    } catch (e) {
+        res.status(e.responseCode).json(e.message);
+    }
+});
+
 module.exports = router;
