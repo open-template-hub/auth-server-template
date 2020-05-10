@@ -24,10 +24,10 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/mobile/login', async (req, res) => {
+router.post('/login-with-access-token', async (req, res) => {
 
     try {
-        const response = await socialLoginService.mobileLogin(req.body);
+        const response = await socialLoginService.loginWithAccessToken(req.body);
         res.json({accessToken: response.accessToken, refreshToken: response.refreshToken})
     } catch (e) {
         res.status(e.responseCode).json(e.message);
