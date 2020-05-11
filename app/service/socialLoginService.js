@@ -125,7 +125,8 @@ const service = {
             headers = {
                 'Accept': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0',
-                'Authorization': tokenType + ' ' + accessTokenData.token
+                'Authorization': tokenType + ' ' + accessTokenData.token,
+                'Client-ID': config.client_id
             };
         } else {
             userDataUrl = builder.buildUrl(config.user_data_uri, [accessTokenData.token]);
