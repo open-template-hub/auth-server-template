@@ -1,9 +1,12 @@
 # auth-server-nodejs-template
+
 Auth Server Template in NodeJS Express.js
 
-### Social Logins
-* Github:
+## Social Login Configurations
 
+### Github
+
+``` sql
   INSERT INTO social_logins
   VALUES (
       'GITHUB',
@@ -29,9 +32,11 @@ Auth Server Template in NodeJS Express.js
     true,
     'GET'
   );
+```
 
-* Facebook:
+### Facebook
 
+``` sql
   INSERT INTO social_logins
   VALUES (
       'FACEBOOK',
@@ -56,3 +61,4 @@ Auth Server Template in NodeJS Express.js
     false,
     'GET'
   );
+```
