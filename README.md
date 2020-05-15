@@ -1,18 +1,21 @@
 # auth-server-nodejs-template
+
 Auth Server Template in NodeJS Express.js
 
-### Social Logins
-* Github:
+## Social Login Configurations
 
-  INSERT INTO social_logins
-  VALUES (
-      'GITHUB',
-      2,
-      'Github login with oauth v2'
-  );
+### Github
 
-  INSERT INTO oauth_v2_config_params
-  VALUES (
+``` sql
+INSERT INTO social_logins
+VALUES (
+    'GITHUB',
+    2,
+    'Github login with oauth v2'
+);
+
+INSERT INTO oauth_v2_config_params
+VALUES (
     'GITHUB',
     '<Github Client Id>', 
     '<Github Client Secret>', 
@@ -28,23 +31,25 @@ Auth Server Template in NodeJS Express.js
     'token_type',
     true,
     'GET'
-  );
+);
+```
 
-* Facebook:
+### Facebook
 
-  INSERT INTO social_logins
-  VALUES (
-      'FACEBOOK',
-      2,
-      'Facebook login with oauth v2'
-  );
+``` sql
+INSERT INTO social_logins
+VALUES (
+    'FACEBOOK',
+    2,
+    'Facebook login with oauth v2'
+);
 
-  INSERT INTO oauth_v2_config_params
-  VALUES (
+INSERT INTO oauth_v2_config_params
+VALUES (
     'FACEBOOK',
     '<Facebook Client Id>', 
     '<Facebook Client Secret>', 
-	  '<Redirect Url>',
+    '<Redirect Url>',
     'https://www.facebook.com/v6.0/dialog/oauth?client_id={{0}}&redirect_uri={{2}}',
     'https://graph.facebook.com/oauth/access_token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}&grant_type=client_credentials',
     'access_token',
@@ -55,7 +60,8 @@ Auth Server Template in NodeJS Express.js
     null,
     false,
     'GET'
-  );
+);
+```
 
 ## Contributors
 
