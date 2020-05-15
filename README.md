@@ -4,63 +4,340 @@ Auth Server Template in NodeJS Express.js
 
 ## Social Login Configurations
 
-### Github
-
+### GITHUB
 ``` sql
-INSERT INTO social_logins
-VALUES (
-    'GITHUB',
-    2,
-    'Github login with oauth v2'
-);
-
-INSERT INTO oauth_v2_config_params
-VALUES (
-    'GITHUB',
-    '<Github Client Id>', 
-    '<Github Client Secret>', 
-    '<Redirect Url>',
-    'https://localhost/auth',
-    'https://github.com/login/oauth/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}',
-    'https://github.com/login/oauth/access_token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}',
-    'access_token',
-    'https://api.github.com/user',
-    'id',
-    'email',
-    'login',
-    'token_type',
-    true,
-    'GET'
-);
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('GITHUB', 'https://github.com/settings/developers');
+INSERT INTO oauth_v2_config_params 
+			( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'GITHUB', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://github.com/login/oauth/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}', 
+                        'https://github.com/login/oauth/access_token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}', 
+                        'access_token', 
+                        'https://api.github.com/user', 
+                        'id', 
+                        'email', 
+                        'login', 
+                        'token_type', 
+                        true, 
+                        'GET' 
+            );
 ```
-
-### Facebook
-
+### FACEBOOK
 ``` sql
-INSERT INTO social_logins
-VALUES (
-    'FACEBOOK',
-    2,
-    'Facebook login with oauth v2'
-);
-
-INSERT INTO oauth_v2_config_params
-VALUES (
-    'FACEBOOK',
-    '<Facebook Client Id>', 
-    '<Facebook Client Secret>', 
-    '<Redirect Url>',
-    'https://www.facebook.com/v6.0/dialog/oauth?client_id={{0}}&redirect_uri={{2}}',
-    'https://graph.facebook.com/oauth/access_token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}&grant_type=client_credentials',
-    'access_token',
-    'https://graph.facebook.com/me?fields=id,email&access_token={{0}}',
-    'id',
-    'email',
-    null,
-    null,
-    false,
-    'GET'
-);
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('FACEBOOK', 'https://developers.facebook.com');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'FACEBOOK', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://www.facebook.com/v6.0/dialog/oauth?client_id={{0}}&redirect_uri={{2}}', 
+                        'https://graph.facebook.com/v6.0/oauth/access_token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}#_=_', 
+                        'access_token', 
+                        'https://graph.facebook.com/me?fields=id,email&access_token={{0}}', 
+                        'id', 
+                        'email', 
+                        NULL, 
+                        'token_type', 
+                        false, 
+                        'GET' 
+            );
+```
+### GOOGLE
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('GOOGLE', 'https://console.developers.google.com');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'GOOGLE', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://accounts.google.com/o/oauth2/v2/auth?client_id={{0}}&state={{1}}&redirect_uri={{2}}&response_type=code&scope=openid%20profile%20email', 
+                        'https://oauth2.googleapis.com/token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}&grant_type=authorization_code', 
+                        'access_token', 
+                        'https://people.googleapis.com/v1/people/me?personFields=emailAddresses&access_token={{0}}', 
+                        'emailAddresses.0.metadata.source.id', 
+                        'emailAddresses.0.value', 
+                        NULL, 
+                        NULL, 
+                        false, 
+                        'POST' 
+            );
+```
+### TWITTER
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('TWITTER', 'https://developer.twitter.com/en/apps');
+INSERT INTO oauth_v1_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_query_param_field_path, 
+                        user_data_uri, 
+                        external_user_id_query_param_field_path, 
+                        external_user_email_query_param_field_path, 
+                        external_username_query_param_field_path, 
+                        request_token_uri, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'TWITTER', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://api.twitter.com/oauth/authenticate?oauth_token={{0}}', 
+                        'https://api.twitter.com/oauth/access_token?oauth_token={{0}}&oauth_verifier={{1}}', 
+                        'oauth_token', 
+                        'https://api.twitter.com/1.1/account/verify_credentials.json', 
+                        'user_id', 
+                        NULL, 
+                        'screen_name', 
+                        'https://api.twitter.com/oauth/request_token', 
+                        'POST' 
+            );
+```
+### LINKEDIN
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('LINKEDIN', 'https://www.linkedin.com/developers/apps');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'LINKEDIN', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://www.linkedin.com/oauth/v2/authorization?client_id={{0}}&state={{1}}&redirect_uri={{2}}&response_type=code&scope=r_liteprofile', 
+                        'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}', 
+                        'access_token', 
+                        'https://api.linkedin.com/v2/me?projection=(id)', 
+                        'id', 
+                        NULL, 
+                        NULL, 
+                        NULL, 
+                        true, 
+                        'POST' 
+            );
+```
+### REDDIT
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('REDDIT', 'https://www.reddit.com/prefs/apps/');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'REDDIT', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://old.reddit.com/api/v1/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}&response_type=code&scope=identity&duration=temporary', 
+                        'https://{{0}}:{{1}}@www.reddit.com/api/v1/access_token?grant_type=authorization_code&code={{3}}&redirect_uri={{2}}', 
+                        'access_token', 
+                        'https://oauth.reddit.com/api/v1/me', 
+                        'id', 
+                        NULL, 
+                        'name', 
+                        'token_type', 
+                        true, 
+                        'POST' 
+            );
+```
+### DRIBBBLE
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('DRIBBBLE', 'https://dribbble.com/account/applications');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'DRIBBBLE', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://dribbble.com/oauth/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}&scope=public', 
+                        'https://dribbble.com/oauth/token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}', 
+                        'access_token', 
+                        'https://api.dribbble.com/v2/user', 
+                        'id', 
+                        NULL, 
+                        'login', 
+                        'token_type', 
+                        true, 
+                        'POST' 
+            );
+```
+### TWITCH
+``` sql
+INSERT INTO social_logins (social_login_key, developer_notes) VALUES ('TWITCH', 'https://dev.twitch.tv/console/apps');
+INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'TWITCH', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://id.twitch.tv/oauth2/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}&response_type=code&scope=user_read', 
+                        'https://id.twitch.tv/oauth2/token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}&grant_type=authorization_code', 
+                        'access_token', 
+                        'https://api.twitch.tv/helix/users', 
+                        'data.0.id', 
+                        NULL, 
+                        'data.0.login', 
+                        'token_type', 
+                        true, 
+                        'POST' 
+            );INSERT INTO oauth_v2_config_params 
+            ( 
+                        social_login_key, 
+                        client_id, 
+                        client_secret, 
+                        redirect_uri, 
+                        login_uri, 
+                        access_token_uri, 
+                        access_token_json_field_path, 
+                        user_data_uri, 
+                        external_user_id_json_field_path, 
+                        external_user_email_json_field_path, 
+                        external_username_json_field_path, 
+                        token_type_json_field_path, 
+                        requested_with_auth_header, 
+                        access_token_request_method 
+            ) 
+            VALUES 
+            ( 
+                        'TWITCH', 
+                        <client_id>, 
+                        <client_secret>, 
+                        <redirect_uri>, 
+                        'https://id.twitch.tv/oauth2/authorize?client_id={{0}}&state={{1}}&redirect_uri={{2}}&response_type=code&scope=user_read', 
+                        'https://id.twitch.tv/oauth2/token?client_id={{0}}&client_secret={{1}}&redirect_uri={{2}}&code={{3}}&grant_type=authorization_code', 
+                        'access_token', 
+                        'https://api.twitch.tv/helix/users', 
+                        'data.0.id', 
+                        NULL, 
+                        'data.0.login', 
+                        'token_type', 
+                        true, 
+                        'POST' 
+            );
 ```
 
 ## Contributors
