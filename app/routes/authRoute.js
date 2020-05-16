@@ -40,7 +40,7 @@ router.post('/token', async (req, res) => {
 
     try {
         const accessToken = await authService.token(req.body.token);
-        res.json({accessToken: accessToken})
+        res.json({accessToken: accessToken, refreshToken: req.body.token})
     } catch (e) {
         res.status(e.responseCode).json(e.message);
     }
