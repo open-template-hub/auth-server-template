@@ -35,6 +35,18 @@ const dao = {
         return res.rows[0];
     },
 
+    findEmailByUsername: async (username) => {
+        let res;
+        try {
+            res = await db.query('SELECT username, email FROM users WHERE username LIKE $1', [username]);
+            shouldHaveSingleRow(res);
+        } catch (e) {
+            throw e;
+        }
+
+        return res.rows[0];
+    },
+
     findEmailAndPasswordByUsername: async (username) => {
         let res;
         try {

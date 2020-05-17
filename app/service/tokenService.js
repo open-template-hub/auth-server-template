@@ -23,6 +23,15 @@ const service = {
         }
     },
 
+    verifyAccessToken: function (token) {
+        try {
+            return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        } catch (e) {
+            e.responseCode = 403;
+            throw e;
+        }
+    },
+
     verifyRefreshToken: function (token) {
         try {
             return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
