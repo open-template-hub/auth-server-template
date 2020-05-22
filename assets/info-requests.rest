@@ -1,0 +1,5 @@
+###
+
+GET http://localhost:4001/info/me
+Content-Type: application/json
+Authorization: Bearer token
