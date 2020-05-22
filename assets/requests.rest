@@ -1,5 +1,5 @@
 ###
-POST http://localhost:4000/auth/signup
+POST http://localhost:4001/auth/signup
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:4000/auth/login
+POST http://localhost:4001/auth/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:4000/auth/logout
+POST http://localhost:4001/auth/logout
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:4000/auth/token
+POST http://localhost:4001/auth/token
 Content-Type: application/json
 
 {
@@ -36,11 +36,11 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:4000/auth/verify?token=""
+GET http://localhost:4001/auth/verify?token=""
 
 ###
 
-POST http://localhost:4000/auth/forget-password
+POST http://localhost:4001/auth/forget-password
 Content-Type: application/json
 
 {
@@ -49,7 +49,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:4000/auth/reset-password
+POST http://localhost:4001/auth/reset-password
 Content-Type: application/json
 
 {
@@ -60,7 +60,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:4000/social/login-url
+POST http://localhost:4001/social/login-url
 Content-Type: application/json
 
 {
@@ -69,7 +69,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:4000/social/login
+POST http://localhost:4001/social/login
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:4000/social/login-with-access-token
+POST http://localhost:4001/social/login-with-access-token
 Content-Type: application/json
 
 {
@@ -91,8 +91,8 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:4000/info/me
+GET http://localhost:4001/info/me
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZ1cmthbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTU4OTc1NTYyOSwiZXhwIjoxNTg5NzU2NTI5fQ.Zpz-413GjE1DmIdKoZnqZzxl3zivuvj0v_3t3t5QxHE
+Authorization: Bearer token
 
 ###
