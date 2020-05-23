@@ -10,8 +10,8 @@ const cronService = require('./app/service/cronService.js');
 const mountRoutes = require('./app/routes');
 
 // precondition check
-if(!util.envVariablesCheck()) {
-    return;
+if (!util.envVariablesCheck()) {
+ return;
 }
 
 // express init
