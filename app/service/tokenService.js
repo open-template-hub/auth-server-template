@@ -27,7 +27,12 @@ const service = {
         try {
             return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         } catch (e) {
-            e.responseCode = 403;
+            console.error(e);
+            if (e.name === 'JsonWebTokenError') {
+                e.responseCode = 403;
+            } else if (e.name === 'TokenExpiredError') {
+                e.responseCode = 401;
+            }
             throw e;
         }
     },
@@ -36,7 +41,12 @@ const service = {
         try {
             return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
         } catch (e) {
-            e.responseCode = 403;
+            console.error(e);
+            if (e.name === 'JsonWebTokenError') {
+                e.responseCode = 403;
+            } else if (e.name === 'TokenExpiredError') {
+                e.responseCode = 401;
+            }
             throw e;
         }
     },
@@ -45,7 +55,12 @@ const service = {
         try {
             return jwt.verify(token, process.env.VERIFICATION_TOKEN_SECRET);
         } catch (e) {
-            e.responseCode = 403;
+            console.error(e);
+            if (e.name === 'JsonWebTokenError') {
+                e.responseCode = 403;
+            } else if (e.name === 'TokenExpiredError') {
+                e.responseCode = 401;
+            }
             throw e;
         }
     },
@@ -54,7 +69,12 @@ const service = {
         try {
             return jwt.verify(token, process.env.RESET_PASSWORD_TOKEN_SECRET + currentPassword);
         } catch (e) {
-            e.responseCode = 403;
+            console.error(e);
+            if (e.name === 'JsonWebTokenError') {
+                e.responseCode = 403;
+            } else if (e.name === 'TokenExpiredError') {
+                e.responseCode = 401;
+            }
             throw e;
         }
     }

@@ -24,14 +24,14 @@ const dao = {
         }
 
         if (res.rows.length === 0) {
-            let error = new Error();
-            error.responseCode = 403;
-            throw error
+            let e = new Error("invalid token");
+            e.responseCode = 401;
+            throw e
         } else if (res.rows.length > 1) {
-            console.error('Ambiguous token');
-            let error = new Error();
-            error.responseCode = 500;
-            throw error
+            console.error('ambiguous token');
+            let e = new Error("internal server error");
+            e.responseCode = 500;
+            throw e
         }
 
         return res.rows[0];

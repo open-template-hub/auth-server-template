@@ -8,6 +8,13 @@ const tokenDao = require('../dao/tokenDao');
 const service = {
     signup: async (user) => {
         try {
+            if (!user.password || !user.username || !user.email) {
+                let e = new Error("username, password and email required");
+                e.responseCode = 400;
+                console.error(e);
+                throw e;
+            }
+
             const hashedPassword = await bcrypt.hash(user.password, 10);
             await userDao.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
@@ -19,6 +26,16 @@ const service = {
     },
 
     login: async (user) => {
+        try {
+            if (!user.password || !user.username) {
+                let e = new Error("username and password required");
+                e.responseCode = 400;
+                throw e;
+            }
+        } catch (e) {
+            throw e
+        }
+
         let dbUser = {password: '', verified: false};
         try {
             dbUser = await userDao.findUserByUsername(user.username);
@@ -27,33 +44,18 @@ const service = {
         }
 
         if (!await bcrypt.compare(user.password, dbUser.password)) {
-            let error = new Error();
-            error.message = "Bad credentials";
-            error.responseCode = 403;
-            throw error;
+            let e = new Error("Bad credentials");
+            e.responseCode = 403;
+            throw e;
         }
 
         if (!dbUser.verified) {
-            let error = new Error();
-            error.message = "Account not verified";
-            error.responseCode = 403;
-            throw error;
+            let e = new Error("Account not verified");
+            e.responseCode = 403;
+            throw e;
         }
 
         return await service.generateTokens(dbUser);
-    },
-
-    generateTokens: async(user) => {
-        const accessToken = tokenService.generateAccessToken(user);
-        const refreshToken = tokenService.generateRefreshToken(user);
-
-        try {
-            await tokenDao.insertToken({token:refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
-        } catch (e) {
-            throw e
-        }
-
-        return {accessToken: accessToken, refreshToken: refreshToken.token};
     },
 
     logout: async (token) => {
@@ -95,6 +97,12 @@ const service = {
 
     resetPassword: async (user, token) => {
         try {
+            if (!user.password || !user.username) {
+                let e = new Error("username and password required");
+                e.responseCode = 400;
+                throw e;
+            }
+
             user.password = await bcrypt.hash(user.password, 10);
 
             const dbUser = await userDao.findEmailAndPasswordByUsername(user.username);
@@ -103,6 +111,19 @@ const service = {
         } catch (e) {
             throw e
         }
+    },
+
+    generateTokens: async(user) => {
+        const accessToken = tokenService.generateAccessToken(user);
+        const refreshToken = tokenService.generateRefreshToken(user);
+
+        try {
+            await tokenDao.insertToken({token:refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
+        } catch (e) {
+            throw e
+        }
+
+        return {accessToken: accessToken, refreshToken: refreshToken.token};
     }
 };
 

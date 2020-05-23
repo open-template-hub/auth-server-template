@@ -18,6 +18,12 @@ const service = {
     loginUrl: async (data) => {
         let loginUrl = "";
         try {
+            if (!data.key) {
+                let e = new Error("key required");
+                e.responseCode = 400;
+                throw e;
+            }
+
             let socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
 
             // if oauth version 2
@@ -36,6 +42,17 @@ const service = {
 
     login: async (data) => {
         try {
+            if (!data.key) {
+                let e = new Error("key required");
+                e.responseCode = 400;
+                throw e;
+            }
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+
+        try {
             const socialLoginParams = await socialLoginDao.findSocialLoginByKey(data.key);
 
             // if oauth version 2
@@ -45,11 +62,7 @@ const service = {
                 return await service.loginForOauthV1(socialLoginParams.v1Config, data);
             }
         } catch (e) {
-            console.error(e);
-            let error = new Error();
-            error.message = "Bad credentials";
-            error.responseCode = 403;
-            throw error;
+            throw e;
         }
     },
 
@@ -69,44 +82,58 @@ const service = {
             }
         } catch (e) {
             console.error(e);
-            let error = new Error();
-            error.message = "Bad credentials";
-            error.responseCode = 403;
-            throw error;
+            e.responseCode = 403;
+            throw e;
         }
     },
 
     loginForOauthV1: async (config, params) => {
-        let accessTokenData = await service.getAccessTokenDataForOauthV1(config, params);
-        if (!accessTokenData.token) {
-            console.error('Access token couldn\'t obtained');
-            throw new Error();
-        }
+        try {
+            let accessTokenData = await service.getAccessTokenDataForOauthV1(config, params);
+            if (!accessTokenData.token) {
+                let e = new Error('Access token couldn\'t obtained');
+                e.responseCode = 400;
+                console.error(e);
+                throw e;
+            }
 
-        let userData = accessTokenData.userData;
-        if (!userData.external_user_id) {
-            console.error('User data couldn\'t obtained');
-            throw new Error();
-        }
+            let userData = accessTokenData.userData;
+            if (!userData.external_user_id) {
+                let e = new Error('User data couldn\'t obtained');
+                e.responseCode = 400;
+                console.error(e);
+                throw e;
+            }
 
-        return await service.loginUserWithUserData(params.key, userData);
+            return await service.loginUserWithUserData(params.key, userData);
+        } catch (e) {
+            throw e;
+        }
     },
 
     loginForOauthV2: async (config, params) => {
-        let accessTokenData = await service.getAccessTokenDataForOauthV2(config, params);
-        if (!accessTokenData.token) {
-            console.error('Access token couldn\'t obtained');
-            throw new Error();
-        }
+        try {
+            let accessTokenData = await service.getAccessTokenDataForOauthV2(config, params);
+            if (!accessTokenData.token) {
+                let e = new Error('Access token couldn\'t obtained');
+                e.responseCode = 400;
+                console.error(e);
+                throw e;
+            }
 
-        return await service.loginWithAccessTokenForOauthV2(accessTokenData, config, params);
+            return await service.loginWithAccessTokenForOauthV2(accessTokenData, config, params);
+        } catch (e) {
+            throw e;
+        }
     },
 
     loginWithAccessTokenForOauthV2: async(accessTokenData, config, params) => {
         let userData = await service.getUserDataWithAccessToken(accessTokenData, config);
         if (!userData.external_user_id) {
-            console.error('User data couldn\'t obtained');
-            throw new Error();
+            let e = new Error('User data couldn\'t obtained');
+            e.responseCode = 400;
+            console.error(e);
+            throw e;
         }
 
         return await service.loginUserWithUserData(params.key, userData);
@@ -201,27 +228,31 @@ const service = {
     },
 
     loginUserWithUserData: async (key, userData) => {
-        // checking social login mapping to determine if signup or login
-        let socialLoginUser = await socialLoginDao.findMappingDataByExternalUserId(key, userData.external_user_id);
+        try {
+            // checking social login mapping to determine if signup or login
+            let socialLoginUser = await socialLoginDao.findMappingDataByExternalUserId(key, userData.external_user_id);
 
-        if (socialLoginUser) {
-            // login user, generate token
-            return await authService.generateTokens(socialLoginUser);
-        } else {
-            // signup user and generate token
-            const autoGeneratedUserName = uuid.v4();
-            const autoGeneratedPassword = uuid.v4();
+            if (socialLoginUser) {
+                // login user, generate token
+                return await authService.generateTokens(socialLoginUser);
+            } else {
+                // signup user and generate token
+                const autoGeneratedUserName = uuid.v4();
+                const autoGeneratedPassword = uuid.v4();
 
-            socialLoginUser = {
-                username: autoGeneratedUserName,
-                password: autoGeneratedPassword,
-                email: userData.external_user_email
+                socialLoginUser = {
+                    username: autoGeneratedUserName,
+                    password: autoGeneratedPassword,
+                    email: userData.external_user_email
+                }
+
+                await service.signup(socialLoginUser);
+                await socialLoginDao.insertSocialLoginMapping(key, userData.external_user_id, userData.external_username, userData.external_user_email, autoGeneratedUserName);
+
+                return await authService.generateTokens(socialLoginUser);
             }
-
-            await service.signup(socialLoginUser);
-            await socialLoginDao.insertSocialLoginMapping(key, userData.external_user_id, userData.external_username, userData.external_user_email, autoGeneratedUserName);
-
-            return await authService.generateTokens(socialLoginUser);
+        } catch (e) {
+            throw e;
         }
     },
 

@@ -12,9 +12,9 @@ router.get('/me', async (req, res) => {
         const BEARER = "Bearer ";
 
         if (!token || !token.startsWith(BEARER)) {
-            let error = new Error('invalid token');
-            error.responseCode = 400;
-            throw error;
+            let e = new Error('invalid token');
+            e.responseCode = 400;
+            throw e;
         }
 
         token = token.slice(BEARER.length);
@@ -22,7 +22,7 @@ router.get('/me', async (req, res) => {
         const me = await infoService.me(token);
         res.status(200).json(me);
     } catch (e) {
-        res.status(e.responseCode).json(e.message);
+        res.status(e.responseCode ? e.responseCode : 500).json(e.message);
     }
 });
 

@@ -8,7 +8,7 @@ const pool = new Pool({
     }
 });
 
-const preloadTablesTemplatePath = "./assets/preloadTables.psql";
+const preloadTablesTemplatePath = "./assets/sql/preloadTables.psql";
 
 async function preload() {
     let tables = builder.buildTemplate(preloadTablesTemplatePath);

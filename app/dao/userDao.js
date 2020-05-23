@@ -1,17 +1,16 @@
 const db = require('./db');
 
 const shouldHaveSingleRow = function (res) {
+
     if (res.rows.length === 0) {
-        let error = new Error();
-        error.message = "Bad credentials";
-        error.responseCode = 403;
-        throw error;
+        let e = new Error("user not found");
+        e.responseCode = 400;
+        throw e
     } else if (res.rows.length > 1) {
-        console.error('Ambiguous username');
-        let error = new Error();
-        error.message = "Internal server error";
-        error.responseCode = 500;
-        throw error;
+        console.error('ambiguous token');
+        let e = new Error("internal server error");
+        e.responseCode = 500;
+        throw e
     }
 };
 
@@ -51,7 +50,17 @@ const dao = {
         let res;
         try {
             res = await db.query('SELECT username, email, password FROM users WHERE username LIKE $1', [username]);
-            shouldHaveSingleRow(res);
+
+            if (res.rows.length === 0) {
+                let e = new Error("bad credentials");
+                e.responseCode = 403;
+                throw e
+            } else if (res.rows.length > 1) {
+                console.error('ambiguous token');
+                let e = new Error("internal server error");
+                e.responseCode = 500;
+                throw e
+            }
         } catch (e) {
             throw e;
         }
