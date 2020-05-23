@@ -3,9 +3,9 @@ POST http://localhost:4001/auth/signup
 Content-Type: application/json
 
 {
-  "username": "username",
-  "password": "password",
-  "email": "email@email.com"
+ "username": "username",
+ "password": "password",
+ "email": "email@email.com"
 }
 
 ###
@@ -13,8 +13,8 @@ POST http://localhost:4001/auth/login
 Content-Type: application/json
 
 {
-  "username": "username",
-  "password": "password"
+ "username": "username",
+ "password": "password"
 }
 
 ###
@@ -23,7 +23,7 @@ POST http://localhost:4001/auth/logout
 Content-Type: application/json
 
 {
-  "token": ""
+ "token": ""
 }
 
 ###
@@ -31,7 +31,7 @@ POST http://localhost:4001/auth/token
 Content-Type: application/json
 
 {
-  "token": ""
+ "token": ""
 }
 
 ###
@@ -44,7 +44,7 @@ POST http://localhost:4001/auth/forget-password
 Content-Type: application/json
 
 {
-  "username": "username"
+ "username": "username"
 }
 
 ###
@@ -53,7 +53,7 @@ POST http://localhost:4001/auth/reset-password
 Content-Type: application/json
 
 {
-  "username": "username",
-  "password": "",
-  "token": ""
+ "username": "username",
+ "password": "password",
+ "token": "token"
 }
