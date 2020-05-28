@@ -1,4 +1,12 @@
-# auth-server-nodejs-template
+![Logo](https://avatars2.githubusercontent.com/u/65504426?s=200&v=4)
+
+# Auth Server Template
+
+[![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
+[![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
+[![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
+[![LAstCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
+[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
 
 Auth Server Template in NodeJS Express.js
 
@@ -359,4 +367,3 @@ INSERT INTO oauth_v2_config_params
 ## LICENSE
 
 [MIT](LICENSE)
-
