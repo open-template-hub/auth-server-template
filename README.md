@@ -6,7 +6,7 @@
 [![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
 [![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
 [![LAstCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
-[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?color=F0DF65&style=plastic)]()
+[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?include_prereleases&color=F0DF65&style=plastic)]()
 
 Auth Server Template in NodeJS Express.js
 
