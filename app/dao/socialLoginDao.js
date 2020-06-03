@@ -27,7 +27,7 @@ const dao = {
  findMappingDataByExternalUserId: async (key, userId) => {
   let res;
   try {
-   res = await db.query('SELECT username FROM social_login_mappings WHERE social_login_key LIKE $1 and external_user_id LIKE $2', [key, userId]);
+   res = await db.query('SELECT users.username, users.role FROM social_login_mappings LEFT JOIN users ON users.username = social_login_mappings.username WHERE social_login_key LIKE $1 and external_user_id LIKE $2', [key, userId]);
   } catch (e) {
    throw e;
   }
