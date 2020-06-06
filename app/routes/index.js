@@ -30,7 +30,7 @@ module.exports = app => {
     let error = handle(err);
 
     console.log(err);
-    res.status(error.code).send({ message: error.message });
+    res.status(error.code).json({ message: error.message });
   });
 
 };
