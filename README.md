@@ -2,11 +2,12 @@
 
 # Auth Server Template
 
-[![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
-[![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
-[![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
-[![LastCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
-[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?include_prereleases&color=2F7488&style=for-the-badge)]()
+[![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](https://github.com/open-template-hub/auth-server-nodejs-template/issues)
+[![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](https://github.com/open-template-hub/auth-server-nodejs-template/pulls?q=is%3Apr+is%3Aclosed)
+[![LastCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](https://github.com/open-template-hub/auth-server-nodejs-template/commits/master)
+[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?include_prereleases&color=2F7488&style=for-the-badge)](https://github.com/open-template-hub/auth-server-nodejs-template/releases)
+[![SonarCloud](https://img.shields.io/sonar/quality_gate/open-template-hub_auth-server-nodejs-template?server=https%3A%2F%2Fsonarcloud.io&label=Sonar%20Cloud&style=for-the-badge)](https://sonarcloud.io/dashboard?id=open-template-hub_auth-server-nodejs-template)
 [![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=for-the-badge&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
 
 Auth Server Template in NodeJS Express.js
