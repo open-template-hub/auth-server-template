@@ -29,7 +29,7 @@ RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 PORT={Port}
 ```
 
-* If you do give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
+* If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
 
 ## Social Login Configurations
 
