@@ -11,6 +11,26 @@
 
 Auth Server Template in NodeJS Express.js
 
+## Configurations
+```sh
+ACCESS_TOKEN_SECRET={Access Token Secret}
+CLIENT_RESET_PASSWORD_URL={Client Reset Password Url}
+CLIENT_URL={Client Url}
+CLIENT_VERIFICATION_SUCCESS_URL={Client Verification Success Url}
+DATABASE_URL={Database Connection Url}
+MAIL_HOST={Mail Host}
+MAIL_PASSWORD={Mail Password}
+MAIL_PORT={Mail Port}
+MAIL_USERNAME={Mail Username}
+REFRESH_TOKEN_SECRET={Refresh Token Secret}
+RESET_PASSWORD_TOKEN_SECRET={Reset Password Token Secret}
+VERIFICATION_TOKEN_SECRET={Verification Token Secret}
+RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
+PORT={Port}
+```
+
+* If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
+
 ## Social Login Configurations
 
 ### GITHUB
