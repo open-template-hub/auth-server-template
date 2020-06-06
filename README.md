@@ -2,12 +2,12 @@
 
 # Auth Server Template
 
-[![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=2F7488&style=plastic)]()
-[![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=2F7488&style=plastic)]()
-[![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=2F7488&style=plastic)]()
-[![LastCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=2F7488&style=plastic)]()
-[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?include_prereleases&color=2F7488&style=plastic)]()
-[![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=plastic&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
+[![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
+[![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
+[![PRCLosed](https://img.shields.io/github/issues-pr-closed-raw/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
+[![LastCommit](https://img.shields.io/github/last-commit/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)]()
+[![Release](https://img.shields.io/github/release/open-template-hub/auth-server-nodejs-template?include_prereleases&color=2F7488&style=for-the-badge)]()
+[![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=for-the-badge&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
 
 Auth Server Template in NodeJS Express.js
 
