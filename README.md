@@ -12,6 +12,12 @@
 
 Auth Server Template in NodeJS Express.js
 
+## Express Deploy
+
+Deploy this template to Heroku
+
+[![Deploy](https://img.shields.io/badge/↑_Deploy_to-Heroku-7056bf.svg?style=for-the-badge)](https://heroku.com/deploy)
+
 ## Configurations
 ```sh
 ACCESS_TOKEN_SECRET={Access Token Secret}
