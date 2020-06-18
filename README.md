@@ -395,9 +395,9 @@ INSERT INTO oauth_v2_config_params
 ## Contributing
 
 * Fork it
-* Create your update branch (git checkout -b my-new-identicon)
-* Commit your changes (git commit -am 'Add some identicon')
-* Push to the branch (git push origin my-new-identicon)
+* Create your update branch (git checkout -b my-feature-branch)
+* Commit your changes (git commit -am 'Add some features')
+* Push to the branch (git push origin my-feature-branch)
 * Create new Pull Request
 
 ## LICENSE
