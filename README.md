@@ -16,7 +16,7 @@ Auth Server Template in NodeJS Express.js
 
 Deploy this template to Heroku
 
-[![Deploy](https://img.shields.io/badge/↑_Deploy_to-Heroku-7056bf.svg?style=for-the-badge)](https://heroku.com/deploy)
+[![Deploy](https://img.shields.io/badge/↑_Deploy_to-Heroku-7056bf.svg?style=for-the-badge)](https://heroku.com/deploy?template=https://github.com/open-template-hub/auth-server-nodejs-template)
 
 ## Configurations
 ```sh
