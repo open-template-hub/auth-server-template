@@ -36,7 +36,7 @@ RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 PORT={Port}
 ```
 
-* If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
+If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
 
 ## Social Login Configurations
 
@@ -391,6 +391,14 @@ INSERT INTO oauth_v2_config_params
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Contributing
+
+* Fork it
+* Create your update branch (git checkout -b my-new-identicon)
+* Commit your changes (git commit -am 'Add some identicon')
+* Push to the branch (git push origin my-new-identicon)
+* Create new Pull Request
 
 ## LICENSE
 
