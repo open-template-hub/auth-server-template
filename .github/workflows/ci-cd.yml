@@ -18,7 +18,6 @@ jobs:
           node-version: 12
       - run: npm install
       - run: npm ci
-      - run: npm test
 
   bump-version:
     needs: build
