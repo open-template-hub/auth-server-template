@@ -1,0 +1,39 @@
+# CI and Bump package.json version
+
+name: Node.js Package
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build:
+    name: "CI"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm ci
+      - run: npm test
+
+  bump-version:
+    needs: build
+    name: "Bump Version on master"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: cat ./package.json
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - uses: phips28/gh-action-bump-version@master
+        with:
+          tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: cat ./package.json
