@@ -24,6 +24,22 @@ Deploy this template to Heroku
 
 [![Deploy](https://img.shields.io/badge/Deploy_to-Heroku-7056bf.svg?style=for-the-badge&logo=heroku)](https://heroku.com/deploy?template=https://github.com/open-template-hub/auth-server-nodejs-template)
 
+or
+
+## Start with Server Generator
+
+Create your server with Server Generator Package
+
+[![NPM](https://img.shields.io/badge/NPM-Package-cb3837.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@open-template-hub/server-generator)
+
+or
+
+## GitHub Template
+
+Use this repository as a Template
+
+https://github.com/open-template-hub/auth-server-nodejs-template/generate
+
 ## Configurations
 ```sh
 ACCESS_TOKEN_SECRET={Access Token Secret}
