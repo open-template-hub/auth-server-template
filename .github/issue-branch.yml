@@ -8,5 +8,7 @@ branches:
     prefix: bugfix/
   - label: documentation
     prefix: document/
+  - label: quality
+    prefix: quality/
   - label: '*'
     prefix: issues/
