@@ -30,7 +30,7 @@ Deploy this template to Heroku
 
 Create your server with Server Generator Package
 
-[![NPM](https://img.shields.io/badge/NPM-Package-cb3837.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@open-template-hub/server-generator)
+[![NPM](https://img.shields.io/badge/NPM-server_generator-cb3837.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@open-template-hub/server-generator)
 
 ### 3. GitHub Template
 
