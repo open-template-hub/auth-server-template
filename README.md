@@ -1,6 +1,12 @@
-![Logo](https://avatars2.githubusercontent.com/u/65504426?s=200&v=4)
+<p align="center">
+  <a href="https://www.linkedin.com/company/open-template-hub">
+    <img src="https://avatars2.githubusercontent.com/u/65504426?s=200&v=4" alt="Logo">
+  </a>
+</p>
 
-# Auth Server Template
+<h1 align="center">
+Auth Server Template
+</h1>
 
 [![License](https://img.shields.io/github/license/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](LICENSE)
 [![Issues](https://img.shields.io/github/issues/open-template-hub/auth-server-nodejs-template?color=2F7488&style=for-the-badge)](https://github.com/open-template-hub/auth-server-nodejs-template/issues)
@@ -12,11 +18,25 @@
 
 Auth Server Template in NodeJS Express.js
 
-## Express Deploy
+## Ways to Begin
+
+### 1. Express Deploy
 
 Deploy this template to Heroku
 
 [![Deploy](https://img.shields.io/badge/Deploy_to-Heroku-7056bf.svg?style=for-the-badge&logo=heroku)](https://heroku.com/deploy?template=https://github.com/open-template-hub/auth-server-nodejs-template)
+
+### 2. Start with Server Generator
+
+Create your server with Server Generator Package
+
+[![NPM](https://img.shields.io/badge/NPM-server_generator-cb3837.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@open-template-hub/server-generator)
+
+### 3. GitHub Template
+
+Use this repository as a Template
+
+[![GitHubTemplate](https://img.shields.io/badge/GitHub-Template-24292e.svg?style=for-the-badge&logo=github)](https://github.com/open-template-hub/auth-server-nodejs-template/generate)
 
 ## Configurations
 ```sh
