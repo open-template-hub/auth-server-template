@@ -1,6 +1,6 @@
 {
  "name": "auth-server-nodejs-template",
- "version": "1.0.2",
+ "version": "1.0.3",
  "description": "Auth Server Template in NodeJS Express.js",
  "main": "index.js",
  "scripts": {
