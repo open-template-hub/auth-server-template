@@ -21,7 +21,7 @@
  "homepage": "https://github.com/furknyavuz/auth-server-nodejs-template#readme",
  "dependencies": {
   "axios": "^0.19.2",
-  "bcrypt": "^4.0.1",
+  "bcrypt": "^5.0.0",
   "capitalize": "^2.0.3",
   "cors": "^2.8.5",
   "crypto-js": "^4.0.0",
