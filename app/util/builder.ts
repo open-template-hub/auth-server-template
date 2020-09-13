@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 export class Builder {
- buildTemplate = (filePath, params) => {
+ buildTemplate = (filePath, params?: Map<string, string>) => {
   let template = '';
 
   try {
@@ -11,11 +11,9 @@ export class Builder {
   }
 
   if (params != undefined) {
-   for (var entry of params.entries()) {
-    let key = entry[0],
-     value = entry[1];
+   params.forEach((value: string, key: string) => {
     template = template.replace(key, value);
-   }
+   });
   }
   console.log('Successfully build template: \n' + template);
 

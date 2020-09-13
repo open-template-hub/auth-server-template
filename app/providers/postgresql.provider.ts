@@ -11,7 +11,7 @@ export class PostgreSqlProvider {
 
  preload = async () => {
   await this.initConnection();
-  let tables = this.builder.buildTemplate(this.preloadTablesTemplatePath, null);
+  let tables = this.builder.buildTemplate(this.preloadTablesTemplatePath);
   return await this.query(tables, []);
  }
 
