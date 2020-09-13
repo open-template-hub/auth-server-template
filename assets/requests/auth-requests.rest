@@ -3,9 +3,9 @@ POST http://localhost:4001/auth/signup
 Content-Type: application/json
 
 {
- "username": "username_test",
+ "username": "username",
  "password": "password",
- "email": "furkanyavuz.spambox@gmail.com"
+ "email": "email@email.com"
 }
 
 ###
@@ -13,8 +13,8 @@ POST http://localhost:4001/auth/login
 Content-Type: application/json
 
 {
- "username": "username_test",
- "password": "password"
+ "username": "furkan",
+ "password": "qwe123"
 }
 
 ###
@@ -23,7 +23,7 @@ POST http://localhost:4001/auth/logout
 Content-Type: application/json
 
 {
- "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lX3Rlc3QiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU5OTk0MzAzNywiZXhwIjoxNTk5OTQzOTM3fQ.SCGsWKxE3UJ__wqv3gxrWsEHreqd-5n_qaOwuZJySQk"
+ "token": "token"
 }
 
 ###
@@ -31,7 +31,7 @@ POST http://localhost:4001/auth/token
 Content-Type: application/json
 
 {
- "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lX3Rlc3QiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTU5OTk0MzE3NywiZXhwIjoxNjAyNTM1MTc3fQ.oAD_AggGsqoPVp4SiLNVCVlXSjzk3-pTns4onvQKhSU"
+ "token": "token"
 }
 
 ###
@@ -44,7 +44,7 @@ POST http://localhost:4001/auth/forget-password
 Content-Type: application/json
 
 {
- "username": "furkan"
+ "username": "username"
 }
 
 ###
