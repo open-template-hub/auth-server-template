@@ -2,7 +2,7 @@
  * @description holds constants
  */
 
-const ResponseCode = {
+export const ResponseCode = {
  OK: 200,
  CREATED: 201,
  BAD_REQUEST: 400,
@@ -14,5 +14,3 @@ const ResponseCode = {
  INTERNAL_SERVER_ERROR: 500,
  SERVICE_UNAVAILABLE: 503,
 }
-
-module.exports = ResponseCode;

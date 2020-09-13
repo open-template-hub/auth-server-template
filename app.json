@@ -1,7 +1,23 @@
 {
-  "name": "Auth Server NodeJS Template",
-  "description": "Auth Server Template in NodeJS Express.js",
-  "repository": "https://github.com/open-template-hub/auth-server-nodejs-template",
-  "logo": "https://avatars2.githubusercontent.com/u/65504426?s=200&v=4",
-  "keywords": ["authentication", "server", "template", "nodejs", "express", "nodejs-express", "oauth", "oauth2", "social-login", "facebook-login", "google-login", "linkedin-login", "twitter-login", "twitch-login", "github-login"]
+ "name": "Auth Server Template",
+ "description": "Auth Server Template in NodeJS Express.js",
+ "repository": "https://github.com/open-template-hub/auth-server-nodejs-template",
+ "logo": "https://avatars2.githubusercontent.com/u/65504426?s=200&v=4",
+ "keywords": [
+  "authentication",
+  "server",
+  "template",
+  "nodejs",
+  "express",
+  "nodejs-express",
+  "oauth",
+  "oauth2",
+  "social-login",
+  "facebook-login",
+  "google-login",
+  "linkedin-login",
+  "twitter-login",
+  "twitch-login",
+  "github-login"
+ ]
 }
