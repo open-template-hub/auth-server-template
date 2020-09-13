@@ -7,7 +7,7 @@ export class PostgreSqlProvider {
 
  builder = new Builder();
 
- preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
+ preloadTablesTemplatePath = './assets/sql/preload-tables.psql';
 
  preload = async () => {
   await this.initConnection();
