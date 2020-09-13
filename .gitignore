@@ -25,6 +25,12 @@ coverage
 # nyc test coverage
 .nyc_output
 
+# Out folder
+out/
+
+# Vscode
+.vscode/
+
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
@@ -81,9 +87,6 @@ typings/
 # Nuxt.js build / generate output
 .nuxt
 dist
-
-# VS Code
-.vscode/
 
 # Gatsby files
 .cache/
