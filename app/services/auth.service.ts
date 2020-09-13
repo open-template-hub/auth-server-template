@@ -1,12 +1,5 @@
 import bcrypt from 'bcrypt';
-import { HttpError } from '../util/httpError';
-import {
- findEmailAndPasswordByUsername,
- findUserByUsername,
- insertUser,
- updateByUsername,
- verifyUser
-} from '../dao/userDao';
+import { HttpError } from '../util/http-error';
 import {
  generateAccessToken,
  generatePasswordResetToken,
@@ -15,10 +8,11 @@ import {
  verifyPasswordResetToken,
  verifyRefreshToken,
  verifyVerificationToken
-} from './tokenService';
-import { sendAccountVerificationMail, sendPasswordResetMail } from './mailService';
-import { deleteToken, findToken, insertToken } from '../dao/tokenDao';
+} from './token.service';
+import { sendAccountVerificationMail, sendPasswordResetMail } from './mail.service';
 import { ResponseCode } from '../util/constant';
+import { TokenRepository } from '../repository/token.repository';
+import { UserRepository } from '../repository/user.repository';
 
 export class AuthService {
  signup = async (db, user) => {
@@ -30,7 +24,9 @@ export class AuthService {
   }
 
   const hashedPassword = await bcrypt.hash(user.password, 10);
-  await insertUser(db, {username: user.username, password: hashedPassword, email: user.email});
+
+  const userRepository = new UserRepository(db);
+  await userRepository.insertUser({username: user.username, password: hashedPassword, email: user.email});
 
   const verificationToken = generateVerificationToken(user);
   await sendAccountVerificationMail(user, verificationToken);
@@ -43,7 +39,8 @@ export class AuthService {
    throw e;
   }
 
-  let dbUser = await findUserByUsername(db, user.username);
+  const userRepository = new UserRepository(db);
+  let dbUser = await userRepository.findUserByUsername(user.username);
 
   if (!await bcrypt.compare(user.password, dbUser.password)) {
    let e = new Error('Bad credentials') as HttpError;
@@ -61,22 +58,28 @@ export class AuthService {
  }
 
  logout = async (db, token) => {
-  await deleteToken(db, token);
+  const tokenRepository = new TokenRepository(db);
+  await tokenRepository.deleteToken(token);
  }
 
  token = async (db, token) => {
-  await findToken(db, token);
+  const tokenRepository = new TokenRepository(db);
+  await tokenRepository.findToken(token);
   const user = await verifyRefreshToken(token);
   return generateAccessToken(user);
  }
 
  verify = async (db, token) => {
   const user = await verifyVerificationToken(token);
-  await verifyUser(db, user.username);
+
+  const userRepository = new UserRepository(db);
+  await userRepository.verifyUser(user.username);
  }
 
  forgetPassword = async (db, username) => {
-  const user = await findEmailAndPasswordByUsername(db, username);
+
+  const userRepository = new UserRepository(db);
+  const user = await userRepository.findEmailAndPasswordByUsername(username);
   const passwordResetToken = generatePasswordResetToken(user);
   await sendPasswordResetMail(user, passwordResetToken);
  }
@@ -90,16 +93,18 @@ export class AuthService {
 
   user.password = await bcrypt.hash(user.password, 10);
 
-  const dbUser = await findEmailAndPasswordByUsername(db, user.username);
+  const userRepository = new UserRepository(db);
+  const dbUser = await userRepository.findEmailAndPasswordByUsername(user.username);
   await verifyPasswordResetToken(token, dbUser.password);
-  await updateByUsername(db, user);
+  await userRepository.updateByUsername(user);
  }
 
  generateTokens = async (db, user) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  await insertToken(db, {token: refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
+  const tokenRepository = new TokenRepository(db);
+  await tokenRepository.insertToken({token: refreshToken.token, expireAt: new Date(refreshToken.exp * 1000)});
 
   return {accessToken: accessToken, refreshToken: refreshToken.token};
  }

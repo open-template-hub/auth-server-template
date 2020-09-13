@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
-import { SocialLoginService } from '../services/socialLoginService';
+import { SocialLoginService } from '../services/social-login.service';
 
 const subRoutes = {
  root: '/',

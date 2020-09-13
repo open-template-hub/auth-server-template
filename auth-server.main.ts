@@ -1,10 +1,10 @@
 import dotenv from 'dotenv'
 import cors from 'cors';
 import express from 'express';
-import { Routes } from './app/routes';
+import { Routes } from './app/routes/index.route';
 import bodyParser from 'body-parser';
 import { envVariablesCheck } from './app/util/util';
-import { configureCronJobs } from './app/services/cronService';
+import { configureCronJobs } from './app/services/cron.service';
 
 dotenv.config();
 

@@ -1,8 +1,8 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { ResponseCode } from '../util/constant';
-import { HttpError } from '../util/httpError';
-import { me } from '../services/infoService';
+import { HttpError } from '../util/http-error';
+import { me } from '../services/info.service';
 
 const subRoutes = {
  root: '/',

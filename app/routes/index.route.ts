@@ -1,10 +1,10 @@
-import authRouter from './authRoute';
-import socialLoginRouter from './socialLoginRoute';
-import infoRouter from './infoRoute';
-import { handle } from '../services/errorHandler';
+import authRouter from './auth.route';
+import socialLoginRouter from './social-login.route';
+import infoRouter from './info.route';
+import { handle } from '../services/error-handler.service';
 import { Request, Response } from 'express';
-import { PostgreSqlProvider } from '../database/postgreSqlProvider';
-import { EncryptionService } from '../services/encryptionService';
+import { PostgreSqlProvider } from '../providers/postgresql.provider';
+import { EncryptionService } from '../services/encryption.service';
 
 export module Routes {
  export function mount(app) {

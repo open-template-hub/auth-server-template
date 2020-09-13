@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
-import { AuthService } from '../services/authService';
+import { AuthService } from '../services/auth.service';
 
 const subRoutes = {
  root: '/',

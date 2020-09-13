@@ -1,18 +1,26 @@
 import jwt from 'jsonwebtoken';
 import { ResponseCode } from '../util/constant';
 
+const defaults = {
+ expire: {
+  accessToken: '1hour',
+  refreshToken: '30days',
+  resetPasswordToken: '1day'
+ }
+}
+
 export function generateAccessToken(user) {
  return jwt.sign({
   username: user.username,
   role: user.role
- }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15minutes'});
+ }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRE || defaults.expire.accessToken});
 }
 
 export function generateRefreshToken(user) {
  const token = jwt.sign({
   username: user.username,
   role: user.role
- }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '30days'});
+ }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRE || defaults.expire.refreshToken});
  const {exp} = jwt.decode(token);
  return {token: token, exp: exp};
 }
@@ -22,7 +30,7 @@ export function generateVerificationToken(user) {
 }
 
 export function generatePasswordResetToken(user) {
- return jwt.sign({username: user.username}, process.env.RESET_PASSWORD_TOKEN_SECRET + user.password, {expiresIn: '1day'});
+ return jwt.sign({username: user.username}, process.env.RESET_PASSWORD_TOKEN_SECRET + user.password, {expiresIn: process.env.RESET_PASSWORD_TOKEN_EXPIRE || defaults.expire.resetPasswordToken});
 }
 
 export function verifyAccessToken(token) {

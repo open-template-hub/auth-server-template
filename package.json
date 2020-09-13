@@ -2,7 +2,7 @@
  "name": "auth-server",
  "version": "1.0.0",
  "description": "Auth Server Template",
- "main": "authServer.ts",
+ "main": "auth-server.main.ts",
  "license": "MIT",
  "homepage": "https://github.com/open-template-hub/auth-server-nodejs-template#readme",
  "repository": {
@@ -10,8 +10,8 @@
   "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
  },
  "scripts": {
-  "start": "ts-node authServer.ts",
-  "devStart": "nodemon --exec ts-node authServer.ts"
+  "start": "ts-node auth-server.main.ts",
+  "devStart": "nodemon --exec ts-node auth-server.main.ts"
  },
  "dependencies": {
   "@types/crypto-js": "^3.1.47",
