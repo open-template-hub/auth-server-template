@@ -7,11 +7,11 @@ export class PostgreSqlProvider {
 
  builder = new Builder();
 
- preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
+ preloadTablesTemplatePath = './assets/sql/preload-tables.psql';
 
  preload = async () => {
   await this.initConnection();
-  let tables = this.builder.buildTemplate(this.preloadTablesTemplatePath, null);
+  let tables = this.builder.buildTemplate(this.preloadTablesTemplatePath);
   return await this.query(tables, []);
  }
 
