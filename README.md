@@ -423,4 +423,3 @@ INSERT INTO oauth_v2_config_params
 ## LICENSE
 
 The source code for this project is released under the [MIT License](LICENSE).
-
