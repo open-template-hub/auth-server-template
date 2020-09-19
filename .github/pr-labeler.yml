@@ -1,5 +1,0 @@
-enhancement: 'feature/*'
-bug: 'bugfix/*'
-documentation: 'document/*'
-quality: 'quality/*'
-hotfix: 'hotfix/*'
