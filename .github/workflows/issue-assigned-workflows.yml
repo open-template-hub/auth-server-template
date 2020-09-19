@@ -1,0 +1,14 @@
+name: Issue Open Workflows
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  automate-project-columns:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.3.0
+        with:
+          project: Open Template Hub Servers
+          column: In progress
+          repo-token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
