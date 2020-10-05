@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: alex-page/github-project-automation-plus@v0.3.0
         with:
-          project: WeContribute
+          project: Open Template Hub Servers
           column: To do
           repo-token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
   milestone-binder:
