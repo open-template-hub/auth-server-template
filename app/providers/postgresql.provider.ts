@@ -18,26 +18,23 @@ export class PostgreSqlProvider {
  initConnection = async () => {
   this.pool = new Pool({
    connectionString: process.env.DATABASE_URL,
+   max: 20,
+   application_name: 'AuthServer',
    ssl: {
     rejectUnauthorized: false,
    }
   });
-
-  this.pool.connect((err) => {
-   if (err) {
-    console.log(err);
-   } else {
-    return console.log('PostgreSQL pool initialized');
-   }
-  })
  }
 
  query = async (text: string, params: Array<any>): Promise<any> => {
   const start = Date.now();
   if (this.pool == null) throw new Error(this.POOL_NOT_INITIALIZED);
-  const definedPool = this.pool;
+
+  let client = await this.pool.connect();
+
   return new Promise(function (resolve, reject) {
-   definedPool.query(text, params, (err: Error, res: QueryResult<any>) => {
+   client.query(text, params, (err: Error, res: QueryResult<any>) => {
+    client.release();
     if (err) {
      console.error(err);
      reject(err);

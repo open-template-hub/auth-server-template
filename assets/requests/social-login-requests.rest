@@ -1,5 +1,4 @@
-###
-
+### Get Social Login URL
 POST http://localhost:4001/social/login-url
 Content-Type: application/json
 
@@ -7,8 +6,7 @@ Content-Type: application/json
  "key": "GITHUB"
 }
 
-###
-
+### Social Login
 POST http://localhost:4001/social/login
 Content-Type: application/json
 
@@ -18,8 +16,7 @@ Content-Type: application/json
  "state": "state"
 }
 
-###
-
+### Social Login With Access token
 POST http://localhost:4001/social/login-with-access-token
 Content-Type: application/json
 

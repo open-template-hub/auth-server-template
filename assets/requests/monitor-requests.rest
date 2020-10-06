@@ -1,0 +1,3 @@
+### Is server alive
+GET http://localhost:4001/monitor/alive
+Content-Type: application/json
