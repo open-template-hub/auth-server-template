@@ -1,3 +1,4 @@
+import monitorRouter from './monitor.route';
 import authRouter from './auth.route';
 import socialLoginRouter from './social-login.route';
 import infoRouter from './info.route';
@@ -6,6 +7,14 @@ import { Request, Response } from 'express';
 import { PostgreSqlProvider } from '../providers/postgresql.provider';
 import { EncryptionService } from '../services/encryption.service';
 
+const subRoutes = {
+ root: '/',
+ monitor: '/monitor',
+ auth: '/auth',
+ social: '/social',
+ info: '/info'
+}
+
 export module Routes {
  export function mount(app) {
   const postgreSqlProvider = new PostgreSqlProvider();
@@ -13,7 +22,7 @@ export module Routes {
   postgreSqlProvider.preload().then(() => console.log('PostgreSQL preload completed.'));
 
   const responseInterceptor = (req, res, next) => {
-   var originalSend = res.send;
+   let originalSend = res.send;
    const service = new EncryptionService();
    res.send = function () {
     console.log('Starting Encryption: ', new Date());
@@ -26,7 +35,7 @@ export module Routes {
    next();
   }
 
-  // use this interceptor before routes
+  // Use this interceptor before routes
   app.use(responseInterceptor);
 
   // INFO: Keep this method at top at all times
@@ -45,7 +54,8 @@ export module Routes {
    }
   });
 
-  // TODO: Add your routes here
+  // INFO: Add your routes here
+  app.use(subRoutes.monitor, monitorRouter);
   app.use('/auth', authRouter);
   app.use('/social', socialLoginRouter);
   app.use('/info', infoRouter);

@@ -3,34 +3,30 @@ import cors from 'cors';
 import express from 'express';
 import { Routes } from './app/routes/index.route';
 import bodyParser from 'body-parser';
-import { envVariablesCheck } from './app/util/util';
 import { configureCronJobs } from './app/services/cron.service';
 
-dotenv.config();
+// use .env file
+const env = dotenv.config();
+console.log(env.parsed);
 
-// precondition check
-if (!envVariablesCheck()) {
- process.exitCode = 1;
-} else {
+// express init
+const app: express.Application = express();
 
- // express init
- const app: express.Application = express();
+app.use(bodyParser.urlencoded({extended: false}));
 
- app.use(bodyParser.urlencoded({extended: false}));
+// parse application/json
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use(cors());
 
- // parse application/json
- app.use(bodyParser.json())
- app.use(cors());
+// mount routes
+Routes.mount(app);
 
- Routes.mount(app);
+// listen port
+const port: string = process.env.PORT || '4001' as string;
+app.listen(port, () => {
+ console.info('Auth Server is running on port: ', port);
+});
 
- // listen
- const port: string = process.env.PORT || '4001' as string;
-
- app.listen(port, () => {
-  console.log('Node app is running on port', port);
- });
-
- // cron
- configureCronJobs();
-}
+// cron
+configureCronJobs();

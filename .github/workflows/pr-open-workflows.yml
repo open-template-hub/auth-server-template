@@ -18,3 +18,9 @@ jobs:
           project: Open Template Hub Servers
           column: In progress
           repo-token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+  milestone-binder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Code-Hex/auto-milestone-binder@v1.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
