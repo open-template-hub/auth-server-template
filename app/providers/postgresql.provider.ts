@@ -1,47 +1,49 @@
 import { Pool, QueryResult } from 'pg';
 import { Builder } from '../util/builder';
 
+// debug logger
+const debugLog = require('debug')('auth-server:' + __filename.slice(__dirname.length + 1));
+
+const preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
+
 export class PostgreSqlProvider {
- private readonly POOL_NOT_INITIALIZED = 'Pool not initialized';
- pool: Pool | null = null;
+
+ private connectionPool: Pool = new Pool();
+ private currentPoolLimit: number = 1;
 
  builder = new Builder();
 
- preloadTablesTemplatePath = './assets/sql/preload-tables.psql';
+ preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
 
  preload = async () => {
-  await this.initConnection();
-  let tables = this.builder.buildTemplate(this.preloadTablesTemplatePath);
-  return await this.query(tables, []);
- }
+  this.currentPoolLimit = process.env.POSTGRESQL_CONNECTION_LIMIT ? parseInt(process.env.POSTGRESQL_CONNECTION_LIMIT) : 1;
 
- initConnection = async () => {
-  this.pool = new Pool({
+  // Creating Connection Pool
+  this.connectionPool = new Pool({
    connectionString: process.env.DATABASE_URL,
-   max: 20,
    application_name: 'AuthServer',
+   max: this.currentPoolLimit,
    ssl: {
     rejectUnauthorized: false,
    }
   });
+
+  let queries = this.builder.buildTemplateFromFile(this.preloadTablesTemplatePath);
+  return await this.query(queries, []);
  }
 
  query = async (text: string, params: Array<any>): Promise<any> => {
   const start = Date.now();
-  if (this.pool == null) throw new Error(this.POOL_NOT_INITIALIZED);
 
-  let client = await this.pool.connect();
+  const connectionPool = this.connectionPool;
 
   return new Promise(function (resolve, reject) {
-   client.query(text, params, (err: Error, res: QueryResult<any>) => {
-    client.release();
+   connectionPool.query(text, params, (err: Error, res: QueryResult<any>) => {
     if (err) {
      console.error(err);
      reject(err);
     } else {
-     const duration = Date.now() - start;
-     console.log('executed query', {text, duration});
-     console.log('res', res);
+     debugLog('executed query', {sql: text, duration: Date.now() - start, result: res});
      resolve(res);
     }
    });
