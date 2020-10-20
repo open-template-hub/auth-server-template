@@ -1,21 +1,24 @@
 import fs from 'fs';
 
+// debug logger
+const debugLog = require('debug')('auth-server:' + __filename.slice(__dirname.length + 1));
+
 export class Builder {
- buildTemplate = (filePath, params?: Map<string, string>) => {
+ buildTemplateFromFile = (filePath, params?: Map<string, string>) => {
   let template = '';
 
   try {
    template = fs.readFileSync(filePath, 'utf-8');
   } catch (err) {
-   console.error('An error occurred while building template: ' + err);
+   console.error(err);
   }
 
-  if (params != undefined) {
+  if (params) {
    params.forEach((value: string, key: string) => {
     template = template.replace(key, value);
    });
   }
-  console.log('Successfully build template: \n' + template);
+  debugLog('Successfully build template: \n' + template);
 
   return template;
  }

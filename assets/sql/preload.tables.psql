@@ -1,30 +1,34 @@
-CREATE TABLE IF NOT EXISTS users
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE application_name ILIKE ('AuthServer%') AND state NOT LIKE 'active' AND pid <> pg_backend_pid();
+
+create TABLE IF NOT EXISTS users
 (
-  username text NOT NULL PRIMARY KEY, 
+  username text NOT NULL PRIMARY KEY,
   password text NOT NULL,
   email text UNIQUE,
-  verified boolean, 
+  verified boolean,
   role text
 );
 
-CREATE TABLE IF NOT EXISTS tokens
+create TABLE IF NOT EXISTS tokens
 (
-  token text NOT NULL, 
+  token text NOT NULL,
   expire_date date
 );
 
-CREATE TABLE IF NOT EXISTS social_logins
+create TABLE IF NOT EXISTS social_logins
 (
   social_login_key text NOT NULL UNIQUE,
   developer_notes text
 );
 
-CREATE TABLE IF NOT EXISTS oauth_v1_config_params
+create TABLE IF NOT EXISTS oauth_v1_config_params
 (
   social_login_key text NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS oauth_v2_config_params
+create TABLE IF NOT EXISTS oauth_v2_config_params
 (
   social_login_key text NOT NULL UNIQUE,
   client_id text NOT NULL,
@@ -42,10 +46,10 @@ CREATE TABLE IF NOT EXISTS oauth_v2_config_params
   access_token_request_method text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS social_login_mappings
+create TABLE IF NOT EXISTS social_login_mappings
 (
   social_login_key text NOT NULL,
-  username text NOT NULL, 
+  username text NOT NULL,
   external_user_id text NOT NULL,
   external_username text,
   external_user_email text
