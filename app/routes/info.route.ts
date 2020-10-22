@@ -9,7 +9,7 @@ const subRoutes = {
  me: '/me'
 }
 
-const router = Router();
+export const router = Router();
 
 router.use('/*', async (req: Request, res: Response, next) => {
  let token = req.headers.authorization;
@@ -35,5 +35,3 @@ router.get(subRoutes.me, async (req: Request, res: Response) => {
  const response = await me(res.locals.ctx.dbProviders.postgreSqlProvider, token);
  res.status(200).json(response);
 });
-
-export = router;
