@@ -7,10 +7,8 @@ const subRoutes = {
  alive: '/alive'
 }
 
-const router = Router();
+export const router = Router();
 
 router.get(subRoutes.alive, async (req: Request, res: Response) => {
  res.status(ResponseCode.OK).send();
 });
-
-export = router;

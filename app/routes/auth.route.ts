@@ -13,7 +13,7 @@ const subRoutes = {
  resetPassword: '/reset-password'
 }
 
-const router = Router();
+export const router = Router();
 const authService = new AuthService();
 
 router.post(subRoutes.signup, async (req: Request, res: Response) => {
@@ -60,5 +60,3 @@ router.post(subRoutes.resetPassword, async (req: Request, res: Response) => {
  }, req.body.token);
  res.status(200).json({});
 });
-
-export = router;

@@ -1,7 +1,7 @@
-import monitorRouter from './monitor.route';
-import authRouter from './auth.route';
-import socialLoginRouter from './social-login.route';
-import infoRouter from './info.route';
+import {router as monitorRouter } from './monitor.route';
+import { router as authRouter } from './auth.route';
+import { router as socialLoginRouter } from './social-login.route';
+import { router as infoRouter } from './info.route';
 import { handle } from '../services/error-handler.service';
 import { Request, Response } from 'express';
 import { PostgreSqlProvider } from '../providers/postgresql.provider';

@@ -27,7 +27,7 @@ export const sendAccountVerificationMail = async (user, token) => {
  params.set('${username}', user.username);
 
 
- let mailBody = builder.buildTemplate(emailTemplatePath, params);
+ let mailBody = builder.buildTemplateFromFile(emailTemplatePath, params);
 
  await transporter.sendMail({
   from: process.env.MAIL_USERNAME,

@@ -9,7 +9,8 @@ const subRoutes = {
  loginWithAccessToken: '/login-with-access-token'
 }
 
-const router = Router();
+export const router = Router();
+
 const socialLoginService = new SocialLoginService();
 
 router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
@@ -29,4 +30,3 @@ router.post(subRoutes.loginWithAccessToken, async (req: Request, res: Response) 
  res.status(200).json({accessToken: response.accessToken, refreshToken: response.refreshToken})
 });
 
-export = router;
