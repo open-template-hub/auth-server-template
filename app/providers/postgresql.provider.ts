@@ -1,10 +1,6 @@
 import { Pool, QueryResult } from 'pg';
 import { Builder } from '../util/builder';
-
-// debug logger
-const debugLog = require('debug')('auth-server:' + __filename.slice(__dirname.length + 1));
-
-const preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
+import { debugLog } from '../services/debug-log.service';
 
 export class PostgreSqlProvider {
 

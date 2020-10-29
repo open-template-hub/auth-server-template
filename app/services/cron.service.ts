@@ -1,9 +1,7 @@
 import cron from 'node-cron';
 import { PostgreSqlProvider } from '../providers/postgresql.provider';
 import { TokenRepository } from '../repository/token.repository';
-
-// debug logger
-const debugLog = require('debug')('auth-server:' + __filename.slice(__dirname.length + 1));
+import { debugLog } from './debug-log.service';
 
 export function configureCronJobs() {
  cron.schedule('0 0 1 1-12 *', async () => {

@@ -4,10 +4,11 @@ import express from 'express';
 import { Routes } from './app/routes/index.route';
 import bodyParser from 'body-parser';
 import { configureCronJobs } from './app/services/cron.service';
+import { debugLog } from './app/services/debug-log.service';
 
 // use .env file
 const env = dotenv.config();
-console.log(env.parsed);
+debugLog(env.parsed);
 
 // express init
 const app: express.Application = express();
