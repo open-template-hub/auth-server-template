@@ -2,8 +2,12 @@
 const debug = require('debug');
 
 export const debugLog = (...args) => {
+  const tag =
+    process.env.PROJECT +
+    '-' +
+    process.env.MODULE +
+    '-' +
+    process.env.ENVIRONMENT;
 
- const tag = process.env.PROJECT + '-' + process.env.MODULE + '-' + process.env.ENVIRONMENT;
-
- debug(tag)(args);
+  debug(tag)(args);
 };

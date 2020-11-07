@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import cors from 'cors';
 import express from 'express';
 import { Routes } from './app/routes/index.route';
@@ -13,10 +13,10 @@ debugLog(env.parsed);
 // express init
 const app: express.Application = express();
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -24,9 +24,9 @@ app.use(cors());
 Routes.mount(app);
 
 // listen port
-const port: string = process.env.PORT || '4001' as string;
+const port: string = process.env.PORT || ('4001' as string);
 app.listen(port, () => {
- console.info('Auth Server is running on port: ', port);
+  console.info('Auth Server is running on port: ', port);
 });
 
 // cron
