@@ -21,16 +21,18 @@ export const router = Router();
 const socialLoginController = new SocialLoginController();
 
 router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
+  const context = res.locals.ctx as Context;
   const response = await socialLoginController.loginUrl(
-    res.locals.ctx.dbProviders.postgreSqlProvider,
+    context.postgresql_provider,
     req.body
   );
   res.status(200).json({ loginUrl: response });
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
+  const context = res.locals.ctx as Context;
   const response = await socialLoginController.login(
-    res.locals.ctx.dbProviders.postgreSqlProvider,
+    context.postgresql_provider,
     req.body
   );
   res.status(200).json(response);
@@ -41,8 +43,8 @@ router.post(
   async (req: Request, res: Response) => {
     const context = res.locals.ctx as Context;
     const response = await socialLoginController.loginWithAccessToken(
-      req.body,
-      context.username
+      context.postgresql_provider,
+      req.body
     );
     res.status(200).json(response);
   }
