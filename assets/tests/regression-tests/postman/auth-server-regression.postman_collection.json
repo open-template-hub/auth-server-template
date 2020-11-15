@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "f20ecf5e-7a92-49bd-82eb-3a9eb4eaf693",
+		"name": "auth-server-regression",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sign Up",
+			"item": [
+				{
+					"name": "Sign Up Success [201]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf736ef1-4572-4111-ba0f-8e5ac11ad1e6",
+								"exec": [
+									"pm.environment.set(\"current-index\", Number(pm.environment.get(\"current-index\")) + 1);\r",
+									"\r",
+									"pm.test(\"Response code is CREATED\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains Created User Email\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('email');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\",\r\n \"password\": \"{{password}}{{current-index}}\",\r\n \"email\": \"{{email}}{{current-index}}@test.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/auth/signup",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Sign In",
+			"item": [],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

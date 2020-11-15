@@ -26,3 +26,6 @@ export const TokenDefaults = {
     resetPasswordToken: '1day',
   },
 };
+
+export const EmailTemplatePath =
+  './assets/mail-templates/verify-account-mail-template.html';

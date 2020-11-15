@@ -13,6 +13,7 @@ import { Parser } from '../util/parser.util';
 import { SocialLoginRepository } from '../repository/social-login.repository';
 import { UserRepository } from '../repository/user.repository';
 import { TokenRepository } from '../repository/token.repository';
+import { AuthToken } from '../interface/auth-token.interface';
 
 const builder = new Builder();
 const parser = new Parser();
@@ -74,7 +75,7 @@ export class SocialLoginController {
     }
   };
 
-  loginWithAccessToken = async (db, data) => {
+  loginWithAccessToken = async (db, data): Promise<AuthToken> => {
     try {
       const socialLoginRepository = new SocialLoginRepository(db);
       const socialLoginParams = await socialLoginRepository.findSocialLoginByKey(
@@ -93,7 +94,7 @@ export class SocialLoginController {
           socialLoginParams.v2Config,
           data
         );
-      } else if (socialLoginParams.v1Config) {
+      } else {
         throw new Error('Method Not Implemented');
       }
     } catch (e) {
@@ -151,7 +152,7 @@ export class SocialLoginController {
     accessTokenData,
     config,
     params
-  ) => {
+  ): Promise<AuthToken> => {
     let userData = await this.getUserDataWithAccessToken(
       accessTokenData,
       config
@@ -306,7 +307,7 @@ export class SocialLoginController {
     };
   };
 
-  loginUserWithUserData = async (db, key, userData) => {
+  loginUserWithUserData = async (db, key, userData): Promise<AuthToken> => {
     // checking social login mapping to determine if signup or login
     const socialLoginRepository = new SocialLoginRepository(db);
     let socialLoginUser = await socialLoginRepository.findMappingDataByExternalUserId(

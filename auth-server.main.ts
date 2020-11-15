@@ -1,17 +1,22 @@
+/**
+ * @description holds server main
+ */
 import dotenv from 'dotenv';
 import cors from 'cors';
-import express from 'express';
 import { Routes } from './app/route/index.route';
-import bodyParser from 'body-parser';
-import { configureCronJobs } from './app/util/cron.util';
+import express = require('express');
+import bodyParser = require('body-parser');
 import { debugLog } from './app/util/debug-log.util';
+import { configureCronJobs } from './app/util/cron.util';
 
-// use .env file
 const env = dotenv.config();
 debugLog(env.parsed);
 
 // express init
 const app: express.Application = express();
+
+// public files
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -26,7 +31,7 @@ Routes.mount(app);
 // listen port
 const port: string = process.env.PORT || ('4001' as string);
 app.listen(port, () => {
-  console.info('Auth Server is running on port: ', port);
+  console.info('Payment Server is running on port', port);
 });
 
 // cron

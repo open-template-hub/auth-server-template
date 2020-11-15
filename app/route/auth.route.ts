@@ -14,18 +14,19 @@ const subRoutes = {
 };
 
 export const router = Router();
-const authController = new AuthController();
 
 router.post(subRoutes.signup, async (req: Request, res: Response) => {
-  await authController.signup(res.locals.ctx.dbProviders.postgreSqlProvider, {
+  const authController = new AuthController();
+  const response = await authController.signup(res.locals.ctx.dbProviders.postgreSqlProvider, {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
   });
-  res.status(201).json({ email: req.body.email });
+  res.status(201).json({ email: response });
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   const response = await authController.login(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     {
@@ -40,6 +41,7 @@ router.post(subRoutes.login, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.logout, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   await authController.logout(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.token
@@ -48,6 +50,7 @@ router.post(subRoutes.logout, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.token, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   const accessToken = await authController.token(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.token
@@ -58,6 +61,7 @@ router.post(subRoutes.token, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.verify, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   await authController.verify(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.query.token
@@ -66,6 +70,7 @@ router.post(subRoutes.verify, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   await authController.forgetPassword(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.username
@@ -74,6 +79,7 @@ router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.resetPassword, async (req: Request, res: Response) => {
+  const authController = new AuthController();
   await authController.resetPassword(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     {

@@ -2,14 +2,21 @@ import bcrypt from 'bcrypt';
 import { HttpError } from '../util/http-error.util';
 import { TokenUtil } from '../util/token.util';
 import {
-  sendAccountVerificationMail,
-  sendPasswordResetMail,
+  MailUtil
 } from '../util/mail.util';
 import { ResponseCode } from '../constant';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
 
 export class AuthController {
+  private readonly mailUtil: MailUtil;
+  private readonly tokenUtil: TokenUtil;
+
+  constructor() {
+    this.mailUtil = new MailUtil();
+    this.tokenUtil = new TokenUtil();
+  }
+
   signup = async (db, user) => {
     if (!user.password || !user.username || !user.email) {
       let e = new Error('username, password and email required') as HttpError;
@@ -27,8 +34,10 @@ export class AuthController {
     });
     const tokenUtil = new TokenUtil();
     const verificationToken = tokenUtil.generateVerificationToken(user);
+    
+    await this.mailUtil.sendAccountVerificationMail(user, verificationToken);
 
-    await sendAccountVerificationMail(user, verificationToken);
+    return user.email;
   };
 
   login = async (db, user) => {
@@ -63,26 +72,24 @@ export class AuthController {
 
   token = async (db, token) => {
     const tokenRepository = new TokenRepository(db);
-    const tokenUtil = new TokenUtil();
     await tokenRepository.findToken(token);
-    const user = await tokenUtil.verifyRefreshToken(token);
-    return tokenUtil.generateAccessToken(user);
+    const user = await this.tokenUtil.verifyRefreshToken(token);
+    return this.tokenUtil.generateAccessToken(user);
   };
 
   verify = async (db, token) => {
-    const tokenUtil = new TokenUtil();
-    const user = await tokenUtil.verifyVerificationToken(token);
+    const user = await this.tokenUtil.verifyVerificationToken(token);
 
     const userRepository = new UserRepository(db);
     await userRepository.verifyUser(user.username);
   };
 
   forgetPassword = async (db, username) => {
-    const tokenUtil = new TokenUtil();
     const userRepository = new UserRepository(db);
     const user = await userRepository.findEmailAndPasswordByUsername(username);
-    const passwordResetToken = tokenUtil.generatePasswordResetToken(user);
-    await sendPasswordResetMail(user, passwordResetToken);
+    const passwordResetToken = this.tokenUtil.generatePasswordResetToken(user);
+
+    await this.mailUtil.sendPasswordResetMail(user, passwordResetToken);
   };
 
   resetPassword = async (db, user, token) => {
@@ -98,9 +105,8 @@ export class AuthController {
     const dbUser = await userRepository.findEmailAndPasswordByUsername(
       user.username
     );
-    const tokenUtil = new TokenUtil();
 
-    await tokenUtil.verifyPasswordResetToken(token, dbUser.password);
+    await this.tokenUtil.verifyPasswordResetToken(token, dbUser.password);
     await userRepository.updateByUsername(user);
   };
 }

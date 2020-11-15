@@ -1,6 +1,7 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { SocialLoginController } from '../controller/social-login.controller';
+import { Context } from '../interface/context.interface';
 
 const subRoutes = {
   root: '/',
@@ -26,19 +27,17 @@ router.post(subRoutes.login, async (req: Request, res: Response) => {
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body
   );
-  res.status(200).json({
-    accessToken: response.accessToken,
-    refreshToken: response.refreshToken,
-  });
+  res.status(200).json(response);
 });
 
 router.post(
   subRoutes.loginWithAccessToken,
   async (req: Request, res: Response) => {
-    // const response = await socialLoginController.loginWithAccessToken(req.body);
-    // res.status(200).json({
-    //   accessToken: response.accessToken,
-    //   refreshToken: response.refreshToken,
-    // });
+    const context = res.locals.ctx as Context;
+    const response = await socialLoginController.loginWithAccessToken(
+      req.body,
+      context.username
+    );
+    res.status(200).json(response);
   }
 );

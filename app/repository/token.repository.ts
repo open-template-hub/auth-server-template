@@ -2,11 +2,12 @@ import { HttpError } from '../util/http-error.util';
 import { ResponseCode } from '../constant';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
 import { TokenUtil } from '../util/token.util';
+import { AuthToken } from '../interface/auth-token.interface';
 
 export class TokenRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
 
-  generateTokens = async (user) => {
+  generateTokens = async (user): Promise<AuthToken> => {
     const tokenUtil = new TokenUtil();
     const accessToken = tokenUtil.generateAccessToken(user);
     const refreshToken = tokenUtil.generateRefreshToken(user);
@@ -16,7 +17,7 @@ export class TokenRepository {
       expireAt: new Date(refreshToken.exp * 1000),
     });
 
-    return { accessToken: accessToken, refreshToken: refreshToken.token };
+    return { accessToken: accessToken, refreshToken: refreshToken.token } as AuthToken;
   };
 
   insertToken = async (token) => {
