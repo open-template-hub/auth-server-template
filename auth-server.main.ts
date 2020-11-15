@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 import cors from 'cors';
 import express from 'express';
-import { Routes } from './app/routes/index.route';
+import { Routes } from './app/route/index.route';
 import bodyParser from 'body-parser';
-import { configureCronJobs } from './app/services/cron.service';
-import { debugLog } from './app/services/debug-log.service';
+import { configureCronJobs } from './app/util/cron.util';
+import { debugLog } from './app/util/debug-log.util';
 
 // use .env file
 const env = dotenv.config();

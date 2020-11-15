@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { Builder } from '../util/builder.util';
+import { Builder } from './builder.util';
 
 const emailTemplatePath =
   './assets/mail-templates/verify-account-mail-template.html';

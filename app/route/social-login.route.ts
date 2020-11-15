@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
-import { SocialLoginService } from '../services/social-login.service';
+import { SocialLoginController } from '../controller/social-login.controller';
 
 const subRoutes = {
   root: '/',
@@ -11,10 +11,10 @@ const subRoutes = {
 
 export const router = Router();
 
-const socialLoginService = new SocialLoginService();
+const socialLoginController = new SocialLoginController();
 
 router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
-  const response = await socialLoginService.loginUrl(
+  const response = await socialLoginController.loginUrl(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body
   );
@@ -22,28 +22,23 @@ router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
-  const response = await socialLoginService.login(
+  const response = await socialLoginController.login(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body
   );
-  res
-    .status(200)
-    .json({
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-    });
+  res.status(200).json({
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+  });
 });
 
 router.post(
   subRoutes.loginWithAccessToken,
   async (req: Request, res: Response) => {
-    //const response = await socialLoginService.loginWithAccessToken(req.body);
-    const response = { accessToken: '', refreshToken: '' };
-    res
-      .status(200)
-      .json({
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      });
+    // const response = await socialLoginController.loginWithAccessToken(req.body);
+    // res.status(200).json({
+    //   accessToken: response.accessToken,
+    //   refreshToken: response.refreshToken,
+    // });
   }
 );

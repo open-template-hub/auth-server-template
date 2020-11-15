@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from 'pg';
 import { Builder } from '../util/builder.util';
-import { debugLog } from '../services/debug-log.service';
+import { debugLog } from '../util/debug-log.util';
 
 export class PostgreSqlProvider {
   private connectionPool: Pool = new Pool();

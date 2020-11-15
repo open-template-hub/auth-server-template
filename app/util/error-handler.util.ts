@@ -3,7 +3,7 @@
  */
 
 import { ResponseCode } from '../constant';
-import { debugLog } from './debug-log.service';
+import { debugLog } from './debug-log.util';
 
 export const handle = (exception) => {
   let response = {

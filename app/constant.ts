@@ -14,3 +14,15 @@ export const ResponseCode = {
   INTERNAL_SERVER_ERROR: 500,
   SERVICE_UNAVAILABLE: 503,
 };
+
+export const ErrorMessage = {
+  FORBIDDEN: 'You do not have right permission to do this operation.',
+};
+
+export const TokenDefaults = {
+  expire: {
+    accessToken: '1hour',
+    refreshToken: '30days',
+    resetPasswordToken: '1day',
+  },
+};

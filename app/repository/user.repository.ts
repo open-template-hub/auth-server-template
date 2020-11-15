@@ -1,6 +1,6 @@
 import { HttpError } from '../util/http-error.util';
 import { ResponseCode } from '../constant';
-import { PostgreSqlProvider } from '../providers/postgresql.provider';
+import { PostgreSqlProvider } from '../provider/postgre.provider';
 
 export class UserRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}

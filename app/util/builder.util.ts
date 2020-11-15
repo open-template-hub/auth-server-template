@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { debugLog } from '../services/debug-log.service';
+import { debugLog } from '../util/debug-log.util';
 
 export class Builder {
   buildTemplateFromFile = (filePath, params?: Map<string, string>) => {

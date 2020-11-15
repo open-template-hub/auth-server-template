@@ -1,7 +1,7 @@
 import cron from 'node-cron';
-import { PostgreSqlProvider } from '../providers/postgresql.provider';
+import { PostgreSqlProvider } from '../provider/postgre.provider';
 import { TokenRepository } from '../repository/token.repository';
-import { debugLog } from './debug-log.service';
+import { debugLog } from './debug-log.util';
 
 export function configureCronJobs() {
   cron.schedule(

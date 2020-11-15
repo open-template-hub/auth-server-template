@@ -1,4 +1,4 @@
-import { PostgreSqlProvider } from '../providers/postgresql.provider';
+import { PostgreSqlProvider } from '../provider/postgre.provider';
 
 export class SocialLoginRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}

@@ -2,11 +2,11 @@ import { router as monitorRouter } from './monitor.route';
 import { router as authRouter } from './auth.route';
 import { router as socialLoginRouter } from './social-login.route';
 import { router as infoRouter } from './info.route';
-import { handle } from '../services/error-handler.service';
+import { handle } from '../util/error-handler.util';
 import { Request, Response } from 'express';
-import { PostgreSqlProvider } from '../providers/postgresql.provider';
-import { EncryptionService } from '../services/encryption.service';
-import { debugLog } from '../services/debug-log.service';
+import { PostgreSqlProvider } from '../provider/postgre.provider';
+import { EncryptionService } from '../util/encryption.util';
+import { debugLog } from '../util/debug-log.util';
 
 const subRoutes = {
   root: '/',

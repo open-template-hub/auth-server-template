@@ -1,6 +1,6 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
-import { AuthService } from '../services/auth.service';
+import { AuthController } from '../controller/auth.controller';
 
 const subRoutes = {
   root: '/',
@@ -14,10 +14,10 @@ const subRoutes = {
 };
 
 export const router = Router();
-const authService = new AuthService();
+const authController = new AuthController();
 
 router.post(subRoutes.signup, async (req: Request, res: Response) => {
-  await authService.signup(res.locals.ctx.dbProviders.postgreSqlProvider, {
+  await authController.signup(res.locals.ctx.dbProviders.postgreSqlProvider, {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
@@ -26,23 +26,21 @@ router.post(subRoutes.signup, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
-  const response = await authService.login(
+  const response = await authController.login(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     {
       username: req.body.username,
       password: req.body.password,
     }
   );
-  res
-    .status(200)
-    .json({
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-    });
+  res.status(200).json({
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+  });
 });
 
 router.post(subRoutes.logout, async (req: Request, res: Response) => {
-  await authService.logout(
+  await authController.logout(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.token
   );
@@ -50,7 +48,7 @@ router.post(subRoutes.logout, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.token, async (req: Request, res: Response) => {
-  const accessToken = await authService.token(
+  const accessToken = await authController.token(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.token
   );
@@ -60,7 +58,7 @@ router.post(subRoutes.token, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.verify, async (req: Request, res: Response) => {
-  await authService.verify(
+  await authController.verify(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.query.token
   );
@@ -68,7 +66,7 @@ router.post(subRoutes.verify, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
-  await authService.forgetPassword(
+  await authController.forgetPassword(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     req.body.username
   );
@@ -76,7 +74,7 @@ router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
 });
 
 router.post(subRoutes.resetPassword, async (req: Request, res: Response) => {
-  await authService.resetPassword(
+  await authController.resetPassword(
     res.locals.ctx.dbProviders.postgreSqlProvider,
     {
       username: req.body.username,
