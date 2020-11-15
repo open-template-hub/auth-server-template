@@ -1,12 +1,22 @@
-import { router as monitorRouter } from './monitor.route';
-import { router as authRouter } from './auth.route';
-import { router as socialLoginRouter } from './social-login.route';
+import {
+  router as monitorRouter,
+  publicRoutes as monitorPublicRoutes,
+} from './monitor.route';
+import {
+  router as authRouter,
+  publicRoutes as authPublicRoutes,
+} from './auth.route';
+import {
+  router as socialLoginRouter,
+  publicRoutes as socialLoginPublicRoutes,
+} from './social-login.route';
 import { router as infoRouter } from './info.route';
 import { handle } from '../util/error-handler.util';
 import { Request, Response } from 'express';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
 import { EncryptionService } from '../util/encryption.util';
 import { debugLog } from '../util/debug-log.util';
+import { context } from '../context';
 
 const subRoutes = {
   root: '/',
@@ -17,20 +27,39 @@ const subRoutes = {
 };
 
 export module Routes {
-  export function mount(app) {
-    const postgreSqlProvider = new PostgreSqlProvider();
+  const postgreSqlProvider = new PostgreSqlProvider();
+  var publicRoutes: string[] = [];
+  var adminRoutes: string[] = [];
 
+  function populateRoutes(mainRoute, subRoutes) {
+    var populated = Array<string>();
+    for (var i = 0; i < subRoutes.length; i++) {
+      const s = subRoutes[i];
+      populated.push(mainRoute + (s === '/' ? '' : s));
+    }
+
+    return populated;
+  }
+
+  export function mount(app) {
     postgreSqlProvider
       .preload()
       .then(() => debugLog('PostgreSQL preload completed.'));
 
+    publicRoutes = [
+      ...populateRoutes(subRoutes.monitor, monitorPublicRoutes),
+      ...populateRoutes(subRoutes.auth, authPublicRoutes),
+      ...populateRoutes(subRoutes.social, socialLoginPublicRoutes),
+    ];
+    console.log('Public Routes: ', publicRoutes);
+
     const responseInterceptor = (req, res, next) => {
-      let originalSend = res.send;
+      var originalSend = res.send;
       const service = new EncryptionService();
       res.send = function () {
-        debugLog('Starting Encryption: ', new Date());
+        console.log('Starting Encryption: ', new Date());
         let encrypted_arguments = service.encrypt(arguments);
-        debugLog('Encryption Completed: ', new Date());
+        console.log('Encryption Completed: ', new Date());
 
         originalSend.apply(res, encrypted_arguments);
       };
@@ -45,10 +74,12 @@ export module Routes {
     app.all('/*', async (req: Request, res: Response, next) => {
       try {
         // create context
-        let dbProviders = {
-          postgreSqlProvider: postgreSqlProvider,
-        };
-        res.locals.ctx = { dbProviders };
+        res.locals.ctx = await context(
+          req,
+          postgreSqlProvider,
+          publicRoutes,
+          adminRoutes
+        );
 
         next();
       } catch (err) {

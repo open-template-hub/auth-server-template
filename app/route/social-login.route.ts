@@ -10,6 +10,12 @@ const subRoutes = {
   loginWithAccessToken: '/login-with-access-token',
 };
 
+export const publicRoutes = [
+  subRoutes.loginUrl,
+  subRoutes.login,
+  subRoutes.loginWithAccessToken,
+]
+
 export const router = Router();
 
 const socialLoginController = new SocialLoginController();
