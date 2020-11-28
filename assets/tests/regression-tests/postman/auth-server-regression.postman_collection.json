@@ -1,0 +1,640 @@
+{
+	"info": {
+		"_postman_id": "f20ecf5e-7a92-49bd-82eb-3a9eb4eaf693",
+		"name": "auth-server-regression",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"item": [
+						{
+							"name": "Sign Up Success [201]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bf736ef1-4572-4111-ba0f-8e5ac11ad1e6",
+										"exec": [
+											"pm.test(\"Response code is CREATED\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if (autoVerifyEnabled) {\r",
+											"   pm.test(\"Response contains Access Token\", function () {\r",
+											"        pm.expect(pm.response.text()).to.include('accessToken');\r",
+											"        pm.environment.set(\"access-token\", pm.response.json().accessToken);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Refresh Token\", function () {\r",
+											"        pm.expect(pm.response.text()).to.include('refreshToken');\r",
+											"        pm.environment.set(\"refresh-token\", pm.response.json().refreshToken);\r",
+											"    });\r",
+											"} else {\r",
+											"    pm.test(\"Response contains Created User Email\", function () {\r",
+											"        pm.expect(pm.response.text()).to.include('email');\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Created User Verification Token\", function () {\r",
+											"        pm.expect(pm.response.text()).to.include('verificationToken');\r",
+											"        pm.environment.set(\"verification-token\", pm.response.json().verificationToken);\r",
+											"    });\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "86f14593-eaad-4af1-914e-5721bd86ee91",
+										"exec": [
+											"pm.environment.set(\"current-index\", Number(pm.environment.get(\"current-index\")) + 1);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\",\r\n \"password\": \"{{password}}{{current-index}}\",\r\n \"email\": \"{{email}}{{current-index}}@test.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/signup",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify User Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fab1e958-4268-4caa-8995-867b1ef7fe37",
+										"exec": [
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if(!autoVerifyEnabled) {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(200);\r",
+											"    });\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8cc47991-1a1d-4fd6-b755-ba6e6643380c",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/verify?token={{verification-token}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"verify"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "{{verification-token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Sign In",
+					"item": [
+						{
+							"name": "Sign In By Username Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b6f4b852-6fc0-4c35-b715-409fb1522e1f",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Access Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('accessToken');\r",
+											"    pm.environment.set(\"access-token\", pm.response.json().accessToken);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Refresh Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('refreshToken');\r",
+											"    pm.environment.set(\"refresh-token\", pm.response.json().refreshToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\",\r\n \"password\": \"{{password}}{{current-index}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request New Token Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0dab0e69-119f-46c0-bfcb-a9607335808a",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Access Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('accessToken');\r",
+											"    pm.environment.set(\"access-token\", pm.response.json().accessToken);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Refresh Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('refreshToken');\r",
+											"    pm.environment.set(\"refresh-token\", pm.response.json().refreshToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"token\": \"{{refresh-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/token",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In By Email Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d19b326f-c05e-4162-be13-5d46092a1bf7",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Access Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('accessToken');\r",
+											"    pm.environment.set(\"access-token\", pm.response.json().accessToken);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Refresh Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('refreshToken');\r",
+											"    pm.environment.set(\"refresh-token\", pm.response.json().refreshToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"email\": \"{{email}}{{current-index}}@test.com\",\r\n \"password\": \"{{password}}{{current-index}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In Failure [400]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "dc66525e-f192-4858-b876-c3cd75313d01",
+										"exec": [
+											"pm.test(\"Response code is Bad Request\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Error Message\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('message');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"password\": \"{{password}}{{current-index}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Sign Out",
+					"item": [
+						{
+							"name": "Sign Out Success [204]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3f18e3cb-4b52-43e5-a005-78ef40f0ef3d",
+										"exec": [
+											"pm.test(\"Response code is No Content\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"token\": \"{{refresh-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/logout",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "Forget Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bbc4a333-66a5-4041-a919-d83bde4357c9",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/forget-password",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"forget-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reset Password Token Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ce30921b-8954-4281-9fdd-468f5c730488",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Reset Password Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('resetPasswordToken');\r",
+											"    pm.environment.set(\"reset-password-token\", pm.response.json().resetPasswordToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin-auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}{{current-index}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reset Password Token Failure [403]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e5300f8a-da43-45f2-ad5d-03fa8a6997e0",
+										"exec": [
+											"pm.test(\"Response code is Forbidden\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}{{current-index}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d463cb10-2e2b-4306-97aa-482b1b30ef9a",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\",\r\n \"password\": \"{{changed-password}}{{current-index}}\",\r\n \"token\": \"{{reset-password-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/reset-password",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In With Changed Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a94c23bb-97d0-42bf-97b9-adc354e426d4",
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Access Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('accessToken');\r",
+											"    pm.environment.set(\"access-token\", pm.response.json().accessToken);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Refresh Token\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include('refreshToken');\r",
+											"    pm.environment.set(\"refresh-token\", pm.response.json().refreshToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}{{current-index}}\",\r\n \"password\": \"{{changed-password}}{{current-index}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
