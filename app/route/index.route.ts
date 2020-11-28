@@ -5,6 +5,7 @@ import {
 import {
   router as authRouter,
   publicRoutes as authPublicRoutes,
+  adminRoutes as authAdminRoutes,
 } from './auth.route';
 import {
   router as socialLoginRouter,
@@ -52,6 +53,11 @@ export module Routes {
       ...populateRoutes(subRoutes.social, socialLoginPublicRoutes),
     ];
     console.log('Public Routes: ', publicRoutes);
+
+    adminRoutes = [
+      ...populateRoutes(subRoutes.auth, authAdminRoutes),
+    ];
+    console.log('Admin Routes: ', adminRoutes);
 
     const responseInterceptor = (req, res, next) => {
       var originalSend = res.send;

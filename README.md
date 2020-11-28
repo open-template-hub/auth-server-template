@@ -82,6 +82,8 @@ RESET_PASSWORD_TOKEN_SECRET={Reset Password Token Secret}
 RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 
 VERIFICATION_TOKEN_SECRET={Verification Token Secret}
+
+AUTO_VERIFY={Set True If Auto Verify On SignUp}
 ```
 
 ## Social Login Configurations

@@ -10,11 +10,12 @@ export class TokenUtil {
       },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRE || TokenDefaults.expire.accessToken,
+        expiresIn:
+          process.env.ACCESS_TOKEN_EXPIRE || TokenDefaults.expire.accessToken,
       }
     );
   }
-  
+
   generateRefreshToken(user) {
     const token = jwt.sign(
       {
@@ -30,14 +31,14 @@ export class TokenUtil {
     const { exp } = jwt.decode(token);
     return { token: token, exp: exp };
   }
-  
+
   generateVerificationToken(user) {
     return jwt.sign(
       { username: user.username },
       process.env.VERIFICATION_TOKEN_SECRET
     );
   }
-  
+
   generatePasswordResetToken(user) {
     return jwt.sign(
       { username: user.username },
@@ -49,7 +50,7 @@ export class TokenUtil {
       }
     );
   }
-  
+
   verifyAccessToken(token) {
     try {
       return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -63,7 +64,7 @@ export class TokenUtil {
       throw e;
     }
   }
-  
+
   verifyRefreshToken(token) {
     try {
       return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
@@ -77,7 +78,7 @@ export class TokenUtil {
       throw e;
     }
   }
-  
+
   verifyVerificationToken(token) {
     try {
       return jwt.verify(token, process.env.VERIFICATION_TOKEN_SECRET);
@@ -91,7 +92,7 @@ export class TokenUtil {
       throw e;
     }
   }
-  
+
   verifyPasswordResetToken(token, currentPassword) {
     try {
       return jwt.verify(
@@ -107,5 +108,5 @@ export class TokenUtil {
       }
       throw e;
     }
-  }  
+  }
 }

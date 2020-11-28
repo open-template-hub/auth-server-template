@@ -17,11 +17,11 @@ export class UserRepository {
     }
   };
 
-  findUserByUsername = async (username) => {
+  findUserByUsernameOrEmail = async (username) => {
     let res;
     try {
       res = await this.provider.query(
-        'SELECT username, password, verified, role FROM users WHERE username LIKE $1',
+        'SELECT username, password, verified, role FROM users WHERE username = $1 or email = $1',
         [username]
       );
       this.shouldHaveSingleRow(res);
@@ -36,7 +36,7 @@ export class UserRepository {
     let res;
     try {
       res = await this.provider.query(
-        'SELECT username, email FROM users WHERE username LIKE $1',
+        'SELECT username, email FROM users WHERE username = $1',
         [username]
       );
       this.shouldHaveSingleRow(res);
@@ -51,7 +51,7 @@ export class UserRepository {
     let res;
     try {
       res = await this.provider.query(
-        'SELECT username, email, password FROM users WHERE username LIKE $1',
+        'SELECT username, email, password FROM users WHERE username = $1',
         [username]
       );
     } catch (error) {
@@ -76,7 +76,7 @@ export class UserRepository {
   verifyUser = async (username) => {
     try {
       await this.provider.query(
-        'UPDATE users SET verified = true WHERE username LIKE $1',
+        'UPDATE users SET verified = true WHERE username = $1',
         [username]
       );
     } catch (error) {
@@ -88,7 +88,7 @@ export class UserRepository {
   updateByUsername = async (user) => {
     try {
       await this.provider.query(
-        'UPDATE users SET password =$1 WHERE username = $2',
+        'UPDATE users SET password = $1 WHERE username = $2',
         [user.password, user.username]
       );
     } catch (error) {

@@ -17,7 +17,10 @@ export class TokenRepository {
       expireAt: new Date(refreshToken.exp * 1000),
     });
 
-    return { accessToken: accessToken, refreshToken: refreshToken.token } as AuthToken;
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken.token,
+    } as AuthToken;
   };
 
   insertToken = async (token) => {
@@ -52,7 +55,7 @@ export class TokenRepository {
     let res;
     try {
       res = await this.provider.query(
-        'SELECT token FROM tokens WHERE token LIKE $1',
+        'SELECT token FROM tokens WHERE token = $1',
         [token]
       );
     } catch (error) {

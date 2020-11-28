@@ -7,9 +7,7 @@ const subRoutes = {
   alive: '/alive',
 };
 
-export const publicRoutes = [
-  subRoutes.alive,
-]
+export const publicRoutes = [subRoutes.alive];
 
 export const router = Router();
 
