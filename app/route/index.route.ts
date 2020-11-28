@@ -32,10 +32,10 @@ export module Routes {
   var publicRoutes: string[] = [];
   var adminRoutes: string[] = [];
 
-  function populateRoutes(mainRoute, subRoutes) {
+  function populateRoutes(mainRoute, routes) {
     var populated = Array<string>();
-    for (var i = 0; i < subRoutes.length; i++) {
-      const s = subRoutes[i];
+    for (var i = 0; i < routes.length; i++) {
+      const s = routes[i];
       populated.push(mainRoute + (s === '/' ? '' : s));
     }
 
