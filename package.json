@@ -1,6 +1,6 @@
 {
  "name": "auth-server",
- "version": "1.0.3",
+ "version": "2.1.2",
  "description": "Auth Server Template",
  "main": "auth-server.main.ts",
  "license": "MIT",
