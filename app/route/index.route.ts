@@ -15,7 +15,7 @@ import { router as infoRouter } from './info.route';
 import { handle } from '../util/error-handler.util';
 import { Request, Response } from 'express';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { EncryptionService } from '../util/encryption.util';
+import { Encryption } from '../util/encryption.util';
 import { debugLog } from '../util/debug-log.util';
 import { context } from '../context';
 
@@ -61,7 +61,7 @@ export module Routes {
 
     const responseInterceptor = (req, res, next) => {
       var originalSend = res.send;
-      const service = new EncryptionService();
+      const service = new Encryption();
       res.send = function () {
         console.log('Starting Encryption: ', new Date());
         let encrypted_arguments = service.encrypt(arguments);

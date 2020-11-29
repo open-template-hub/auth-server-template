@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 
-export class EncryptionService {
+export class Encryption {
   encrypt = (args) => {
     if (
       args === undefined ||
