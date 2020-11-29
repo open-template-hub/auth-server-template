@@ -3,6 +3,7 @@ import { PostgreSqlProvider } from '../provider/postgre.provider';
 
 export interface Context {
   postgresql_provider: PostgreSqlProvider;
+  token: string;
   role: UserRole;
   isAdmin: boolean;
   username: string;
