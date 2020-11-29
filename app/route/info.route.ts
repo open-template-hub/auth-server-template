@@ -12,8 +12,10 @@ export const router = Router();
 const infoController = new InfoController();
 
 router.get(subRoutes.me, async (req: Request, res: Response) => {
-  let token = res.locals.token;
   const context = res.locals.ctx as Context;
-  const response = await infoController.me(context.postgresql_provider, token);
+  const response = await infoController.me(
+    context.postgresql_provider,
+    context.token
+  );
   res.status(200).json(response);
 });

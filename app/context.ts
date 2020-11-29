@@ -6,8 +6,9 @@ import { AuthUtil } from './util/auth.util';
 import { Context } from './interface/context.interface';
 import { PostgreSqlProvider } from './provider/postgre.provider';
 import { UserRole } from './enum/user-role.enum';
-import { ErrorMessage } from './constant';
+import { ErrorMessage, ResponseCode } from './constant';
 import { TokenUtil } from './util/token.util';
+import { HttpError } from './util/http-error.util';
 
 export const context = async (
   req: any,
@@ -36,7 +37,20 @@ export const context = async (
     }
   });
 
+  let token = req.headers.authorization;
+
   if (!publicPath) {
+
+    const BEARER = 'Bearer ';
+
+    if (!token || !token.startsWith(BEARER)) {
+      let e = new Error('invalid token') as HttpError;
+      e.responseCode = ResponseCode.BAD_REQUEST;
+      throw e;
+    }
+
+    token = token.slice(BEARER.length);
+
     currentUser = await authUtil.getCurrentUser(req);
   }
 
