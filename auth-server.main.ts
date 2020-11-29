@@ -18,8 +18,6 @@ const app: express.Application = express();
 // public files
 app.use(express.static('public'));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-
 // parse application/json
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -31,7 +29,7 @@ Routes.mount(app);
 // listen port
 const port: string = process.env.PORT || ('4001' as string);
 app.listen(port, () => {
-  console.info('Payment Server is running on port', port);
+  console.info('Auth Server is running on port', port);
 });
 
 // cron
