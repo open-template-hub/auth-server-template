@@ -1,4 +1,4 @@
 export enum UserRole {
-  PUBLIC = '',
+  USER = 'USER',
   ADMIN = 'ADMIN',
 }
