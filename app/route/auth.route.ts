@@ -75,7 +75,7 @@ router.post(subRoutes.token, async (req: Request, res: Response) => {
     .json({ accessToken: accessToken, refreshToken: req.body.token });
 });
 
-router.post(subRoutes.verify, async (req: Request, res: Response) => {
+router.get(subRoutes.verify, async (req: Request, res: Response) => {
   const authController = new AuthController();
   const context = res.locals.ctx as Context;
   await authController.verify(context.postgresql_provider, req.query.token);
