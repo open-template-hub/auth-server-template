@@ -118,7 +118,7 @@
 								}
 							],
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
 								"url": {
 									"raw": "{{uri}}/auth/verify?token={{verification-token}}",
