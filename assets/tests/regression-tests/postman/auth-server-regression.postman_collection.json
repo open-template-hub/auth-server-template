@@ -503,7 +503,7 @@
 										"id": "e5300f8a-da43-45f2-ad5d-03fa8a6997e0",
 										"exec": [
 											"pm.test(\"Response code is Forbidden\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
+											"    pm.response.to.have.status(400);\r",
 											"});"
 										],
 										"type": "text/javascript"
