@@ -495,14 +495,14 @@
 							"response": []
 						},
 						{
-							"name": "Get Reset Password Token Failure [403]",
+							"name": "Get Reset Password Token Failure [400]",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"id": "e5300f8a-da43-45f2-ad5d-03fa8a6997e0",
 										"exec": [
-											"pm.test(\"Response code is Forbidden\", function () {\r",
+											"pm.test(\"Response code is Bad Request\", function () {\r",
 											"    pm.response.to.have.status(400);\r",
 											"});"
 										],
@@ -513,6 +513,54 @@
 							"request": {
 								"auth": {
 									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}{{current-index}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reset Password Token Failure [403]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fe45a732-1e98-493a-b053-d4d63b118398",
+										"exec": [
+											"pm.test(\"Response code is Forbidden\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{public-auth-token}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "GET",
 								"header": [],
