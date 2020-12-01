@@ -584,6 +584,54 @@
 							"response": []
 						},
 						{
+							"name": "Get Reset Password Token Failure [403]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fe45a732-1e98-493a-b053-d4d63b118398",
+										"exec": [
+											"pm.test(\"Response code is Forbidden\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{public-auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}{{current-index}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Reset Password Success [200]",
 							"event": [
 								{
