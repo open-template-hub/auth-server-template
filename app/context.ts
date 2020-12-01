@@ -69,5 +69,6 @@ export const context = async (
     role,
     isAdmin,
     serviceKey,
+    token
   } as Context;
 };
