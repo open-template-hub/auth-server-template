@@ -33,14 +33,13 @@ export class AuthController {
     const tokenUtil = new TokenUtil();
     const verificationToken = tokenUtil.generateVerificationToken(user);
 
-    await this.mailUtil.sendAccountVerificationMail(user, verificationToken);
-
     const isAutoVerify = process.env.AUTO_VERIFY || false;
 
     if (isAutoVerify) {
       await this.verify(db, verificationToken);
       return await this.login(db, user);
     } else {
+      await this.mailUtil.sendAccountVerificationMail(user, verificationToken);
       return { email: user.email, verificationToken };
     }
   };
