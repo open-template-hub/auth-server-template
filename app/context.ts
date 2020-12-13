@@ -6,7 +6,7 @@ import { AuthUtil } from './util/auth.util';
 import { Context } from './interface/context.interface';
 import { PostgreSqlProvider } from './provider/postgre.provider';
 import { UserRole } from './enum/user-role.enum';
-import { ErrorMessage, ResponseCode } from './constant';
+import { ResponseCode } from './constant';
 import { TokenUtil } from './util/token.util';
 import { HttpError } from './util/http-error.util';
 
@@ -60,7 +60,9 @@ export const context = async (
   const isAdmin = authUtil.isAdmin(role);
 
   if (adminPath && !isAdmin) {
-    throw new Error(ErrorMessage.FORBIDDEN);
+    let e = new Error('You do not have right permission to do this operation.') as HttpError;
+    e.responseCode = ResponseCode.FORBIDDEN;
+    throw e;
   }
 
   return {

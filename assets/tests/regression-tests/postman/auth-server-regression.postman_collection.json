@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f20ecf5e-7a92-49bd-82eb-3a9eb4eaf693",
+		"_postman_id": "cb186e09-8d00-434e-a380-09bb0bef98fd",
 		"name": "auth-server-regression",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -17,7 +17,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bf736ef1-4572-4111-ba0f-8e5ac11ad1e6",
+										"id": "b93e63a4-5e54-4060-8665-4eb2f2bccedb",
 										"exec": [
 											"pm.test(\"Response code is CREATED\", function () {\r",
 											"    pm.response.to.have.status(201);\r",
@@ -53,7 +53,7 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "86f14593-eaad-4af1-914e-5721bd86ee91",
+										"id": "3f68f5c3-7c0f-486f-a99d-284e5870640f",
 										"exec": [
 											"pm.environment.set(\"current-index\", Number(pm.environment.get(\"current-index\")) + 1);"
 										],
@@ -92,7 +92,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "fab1e958-4268-4caa-8995-867b1ef7fe37",
+										"id": "5b10ff53-781d-48bf-a582-58caab13c545",
 										"exec": [
 											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
 											"\r",
@@ -109,7 +109,7 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "8cc47991-1a1d-4fd6-b755-ba6e6643380c",
+										"id": "52c9b256-dca3-47fb-961a-6fa7496b27fb",
 										"exec": [
 											""
 										],
@@ -118,7 +118,7 @@
 								}
 							],
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"url": {
 									"raw": "{{uri}}/auth/verify?token={{verification-token}}",
@@ -152,7 +152,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "b6f4b852-6fc0-4c35-b715-409fb1522e1f",
+										"id": "f3334163-ef0d-4c87-a8b4-28fc3e352b54",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -203,7 +203,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "0dab0e69-119f-46c0-bfcb-a9607335808a",
+										"id": "35fb0eb8-c802-4b44-b08a-93d9c2efb66e",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -254,7 +254,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "d19b326f-c05e-4162-be13-5d46092a1bf7",
+										"id": "c2d3f3f4-c745-4305-aad7-1fbc932b45c8",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -305,7 +305,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "dc66525e-f192-4858-b876-c3cd75313d01",
+										"id": "f15078ce-51ec-43b3-b1b3-aeb89c8b0c1f",
 										"exec": [
 											"pm.test(\"Response code is Bad Request\", function () {\r",
 											"    pm.response.to.have.status(400);\r",
@@ -357,7 +357,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3f18e3cb-4b52-43e5-a005-78ef40f0ef3d",
+										"id": "885dc198-c1ed-43a4-9dc3-5c5da9850b15",
 										"exec": [
 											"pm.test(\"Response code is No Content\", function () {\r",
 											"    pm.response.to.have.status(204);\r",
@@ -405,7 +405,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bbc4a333-66a5-4041-a919-d83bde4357c9",
+										"id": "6fb6f36a-9e8b-4dbf-a208-0c495162d83e",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -447,7 +447,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "ce30921b-8954-4281-9fdd-468f5c730488",
+										"id": "00f998d9-3088-473f-86b2-d0bcb7178ca9",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -495,53 +495,12 @@
 							"response": []
 						},
 						{
-							"name": "Get Reset Password Token Failure [400]",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "e5300f8a-da43-45f2-ad5d-03fa8a6997e0",
-										"exec": [
-											"pm.test(\"Response code is Bad Request\", function () {\r",
-											"    pm.response.to.have.status(400);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
-									"host": [
-										"{{uri}}"
-									],
-									"path": [
-										"auth",
-										"reset-password-token"
-									],
-									"query": [
-										{
-											"key": "username",
-											"value": "{{username}}{{current-index}}"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Get Reset Password Token Failure [403]",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
-										"id": "fe45a732-1e98-493a-b053-d4d63b118398",
+										"id": "440386e9-dd79-47a7-9e50-be3bf94bfd73",
 										"exec": [
 											"pm.test(\"Response code is Forbidden\", function () {\r",
 											"    pm.response.to.have.status(403);\r",
@@ -557,55 +516,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "{{public-auth-token}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{uri}}/auth/reset-password-token?username={{username}}{{current-index}}",
-									"host": [
-										"{{uri}}"
-									],
-									"path": [
-										"auth",
-										"reset-password-token"
-									],
-									"query": [
-										{
-											"key": "username",
-											"value": "{{username}}{{current-index}}"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get Reset Password Token Failure [403]",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "fe45a732-1e98-493a-b053-d4d63b118398",
-										"exec": [
-											"pm.test(\"Response code is Forbidden\", function () {\r",
-											"    pm.response.to.have.status(400);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{public-auth-token}}",
+											"value": "{{access-token}}",
 											"type": "string"
 										}
 									]
@@ -637,7 +548,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "d463cb10-2e2b-4306-97aa-482b1b30ef9a",
+										"id": "cede04fa-e003-4001-9bec-e7b03fbfdd65",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
@@ -679,7 +590,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "a94c23bb-97d0-42bf-97b9-adc354e426d4",
+										"id": "1accf134-19fb-4e8d-8618-7acb8b6a8da7",
 										"exec": [
 											"pm.test(\"Response code is OK\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
