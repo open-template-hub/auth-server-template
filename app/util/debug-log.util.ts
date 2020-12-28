@@ -1,13 +1,22 @@
-// debug logger
-const debug = require('debug');
+/**
+ * @description holds debug log util
+ */
 
-export const debugLog = (...args) => {
-  const tag =
-    process.env.PROJECT +
-    '-' +
-    process.env.MODULE +
-    '-' +
-    process.env.ENVIRONMENT;
+import debug from 'debug';
 
-  debug(tag)(args);
-};
+export class DebugLogUtil {
+  /**
+   * generates debug log
+   * @param args arguments
+   */
+  log = (...args: any[]) => {
+    const tag =
+      process.env.PROJECT +
+      '-' +
+      process.env.MODULE +
+      '-' +
+      process.env.ENVIRONMENT;
+
+    debug(tag)(args);
+  };
+}

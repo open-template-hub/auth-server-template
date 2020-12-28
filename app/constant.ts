@@ -26,3 +26,7 @@ export const TokenDefaults = {
 
 export const EmailTemplatePath =
   './assets/mail-templates/verify-account-mail-template.html';
+
+export const ErrorMessage = {
+  FORBIDDEN: 'You do not have right permission to do this operation.',
+};

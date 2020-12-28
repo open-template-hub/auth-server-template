@@ -1,11 +1,20 @@
-import { HttpError } from '../util/http-error.util';
+/**
+ * @description holds user repository
+ */
+
+import { HttpError } from '../interface/http-error.interface';
 import { ResponseCode } from '../constant';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
+import { User } from '../interface/user.interface';
 
 export class UserRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
 
-  insertUser = async (user) => {
+  /**
+   * creates user
+   * @param user user
+   */
+  insertUser = async (user: User) => {
     try {
       await this.provider.query(
         'INSERT INTO users(username, password, email) VALUES($1, $2, $3)',
@@ -17,7 +26,11 @@ export class UserRepository {
     }
   };
 
-  findUserByUsernameOrEmail = async (username) => {
+  /**
+   * gets user by username or email
+   * @param username username
+   */
+  findUserByUsernameOrEmail = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
@@ -32,7 +45,11 @@ export class UserRepository {
     return res.rows[0];
   };
 
-  findEmailByUsername = async (username) => {
+  /**
+   * gets email by username
+   * @param username username
+   */
+  findEmailByUsername = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
@@ -47,7 +64,11 @@ export class UserRepository {
     return res.rows[0];
   };
 
-  findEmailAndPasswordByUsername = async (username) => {
+  /**
+   * gets email and password by username
+   * @param username username
+   */
+  findEmailAndPasswordByUsername = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
@@ -73,7 +94,11 @@ export class UserRepository {
     return res.rows[0];
   };
 
-  verifyUser = async (username) => {
+  /**
+   * checks user is verified or not
+   * @param username username
+   */
+  verifyUser = async (username: string) => {
     try {
       await this.provider.query(
         'UPDATE users SET verified = true WHERE username = $1',
@@ -85,7 +110,11 @@ export class UserRepository {
     }
   };
 
-  updateByUsername = async (user) => {
+  /**
+   * updates user password by username
+   * @param user user
+   */
+  updateByUsername = async (user: User) => {
     try {
       await this.provider.query(
         'UPDATE users SET password = $1 WHERE username = $2',
@@ -97,7 +126,11 @@ export class UserRepository {
     }
   };
 
-  shouldHaveSingleRow = function (res) {
+  /**
+   * checks response has single row
+   * @param res res
+   */
+  shouldHaveSingleRow = (res: any) => {
     if (res.rows.length === 0) {
       let e = new Error('user not found') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;

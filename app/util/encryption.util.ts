@@ -1,7 +1,16 @@
-import CryptoJS from 'crypto-js';
+/**
+ * @description holds encryption util
+ */
 
-export class Encryption {
-  encrypt = (args) => {
+import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
+
+export class EncryptionUtil {
+  /**
+   * encrpyts response
+   * @param args arguments
+   */
+  encrypt = (args: IArguments) => {
     if (
       args === undefined ||
       args === null ||
@@ -18,4 +27,13 @@ export class Encryption {
 
     return args;
   };
+
+  /**
+   * hashes string with key
+   * @param base_string base string
+   * @param key key
+   */
+  hash_function_sha1(base_string: string, key: string) {
+    return crypto.createHmac('sha1', key).update(base_string).digest('base64');
+  }
 }

@@ -1,13 +1,22 @@
-import { HttpError } from '../util/http-error.util';
+/**
+ * @description holds token repository
+ */
+
+import { HttpError } from '../interface/http-error.interface';
 import { ResponseCode } from '../constant';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
 import { TokenUtil } from '../util/token.util';
 import { AuthToken } from '../interface/auth-token.interface';
+import { User } from '../interface/user.interface';
 
 export class TokenRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
 
-  generateTokens = async (user): Promise<AuthToken> => {
+  /**
+   * generates access and refresh tokens
+   * @param user user
+   */
+  generateTokens = async (user: User): Promise<AuthToken> => {
     const tokenUtil = new TokenUtil();
     const accessToken = tokenUtil.generateAccessToken(user);
     const refreshToken = tokenUtil.generateRefreshToken(user);
@@ -23,7 +32,11 @@ export class TokenRepository {
     } as AuthToken;
   };
 
-  insertToken = async (token) => {
+  /**
+   * saves token
+   * @param token token
+   */
+  insertToken = async (token: any) => {
     let res;
     try {
       res = await this.provider.query(
@@ -37,7 +50,11 @@ export class TokenRepository {
     return res.rows[0];
   };
 
-  deleteToken = async (token) => {
+  /**
+   * deletes token
+   * @param token token
+   */
+  deleteToken = async (token: any) => {
     let res;
     try {
       res = await this.provider.query(
@@ -51,7 +68,11 @@ export class TokenRepository {
     return res.rows[0];
   };
 
-  findToken = async (token) => {
+  /**
+   * gets token
+   * @param token token
+   */
+  findToken = async (token: any) => {
     let res;
     try {
       res = await this.provider.query(
@@ -77,6 +98,9 @@ export class TokenRepository {
     return res.rows[0];
   };
 
+  /**
+   * deletes all expired tokens
+   */
   deleteExpiredTokens = async () => {
     let res;
     try {

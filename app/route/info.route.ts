@@ -1,3 +1,7 @@
+/**
+ * @description holds info routes
+ */
+
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { InfoController } from '../controller/info.controller';
@@ -12,6 +16,7 @@ export const router = Router();
 const infoController = new InfoController();
 
 router.get(subRoutes.me, async (req: Request, res: Response) => {
+  // gets user info
   const context = res.locals.ctx as Context;
   const response = await infoController.me(
     context.postgresql_provider,

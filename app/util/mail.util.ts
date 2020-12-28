@@ -1,19 +1,24 @@
+/**
+ * @description holds mail util
+ */
+
+import { User } from '../interface/user.interface';
+import { BuilderUtil } from './builder.util';
+import { DebugLogUtil } from './debug-log.util';
 import nodemailer from 'nodemailer';
-import { EmailTemplatePath } from '../constant';
-import { Builder } from './builder.util';
-import {debugLog} from "./debug-log.util";
-
-const builder = new Builder();
-
-const templates = {
-  verifyAccount: './assets/mail-templates/verify-account.html',
-  forgetPassword: './assets/mail-templates/forget-password.html'
-};
 
 export class MailUtil {
   private readonly config: any;
+  private readonly templates: any;
 
-  constructor() {
+  constructor(
+    private debugLogUtil = new DebugLogUtil(),
+    private builder = new BuilderUtil()
+  ) {
+    this.templates = {
+      verifyAccount: './assets/mail-templates/verify-account.html',
+      forgetPassword: './assets/mail-templates/forget-password.html',
+    };
     this.config = {
       host: process.env.MAIL_HOST,
       port: process.env.MAIL_PORT,
@@ -25,20 +30,54 @@ export class MailUtil {
     };
   }
 
-  sendAccountVerificationMail = async (user, token) => {
+  /**
+   * sends account verification mail
+   * @param user user
+   * @param token token
+   */
+  sendAccountVerificationMail = async (user: User, token: string) => {
     let url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + '?token=' + token;
 
-    await this.send(url, user, 'Account verification', templates.verifyAccount);
+    await this.send(
+      url,
+      user,
+      'Account verification',
+      this.templates.verifyAccount
+    );
   };
 
-  sendPasswordResetMail = async (user, token) => {
-    let url = process.env.CLIENT_RESET_PASSWORD_URL + '?token=' + token + '&username=' + user.username;
-    await this.send(url, user, 'Forget password', templates.forgetPassword);
+  /**
+   * sends password reset mail
+   * @param user user
+   * @param token token
+   */
+  sendPasswordResetMail = async (user: User, token: string) => {
+    let url =
+      process.env.CLIENT_RESET_PASSWORD_URL +
+      '?token=' +
+      token +
+      '&username=' +
+      user.username;
+    await this.send(
+      url,
+      user,
+      'Forget password',
+      this.templates.forgetPassword
+    );
   };
 
-  send = async (url, user, subject, template) => {
+  /**
+   * sends mail
+   * @param url url
+   * @param user user
+   * @param subject mail subject
+   * @param template mail template
+   */
+  send = async (url: string, user: User, subject: string, template: string) => {
     if (process.env.MAIL_SERVER_DISABLED) {
-      debugLog('Mail server is disabled. Some functionalities may not work properly.');
+      this.debugLogUtil.log(
+        'Mail server is disabled. Some functionalities may not work properly.'
+      );
       return;
     }
 
@@ -51,13 +90,13 @@ export class MailUtil {
     params.set('${url}', url);
     params.set('${username}', user.username);
 
-    let mailBody = builder.buildTemplateFromFile(template, params);
+    let mailBody = this.builder.buildTemplateFromFile(template, params);
 
     await transporter.sendMail({
       from: process.env.MAIL_USERNAME,
       to: user.email,
       subject: subject,
-      html: mailBody
+      html: mailBody,
     });
   };
 }

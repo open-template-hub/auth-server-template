@@ -1,3 +1,7 @@
+/**
+ * @description holds context interface
+ */
+
 import { UserRole } from '../enum/user-role.enum';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
 
