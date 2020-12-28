@@ -1,15 +1,25 @@
+/**
+ * @description holds Postgresql connection provider
+ */
+
 import { Pool, QueryResult } from 'pg';
-import { Builder } from '../util/builder.util';
-import { debugLog } from '../util/debug-log.util';
+import { BuilderUtil } from '../util/builder.util';
+import { DebugLogUtil } from '../util/debug-log.util';
 
 export class PostgreSqlProvider {
-  private connectionPool: Pool = new Pool();
-  private currentPoolLimit: number = 1;
+  constructor(
+    private connectionPool: Pool = new Pool(),
+    private currentPoolLimit: number = 1,
+    private debugLogUtil: DebugLogUtil = new DebugLogUtil()
+  ) {}
 
-  builder = new Builder();
+  builder = new BuilderUtil();
 
   preloadTablesTemplatePath = './assets/sql/preload.tables.psql';
 
+  /**
+   * preloads connection provider
+   */
   preload = async () => {
     this.currentPoolLimit = process.env.POSTGRESQL_CONNECTION_LIMIT
       ? parseInt(process.env.POSTGRESQL_CONNECTION_LIMIT)
@@ -18,7 +28,7 @@ export class PostgreSqlProvider {
     // Creating Connection Pool
     this.connectionPool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      application_name: 'AuthServer',
+      application_name: 'PaymentServer',
       max: this.currentPoolLimit,
       ssl: {
         rejectUnauthorized: false,
@@ -31,10 +41,16 @@ export class PostgreSqlProvider {
     return await this.query(queries, []);
   };
 
+  /**
+   * queries db
+   * @param text query
+   * @param params query parameters
+   */
   query = async (text: string, params: Array<any>): Promise<any> => {
     const start = Date.now();
 
     const connectionPool = this.connectionPool;
+    const debugLogUtil = this.debugLogUtil;
 
     return new Promise(function (resolve, reject) {
       connectionPool.query(
@@ -45,7 +61,7 @@ export class PostgreSqlProvider {
             console.error(err);
             reject(err);
           } else {
-            debugLog('executed query', {
+            debugLogUtil.log('executed query', {
               sql: text,
               duration: Date.now() - start,
               result: res,

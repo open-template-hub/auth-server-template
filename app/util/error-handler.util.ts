@@ -1,29 +1,34 @@
 /**
- * Error Handler
+ * @description holds error handler util
  */
 
 import { ErrorMessage, ResponseCode } from '../constant';
-import { debugLog } from './debug-log.util';
+import { DebugLogUtil } from './debug-log.util';
 
-export const handle = (exception) => {
-  let response = {
-    code: ResponseCode.BAD_REQUEST,
-    message: exception.message,
-  };
+export class ErrorHandlerUtil {
+  constructor(private debugLogUtil = new DebugLogUtil()) {}
+  /**
+   * handles custom exceptions
+   * @param exception exception
+   */
+  handle = (exception: any) => {
+    let response = {
+      code: ResponseCode.BAD_REQUEST,
+      message: exception.message,
+    };
 
-  // Overwrite Response Code and Message here
-  if (exception.responseCode) {
-    response.code = exception.responseCode;
-  }
+    // Overwrite Response Code and Message here
+    if (exception.responseCode) {
+      response.code = exception.responseCode;
+    }
 
-  switch (exception.message) {
-    case ErrorMessage.FORBIDDEN:
+    if (exception.message === ErrorMessage.FORBIDDEN) {
       response.code = ResponseCode.FORBIDDEN;
-      break;
-  }
+    }
 
-  debugLog(exception);
-  console.error(response);
+    this.debugLogUtil.log(exception);
+    console.error(response);
 
-  return response;
-};
+    return response;
+  };
+}

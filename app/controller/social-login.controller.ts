@@ -1,25 +1,38 @@
+/**
+ * @description holds social login controller
+ */
+
 import bcrypt from 'bcrypt';
-import { HttpError } from '../util/http-error.util';
+import { HttpError } from '../interface/http-error.interface';
 
 import axios from 'axios';
 import capitalize from 'capitalize';
-
-import crypto from 'crypto';
 import OAuth from 'oauth-1.0a';
 import { v4 as uuid } from 'uuid';
-import { Builder } from '../util/builder.util';
+import { BuilderUtil } from '../util/builder.util';
 import { ResponseCode } from '../constant';
 import { Parser } from '../util/parser.util';
 import { SocialLoginRepository } from '../repository/social-login.repository';
 import { UserRepository } from '../repository/user.repository';
 import { TokenRepository } from '../repository/token.repository';
 import { AuthToken } from '../interface/auth-token.interface';
-
-const builder = new Builder();
-const parser = new Parser();
+import { PostgreSqlProvider } from '../provider/postgre.provider';
+import { User } from '../interface/user.interface';
+import { EncryptionUtil } from '../util/encryption.util';
 
 export class SocialLoginController {
-  loginUrl = async (db, data) => {
+  constructor(
+    private builder = new BuilderUtil(),
+    private parser = new Parser(),
+    private encryptionUtil = new EncryptionUtil()
+  ) {}
+
+  /**
+   * gets social login url
+   * @param db database
+   * @param data social login data
+   */
+  loginUrl = async (db: PostgreSqlProvider, data: any) => {
     let loginUrl = '';
     if (!data.key) {
       let e = new Error('key required') as HttpError;
@@ -39,20 +52,29 @@ export class SocialLoginController {
         data.state,
         socialLoginParams.v2Config.redirect_uri,
       ];
-      loginUrl = builder.buildUrl(socialLoginParams.v2Config.login_uri, params);
+      loginUrl = this.builder.buildUrl(
+        socialLoginParams.v2Config.login_uri,
+        params
+      );
     } else if (socialLoginParams.v1Config) {
       const oAuthRequestToken = await this.getOAuthRequestToken(
         socialLoginParams.v1Config
       );
-      loginUrl = builder.buildUrl(socialLoginParams.v1Config.login_uri, [
-        oAuthRequestToken,
+
+      loginUrl = this.builder.buildUrl(socialLoginParams.v1Config.login_uri, [
+        oAuthRequestToken as string,
       ]);
     }
 
     return loginUrl;
   };
 
-  login = async (db, data) => {
+  /**
+   * login user
+   * @param db database
+   * @param data social login data
+   */
+  login = async (db: PostgreSqlProvider, data: any) => {
     if (!data.key) {
       let e = new Error('key required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -75,7 +97,15 @@ export class SocialLoginController {
     }
   };
 
-  loginWithAccessToken = async (db, data): Promise<AuthToken> => {
+  /**
+   * login user with access token
+   * @param db database
+   * @param data social login data
+   */
+  loginWithAccessToken = async (
+    db: PostgreSqlProvider,
+    data: any
+  ): Promise<AuthToken> => {
     try {
       const socialLoginRepository = new SocialLoginRepository(db);
       const socialLoginParams = await socialLoginRepository.findSocialLoginByKey(
@@ -104,7 +134,17 @@ export class SocialLoginController {
     }
   };
 
-  loginForOauthV1 = async (db, config, params) => {
+  /**
+   * login for oauth v1
+   * @param db database
+   * @param config configuration
+   * @param params parameters
+   */
+  loginForOauthV1 = async (
+    db: PostgreSqlProvider,
+    config: any,
+    params: any
+  ) => {
     let accessTokenData = await this.getAccessTokenDataForOauthV1(
       config,
       params
@@ -127,7 +167,17 @@ export class SocialLoginController {
     return await this.loginUserWithUserData(db, params.key, userData);
   };
 
-  loginForOauthV2 = async (db, config, params) => {
+  /**
+   * login for oauth v2
+   * @param db database
+   * @param config configuration
+   * @param params parameters
+   */
+  loginForOauthV2 = async (
+    db: PostgreSqlProvider,
+    config: any,
+    params: any
+  ) => {
     let accessTokenData = await this.getAccessTokenDataForOauthV2(
       config,
       params
@@ -147,11 +197,18 @@ export class SocialLoginController {
     );
   };
 
+  /**
+   * login for oauth v2 with access token
+   * @param db database
+   * @param accessTokenData access token data
+   * @param config configuration
+   * @param params parameters
+   */
   loginWithAccessTokenForOauthV2 = async (
-    db,
-    accessTokenData,
-    config,
-    params
+    db: PostgreSqlProvider,
+    accessTokenData: any,
+    config: any,
+    params: any
   ): Promise<AuthToken> => {
     let userData = await this.getUserDataWithAccessToken(
       accessTokenData,
@@ -167,7 +224,12 @@ export class SocialLoginController {
     return await this.loginUserWithUserData(db, params.key, userData);
   };
 
-  getUserDataWithAccessToken = async (accessTokenData, config) => {
+  /**
+   * gets user data with access token
+   * @param accessTokenData access token data
+   * @param config config
+   */
+  getUserDataWithAccessToken = async (accessTokenData: any, config: any) => {
     // getting user data with access token
     let userDataUrl = config.user_data_uri;
     let headers = {
@@ -191,7 +253,7 @@ export class SocialLoginController {
         'Client-ID': config.client_id,
       };
     } else {
-      userDataUrl = builder.buildUrl(config.user_data_uri, [
+      userDataUrl = this.builder.buildUrl(config.user_data_uri, [
         accessTokenData.token,
       ]);
     }
@@ -200,15 +262,15 @@ export class SocialLoginController {
       headers,
     });
 
-    const external_user_id = parser.getJsonValue(
+    const external_user_id = this.parser.getJsonValue(
       userDataResponse.data,
       config.external_user_id_json_field_path
     );
-    const external_user_email = parser.getJsonValue(
+    const external_user_email = this.parser.getJsonValue(
       userDataResponse.data,
       config.external_user_email_json_field_path
     );
-    const external_username = parser.getJsonValue(
+    const external_username = this.parser.getJsonValue(
       userDataResponse.data,
       config.external_username_json_field_path
     );
@@ -220,14 +282,20 @@ export class SocialLoginController {
     };
   };
 
-  getAccessTokenDataForOauthV1 = async (config, params) => {
+  /**
+   * gets access token data for oauth v1
+   * @param config configuration
+   * @param params parameters
+   */
+  getAccessTokenDataForOauthV1 = async (config: any, params: any) => {
     const accessTokenParams = [params.oauth_token, params.oauth_verifier];
-    const accessTokenUrl = builder.buildUrl(
+    const accessTokenUrl = this.builder.buildUrl(
       config.access_token_uri,
       accessTokenParams
     );
 
-    let accessTokenResponse;
+    let accessTokenResponse: any;
+
     if (config.access_token_request_method === 'GET') {
       accessTokenResponse = await axios.get<any>(`${accessTokenUrl}`, {});
     } else if (config.access_token_request_method === 'POST') {
@@ -258,7 +326,12 @@ export class SocialLoginController {
     };
   };
 
-  getAccessTokenDataForOauthV2 = async (config, params) => {
+  /**
+   * gets access token data for oauth v2
+   * @param config configuration
+   * @param params parameters
+   */
+  getAccessTokenDataForOauthV2 = async (config: any, params: any) => {
     const headers = {
       Accept: 'application/json',
     };
@@ -269,12 +342,13 @@ export class SocialLoginController {
       params.code,
       params.state,
     ];
-    const accessTokenUrl = builder.buildUrl(
+    const accessTokenUrl = this.builder.buildUrl(
       config.access_token_uri,
       accessTokenParams
     );
 
-    let accessTokenResponse;
+    let accessTokenResponse: any;
+
     if (config.access_token_request_method === 'GET') {
       accessTokenResponse = await axios.get<any>(`${accessTokenUrl}`, {
         headers,
@@ -287,7 +361,7 @@ export class SocialLoginController {
       );
     }
 
-    const accessToken = parser.getJsonValue(
+    const accessToken = this.parser.getJsonValue(
       accessTokenResponse.data,
       config.access_token_json_field_path
     );
@@ -295,7 +369,7 @@ export class SocialLoginController {
     let tokenType = params.tokenType;
 
     if (!tokenType) {
-      tokenType = parser.getJsonValue(
+      tokenType = this.parser.getJsonValue(
         accessTokenResponse.data,
         config.token_type_json_field_path
       );
@@ -307,7 +381,17 @@ export class SocialLoginController {
     };
   };
 
-  loginUserWithUserData = async (db, key, userData): Promise<AuthToken> => {
+  /**
+   * login user with user data
+   * @param db database
+   * @param key social login key
+   * @param userData user data
+   */
+  loginUserWithUserData = async (
+    db: PostgreSqlProvider,
+    key: string,
+    userData: any
+  ): Promise<AuthToken> => {
     // checking social login mapping to determine if signup or login
     const socialLoginRepository = new SocialLoginRepository(db);
     let socialLoginUser = await socialLoginRepository.findMappingDataByExternalUserId(
@@ -344,25 +428,34 @@ export class SocialLoginController {
     }
   };
 
-  signup = async (db, user) => {
+  /**
+   * sign up user
+   * @param db database
+   * @param user user
+   */
+  signup = async (db: PostgreSqlProvider, user: User) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
     const userRepository = new UserRepository(db);
     await userRepository.insertUser({
       username: user.username,
       password: hashedPassword,
-    });
+    } as User);
     await userRepository.verifyUser(user.username);
   };
 
-  getOAuthRequestToken = async (config) => {
+  /**
+   * gets oauth request token
+   * @param config configuration
+   */
+  getOAuthRequestToken = async (config: any) => {
     const oauth = new OAuth({
       consumer: {
         key: config.client_id,
         secret: config.client_secret,
       },
       signature_method: 'HMAC-SHA1',
-      hash_function: this.hash_function_sha1,
+      hash_function: this.encryptionUtil.hash_function_sha1,
     });
 
     const request_data = {
@@ -387,8 +480,4 @@ export class SocialLoginController {
 
     return '';
   };
-
-  hash_function_sha1(base_string, key) {
-    return crypto.createHmac('sha1', key).update(base_string).digest('base64');
-  }
 }

@@ -1,9 +1,20 @@
-import fs from 'fs';
-import { debugLog } from '../util/debug-log.util';
+/**
+ * @description holds builder util
+ */
 
-export class Builder {
-  buildTemplateFromFile = (filePath, params?: Map<string, string>) => {
-    let template = '';
+import fs from 'fs';
+import { DebugLogUtil } from '../util/debug-log.util';
+
+export class BuilderUtil {
+  constructor(private debugLogUtil = new DebugLogUtil()) {}
+
+  /**
+   * builds template from a file
+   * @param filePath file path
+   * @param params parameters
+   */
+  buildTemplateFromFile = (filePath: string, params?: Map<string, string>) => {
+    var template = '';
 
     try {
       template = fs.readFileSync(filePath, 'utf-8');
@@ -16,12 +27,18 @@ export class Builder {
         template = template.replace(key, value);
       });
     }
-    debugLog('Successfully build template: ' + filePath);
+
+    this.debugLogUtil.log('Successfully build template: ' + filePath);
 
     return template;
   };
 
-  buildUrl = (url, params) => {
+  /**
+   * builds url
+   * @param url url
+   * @param params parameters
+   */
+  buildUrl = (url: string, params: Array<string>) => {
     let generatedUrl = url;
     for (let i = 0; i < params.length; i++) {
       let param = params[i];

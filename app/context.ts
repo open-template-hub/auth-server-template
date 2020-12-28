@@ -8,7 +8,7 @@ import { PostgreSqlProvider } from './provider/postgre.provider';
 import { UserRole } from './enum/user-role.enum';
 import { ResponseCode } from './constant';
 import { TokenUtil } from './util/token.util';
-import { HttpError } from './util/http-error.util';
+import { HttpError } from './interface/http-error.interface';
 
 export const context = async (
   req: any,
@@ -40,7 +40,6 @@ export const context = async (
   let token = req.headers.authorization;
 
   if (!publicPath) {
-
     const BEARER = 'Bearer ';
 
     if (!token || !token.startsWith(BEARER)) {
@@ -60,7 +59,9 @@ export const context = async (
   const isAdmin = authUtil.isAdmin(role);
 
   if (adminPath && !isAdmin) {
-    let e = new Error('You do not have right permission to do this operation.') as HttpError;
+    let e = new Error(
+      'You do not have right permission to do this operation.'
+    ) as HttpError;
     e.responseCode = ResponseCode.FORBIDDEN;
     throw e;
   }
@@ -71,6 +72,6 @@ export const context = async (
     role,
     isAdmin,
     serviceKey,
-    token
+    token,
   } as Context;
 };

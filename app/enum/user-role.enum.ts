@@ -1,4 +1,8 @@
+/**
+ * @description holds user roles
+ */
+
 export enum UserRole {
-  USER = 'USER',
+  PUBLIC = 'PUBLIC',
   ADMIN = 'ADMIN',
 }
