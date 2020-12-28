@@ -1,21 +1,29 @@
+/**
+ * @description holds auth controller
+ */
+
 import bcrypt from 'bcrypt';
-import { HttpError } from '../util/http-error.util';
+import { HttpError } from '../interface/http-error.interface';
 import { TokenUtil } from '../util/token.util';
 import { MailUtil } from '../util/mail.util';
 import { ResponseCode } from '../constant';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { PostgreSqlProvider } from '../provider/postgre.provider';
+import { User } from '../interface/user.interface';
 
 export class AuthController {
-  private readonly mailUtil: MailUtil;
-  private readonly tokenUtil: TokenUtil;
+  constructor(
+    private mailUtil: MailUtil = new MailUtil(),
+    private tokenUtil: TokenUtil = new TokenUtil()
+  ) {}
 
-  constructor() {
-    this.mailUtil = new MailUtil();
-    this.tokenUtil = new TokenUtil();
-  }
-
-  signup = async (db, user) => {
+  /**
+   * sign up user
+   * @param db database
+   * @param user user
+   */
+  signup = async (db: PostgreSqlProvider, user: User) => {
     if (!user.password || !user.username || !user.email) {
       let e = new Error('username, password and email required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -25,15 +33,15 @@ export class AuthController {
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const userRepository = new UserRepository(db);
+
     await userRepository.insertUser({
       username: user.username,
       password: hashedPassword,
       email: user.email,
-    });
+    } as User);
+
     const tokenUtil = new TokenUtil();
     const verificationToken = tokenUtil.generateVerificationToken(user);
-
-    await this.mailUtil.sendAccountVerificationMail(user, verificationToken);
 
     const isAutoVerify = process.env.AUTO_VERIFY || false;
 
@@ -41,11 +49,17 @@ export class AuthController {
       await this.verify(db, verificationToken);
       return await this.login(db, user);
     } else {
+      await this.mailUtil.sendAccountVerificationMail(user, verificationToken);
       return { email: user.email, verificationToken };
     }
   };
 
-  login = async (db, user) => {
+  /**
+   * login user
+   * @param db database
+   * @param user user
+   */
+  login = async (db: PostgreSqlProvider, user: User) => {
     console.log(' >login::: User: ', user);
 
     if (!(user.username || user.email)) {
@@ -82,29 +96,49 @@ export class AuthController {
     return await tokenRepository.generateTokens(dbUser);
   };
 
-  logout = async (db, token) => {
+  /**
+   * logout user
+   * @param db database
+   * @param token token
+   */
+  logout = async (db: PostgreSqlProvider, token: string) => {
     const tokenRepository = new TokenRepository(db);
     await tokenRepository.deleteToken(token);
   };
 
-  token = async (db, token) => {
+  /**
+   * generates and returns new access token
+   * @param db database
+   * @param token token
+   */
+  token = async (db: PostgreSqlProvider, token: string) => {
     console.log(' >token::: token: ', token);
 
     const tokenRepository = new TokenRepository(db);
     await tokenRepository.findToken(token);
-    const user = await this.tokenUtil.verifyRefreshToken(token);
+    const user = this.tokenUtil.verifyRefreshToken(token) as User;
     return this.tokenUtil.generateAccessToken(user);
   };
 
-  verify = async (db, token) => {
+  /**
+   * verifies token
+   * @param db database
+   * @param token token
+   */
+  verify = async (db: PostgreSqlProvider, token: string) => {
     console.log(' >verify::: token: ', token);
-    const user = await this.tokenUtil.verifyVerificationToken(token);
+    const user = this.tokenUtil.verifyVerificationToken(token) as User;
 
     const userRepository = new UserRepository(db);
     await userRepository.verifyUser(user.username);
   };
 
-  forgetPassword = async (db, username) => {
+  /**
+   * sends password reset mail
+   * @param db database
+   * @param username username
+   */
+  forgetPassword = async (db: PostgreSqlProvider, username: string) => {
     const userRepository = new UserRepository(db);
     const user = await userRepository.findEmailAndPasswordByUsername(username);
     const passwordResetToken = this.tokenUtil.generatePasswordResetToken(user);
@@ -113,7 +147,13 @@ export class AuthController {
     return passwordResetToken;
   };
 
-  resetPassword = async (db, user, token) => {
+  /**
+   * verifies password reset token and resets password
+   * @param db database
+   * @param user user
+   * @param token token
+   */
+  resetPassword = async (db: PostgreSqlProvider, user: User, token: string) => {
     if (!user.password || !user.username) {
       let e = new Error('username and password required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -127,7 +167,7 @@ export class AuthController {
       user.username
     );
 
-    await this.tokenUtil.verifyPasswordResetToken(token, dbUser.password);
+    this.tokenUtil.verifyPasswordResetToken(token, dbUser.password);
     await userRepository.updateByUsername(user);
   };
 }

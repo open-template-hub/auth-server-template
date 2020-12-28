@@ -1,3 +1,7 @@
+/**
+ * @description holds index routes
+ */
+
 import {
   router as monitorRouter,
   publicRoutes as monitorPublicRoutes,
@@ -12,11 +16,11 @@ import {
   publicRoutes as socialLoginPublicRoutes,
 } from './social-login.route';
 import { router as infoRouter } from './info.route';
-import { handle } from '../util/error-handler.util';
-import { Request, Response } from 'express';
+import { ErrorHandlerUtil } from '../util/error-handler.util';
+import { NextFunction, Request, Response } from 'express';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { Encryption } from '../util/encryption.util';
-import { debugLog } from '../util/debug-log.util';
+import { EncryptionUtil } from '../util/encryption.util';
+import { DebugLogUtil } from '../util/debug-log.util';
 import { context } from '../context';
 
 const subRoutes = {
@@ -29,10 +33,13 @@ const subRoutes = {
 
 export module Routes {
   const postgreSqlProvider = new PostgreSqlProvider();
+  const errorHandlerUtil = new ErrorHandlerUtil();
+  const debugLogUtil = new DebugLogUtil();
+
   var publicRoutes: string[] = [];
   var adminRoutes: string[] = [];
 
-  function populateRoutes(mainRoute, routes) {
+  function populateRoutes(mainRoute: string, routes: Array<string>) {
     var populated = Array<string>();
     for (var i = 0; i < routes.length; i++) {
       const s = routes[i];
@@ -42,10 +49,10 @@ export module Routes {
     return populated;
   }
 
-  export function mount(app) {
+  export function mount(app: any) {
     postgreSqlProvider
       .preload()
-      .then(() => debugLog('PostgreSQL preload completed.'));
+      .then(() => console.log('PostgreSQL preload completed.'));
 
     publicRoutes = [
       ...populateRoutes(subRoutes.monitor, monitorPublicRoutes),
@@ -54,21 +61,23 @@ export module Routes {
     ];
     console.log('Public Routes: ', publicRoutes);
 
-    adminRoutes = [
-      ...populateRoutes(subRoutes.auth, authAdminRoutes),
-    ];
+    adminRoutes = [...populateRoutes(subRoutes.auth, authAdminRoutes)];
     console.log('Admin Routes: ', adminRoutes);
 
-    const responseInterceptor = (req, res, next) => {
+    const responseInterceptor = (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
       var originalSend = res.send;
-      const service = new Encryption();
+      const encryptionUtil = new EncryptionUtil();
       res.send = function () {
         console.log('Starting Encryption: ', new Date());
-        let encrypted_arguments = service.encrypt(arguments);
+        let encrypted_arguments = encryptionUtil.encrypt(arguments);
         console.log('Encryption Completed: ', new Date());
 
-        originalSend.apply(res, encrypted_arguments);
-      };
+        originalSend.apply(res, encrypted_arguments as any);
+      } as any;
 
       next();
     };
@@ -77,7 +86,7 @@ export module Routes {
     app.use(responseInterceptor);
 
     // INFO: Keep this method at top at all times
-    app.all('/*', async (req: Request, res: Response, next) => {
+    app.all('/*', async (req: Request, res: Response, next: NextFunction) => {
       try {
         // create context
         res.locals.ctx = await context(
@@ -89,7 +98,7 @@ export module Routes {
 
         next();
       } catch (err) {
-        let error = handle(err);
+        let error = errorHandlerUtil.handle(err);
         res.status(error.code).json({ message: error.message });
       }
     });
@@ -101,8 +110,13 @@ export module Routes {
     app.use(subRoutes.info, infoRouter);
 
     // Use for error handling
-    app.use(function (err, req, res, next) {
-      let error = handle(err);
+    app.use(function (
+      err: Error,
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) {
+      let error = errorHandlerUtil.handle(err);
       res.status(error.code).json({ message: error.message });
     });
   }
