@@ -22,6 +22,9 @@ export class MailUtil {
     this.config = {
       host: process.env.MAIL_HOST,
       port: process.env.MAIL_PORT,
+      secure: true, // Compliant
+      requireTLS: true, // Compliant
+      secured: true, // Compliant
       auth: {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
