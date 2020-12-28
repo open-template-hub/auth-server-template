@@ -5,9 +5,7 @@
 import { User } from '../interface/user.interface';
 import { BuilderUtil } from './builder.util';
 import { DebugLogUtil } from './debug-log.util';
-
-// use with require to fix security bug
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 export class MailUtil {
   private readonly config: any;
