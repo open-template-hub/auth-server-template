@@ -72,11 +72,11 @@ export class MailUtil {
     }
 
     let transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST as string,
-      port: 465, // Compliant,
       secure: true, // Compliant
       requireTLS: true, // Compliant
+      port: 465, // Compliant,
       secured: true, // Compliant
+      host: process.env.MAIL_HOST as string,
       auth: {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
