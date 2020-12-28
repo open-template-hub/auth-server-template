@@ -2,12 +2,15 @@
  * @description holds mail util
  */
 
-import nodemailer from 'nodemailer';
 import { User } from '../interface/user.interface';
 import { BuilderUtil } from './builder.util';
 import { DebugLogUtil } from './debug-log.util';
 
+// use with require to fix security bug
+const nodemailer = require('nodemailer');
+
 export class MailUtil {
+  private readonly config: any;
   private readonly templates: any;
 
   constructor(
@@ -17,6 +20,15 @@ export class MailUtil {
     this.templates = {
       verifyAccount: './assets/mail-templates/verify-account.html',
       forgetPassword: './assets/mail-templates/forget-password.html',
+    };
+    this.config = {
+      host: process.env.MAIL_HOST,
+      port: process.env.MAIL_PORT,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
     };
   }
 
@@ -71,17 +83,7 @@ export class MailUtil {
       return;
     }
 
-    let transporter = nodemailer.createTransport({
-      secure: true, // Compliant
-      requireTLS: true, // Compliant
-      port: 465, // Compliant,
-      secured: true, // Compliant
-      host: process.env.MAIL_HOST as string,
-      auth: {
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD,
-      },
-    } as any);
+    let transporter = nodemailer.createTransport(this.config);
 
     const clientUrl = '' + process.env.CLIENT_URL;
     url = url.replace('${CLIENT_URL}', clientUrl);
