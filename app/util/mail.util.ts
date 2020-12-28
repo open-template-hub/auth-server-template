@@ -8,7 +8,6 @@ import { BuilderUtil } from './builder.util';
 import { DebugLogUtil } from './debug-log.util';
 
 export class MailUtil {
-  private readonly config: any;
   private readonly templates: any;
 
   constructor(
@@ -18,17 +17,6 @@ export class MailUtil {
     this.templates = {
       verifyAccount: './assets/mail-templates/verify-account.html',
       forgetPassword: './assets/mail-templates/forget-password.html',
-    };
-    this.config = {
-      host: process.env.MAIL_HOST,
-      port: 465, // Compliant,
-      secure: true, // Compliant
-      requireTLS: true, // Compliant
-      secured: true, // Compliant
-      auth: {
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD,
-      },
     };
   }
 
@@ -83,7 +71,17 @@ export class MailUtil {
       return;
     }
 
-    let transporter = nodemailer.createTransport(this.config);
+    let transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST as string,
+      port: 465, // Compliant,
+      secure: true, // Compliant
+      requireTLS: true, // Compliant
+      secured: true, // Compliant
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    } as any);
 
     const clientUrl = '' + process.env.CLIENT_URL;
     url = url.replace('${CLIENT_URL}', clientUrl);
