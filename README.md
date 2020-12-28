@@ -70,6 +70,7 @@ DATABASE_URL={Database Connection Url}
 
 MAIL_HOST={SMTP Host}
 MAIL_PASSWORD={Mail Password}
+MAIL_PORT={SMTP Port}
 MAIL_USERNAME={Mail Address}
 
 REFRESH_TOKEN_EXPIRE=30days
