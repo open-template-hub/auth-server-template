@@ -16,8 +16,8 @@ export class MailUtil {
     private builder = new BuilderUtil()
   ) {
     this.templates = {
-      verifyAccount: './assets/mail-templates/verify-account.html',
-      forgetPassword: './assets/mail-templates/forget-password.html',
+      verifyAccount: './assets/mail-templates/verify-account-mail-template.html',
+      forgetPassword: './assets/mail-templates/forget-password-mail-template.html',
     };
     this.config = {
       host: process.env.MAIL_HOST,
