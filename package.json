@@ -10,7 +10,7 @@
     "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
   },
   "scripts": {
-    "start": "ts-node auth-server.main.ts --max_old_space_size=2560",
+    "start": "ts-node auth-server.main.ts --optimize_for_size --max_old_space_size=230",
     "devStart": "nodemon --exec DEBUG=* ts-node auth-server.main.ts"
   },
   "dependencies": {
