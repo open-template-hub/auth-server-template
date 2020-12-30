@@ -38,7 +38,11 @@ export class MailUtil {
    * @param token token
    */
   sendAccountVerificationMail = async (user: User, token: string) => {
-    let url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + '?token=' + token;
+    let url =
+      (((process.env.CLIENT_URL as string) +
+        process.env.CLIENT_VERIFICATION_SUCCESS_URL) as string) +
+      '?token=' +
+      token;
 
     await this.send(
       url,
@@ -55,7 +59,8 @@ export class MailUtil {
    */
   sendPasswordResetMail = async (user: User, token: string) => {
     let url =
-      process.env.CLIENT_RESET_PASSWORD_URL +
+      (((process.env.CLIENT_URL as string) +
+        process.env.CLIENT_RESET_PASSWORD_URL) as string) +
       '?token=' +
       token +
       '&username=' +
@@ -84,9 +89,6 @@ export class MailUtil {
     }
 
     let transporter = nodemailer.createTransport(this.config);
-
-    const clientUrl = '' + process.env.CLIENT_URL;
-    url = url.replace('${CLIENT_URL}', clientUrl);
 
     let params = new Map<string, string>();
     params.set('${url}', url);
