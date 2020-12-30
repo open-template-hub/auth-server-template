@@ -16,13 +16,15 @@ export class MailUtil {
     private builder = new BuilderUtil()
   ) {
     this.templates = {
-      verifyAccount: './assets/mail-templates/verify-account-mail-template.html',
-      forgetPassword: './assets/mail-templates/forget-password-mail-template.html',
+      verifyAccount:
+        './assets/mail-templates/verify-account-mail-template.html',
+      forgetPassword:
+        './assets/mail-templates/forget-password-mail-template.html',
     };
     this.config = {
       host: process.env.MAIL_HOST,
       port: process.env.MAIL_PORT,
-      secure: false, // true for 465, false for other ports
+      secure: (process.env.MAIL_PORT as string) === '465' ? true : false,
       auth: {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
