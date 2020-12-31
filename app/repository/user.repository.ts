@@ -6,6 +6,7 @@ import { HttpError } from '../interface/http-error.interface';
 import { ResponseCode } from '../constant';
 import { PostgreSqlProvider } from '../provider/postgre.provider';
 import { User } from '../interface/user.interface';
+import { UserRole } from '../enum/user-role.enum';
 
 export class UserRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
@@ -17,8 +18,8 @@ export class UserRepository {
   insertUser = async (user: User) => {
     try {
       await this.provider.query(
-        'INSERT INTO users(username, password, email) VALUES($1, $2, $3)',
-        [user.username, user.password, user.email]
+        'INSERT INTO users(username, password, email, role) VALUES($1, $2, $3, $4)',
+        [user.username, user.password, user.email, UserRole.DEFAULT]
       );
     } catch (error) {
       console.error(error);

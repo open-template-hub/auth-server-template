@@ -16,13 +16,15 @@ export class MailUtil {
     private builder = new BuilderUtil()
   ) {
     this.templates = {
-      verifyAccount: './assets/mail-templates/verify-account.html',
-      forgetPassword: './assets/mail-templates/forget-password.html',
+      verifyAccount:
+        './assets/mail-templates/verify-account-mail-template.html',
+      forgetPassword:
+        './assets/mail-templates/forget-password-mail-template.html',
     };
     this.config = {
       host: process.env.MAIL_HOST,
       port: process.env.MAIL_PORT,
-      secure: false, // true for 465, false for other ports
+      secure: (process.env.MAIL_PORT as string) === '465' ? true : false,
       auth: {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
@@ -36,7 +38,11 @@ export class MailUtil {
    * @param token token
    */
   sendAccountVerificationMail = async (user: User, token: string) => {
-    let url = process.env.CLIENT_VERIFICATION_SUCCESS_URL + '?token=' + token;
+    let url =
+      (((process.env.CLIENT_URL as string) +
+        process.env.CLIENT_VERIFICATION_SUCCESS_URL) as string) +
+      '?token=' +
+      token;
 
     await this.send(
       url,
@@ -53,7 +59,8 @@ export class MailUtil {
    */
   sendPasswordResetMail = async (user: User, token: string) => {
     let url =
-      process.env.CLIENT_RESET_PASSWORD_URL +
+      (((process.env.CLIENT_URL as string) +
+        process.env.CLIENT_RESET_PASSWORD_URL) as string) +
       '?token=' +
       token +
       '&username=' +
@@ -82,9 +89,6 @@ export class MailUtil {
     }
 
     let transporter = nodemailer.createTransport(this.config);
-
-    const clientUrl = '' + process.env.CLIENT_URL;
-    url = url.replace('${CLIENT_URL}', clientUrl);
 
     let params = new Map<string, string>();
     params.set('${url}', url);

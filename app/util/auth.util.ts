@@ -23,7 +23,7 @@ export class AuthUtil {
 
     if (authTokenHeader && authTokenHeader.startsWith(BEARER)) {
       authToken = authTokenHeader.slice(BEARER.length);
-      currentUser = await this.tokenService.verifyAccessToken(authToken);
+      currentUser = this.tokenService.verifyAccessToken(authToken);
     }
 
     if (!currentUser) {
