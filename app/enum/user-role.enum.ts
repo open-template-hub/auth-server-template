@@ -3,6 +3,6 @@
  */
 
 export enum UserRole {
-  PUBLIC = 'PUBLIC',
+  DEFAULT = 'DEFAULT',
   ADMIN = 'ADMIN',
 }
