@@ -34,6 +34,7 @@ const port: string = process.env.PORT || ('4001' as string);
 
 app.listen(port, () => {
   console.info('Auth Server is running on port', port);
+  
   const usageUtil = new UsageUtil();
   const memoryUsage = usageUtil.getMemoryUsage();
   console.info(`Startup Memory Usage: ${memoryUsage.toFixed(2)} MB`);
