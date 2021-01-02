@@ -38,11 +38,11 @@ export class MailUtil {
    * @param token token
    */
   sendAccountVerificationMail = async (user: User, token: string) => {
-    let url =
-      (((process.env.CLIENT_URL as string) +
-        process.env.CLIENT_VERIFICATION_SUCCESS_URL) as string) +
-      '?token=' +
-      token;
+    const clientUrl = process.env.CLIENT_URL || '';
+    const clientVerificationSuccessUrl =
+      process.env.CLIENT_VERIFICATION_SUCCESS_URL || '';
+
+    let url = clientUrl + clientVerificationSuccessUrl + '?token=' + token;
 
     await this.send(
       url,
@@ -58,13 +58,17 @@ export class MailUtil {
    * @param token token
    */
   sendPasswordResetMail = async (user: User, token: string) => {
+    const clientUrl = process.env.CLIENT_URL || '';
+    const clientResetPasswordUrl = process.env.CLIENT_RESET_PASSWORD_URL || '';
+
     let url =
-      (((process.env.CLIENT_URL as string) +
-        process.env.CLIENT_RESET_PASSWORD_URL) as string) +
+      clientUrl +
+      clientResetPasswordUrl +
       '?token=' +
       token +
       '&username=' +
       user.username;
+
     await this.send(
       url,
       user,
