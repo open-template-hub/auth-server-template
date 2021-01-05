@@ -4,7 +4,7 @@
 
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
-import { ResponseCode } from '../constant';
+import { ResponseCode } from '@open-template-hub/common';
 
 const subRoutes = {
   root: '/',

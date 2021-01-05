@@ -16,12 +16,16 @@ import {
   publicRoutes as socialLoginPublicRoutes,
 } from './social-login.route';
 import { router as infoRouter } from './info.route';
-import { ErrorHandlerUtil } from '../util/error-handler.util';
+import {
+  ErrorHandlerUtil,
+  PostgreSqlProvider,
+  EncryptionUtil,
+  DebugLogUtil,
+  context,
+  PreloadUtil,
+} from '@open-template-hub/common';
 import { NextFunction, Request, Response } from 'express';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { EncryptionUtil } from '../util/encryption.util';
-import { DebugLogUtil } from '../util/debug-log.util';
-import { context } from '../context';
+import { Environment } from '../../environment';
 
 const subRoutes = {
   root: '/',
@@ -32,7 +36,8 @@ const subRoutes = {
 };
 
 export module Routes {
-  const postgreSqlProvider = new PostgreSqlProvider();
+  var environment: Environment;
+  var postgresql_provider: PostgreSqlProvider;
   const errorHandlerUtil = new ErrorHandlerUtil();
   const debugLogUtil = new DebugLogUtil();
 
@@ -50,9 +55,17 @@ export module Routes {
   }
 
   export function mount(app: any) {
-    postgreSqlProvider
-      .preload()
-      .then(() => console.log('PostgreSQL preload completed.'));
+    const preloadUtil = new PreloadUtil();
+    environment = new Environment();
+
+    postgresql_provider = new PostgreSqlProvider(
+      environment.args(),
+      'AuthServer'
+    );
+
+    preloadUtil
+      .preload(undefined, postgresql_provider)
+      .then(() => console.log('DB preloads are completed.'));
 
     publicRoutes = [
       ...populateRoutes(subRoutes.monitor, monitorPublicRoutes),
@@ -70,7 +83,7 @@ export module Routes {
       next: NextFunction
     ) => {
       var originalSend = res.send;
-      const encryptionUtil = new EncryptionUtil();
+      const encryptionUtil = new EncryptionUtil(environment.args());
       res.send = function () {
         console.log('Starting Encryption: ', new Date());
         let encrypted_arguments = encryptionUtil.encrypt(arguments);
@@ -91,9 +104,11 @@ export module Routes {
         // create context
         res.locals.ctx = await context(
           req,
-          postgreSqlProvider,
+          environment.args(),
           publicRoutes,
-          adminRoutes
+          adminRoutes,
+          undefined,
+          postgresql_provider
         );
 
         next();

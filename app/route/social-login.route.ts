@@ -5,7 +5,7 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { SocialLoginController } from '../controller/social-login.controller';
-import { Context } from '../interface/context.interface';
+import { ResponseCode, Context } from '@open-template-hub/common';
 
 const subRoutes = {
   root: '/',
@@ -31,7 +31,7 @@ router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
     context.postgresql_provider,
     req.body
   );
-  res.status(200).json({ loginUrl: response });
+  res.status(ResponseCode.OK).json({ loginUrl: response });
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
@@ -41,7 +41,7 @@ router.post(subRoutes.login, async (req: Request, res: Response) => {
     context.postgresql_provider,
     req.body
   );
-  res.status(200).json(response);
+  res.status(ResponseCode.OK).json(response);
 });
 
 router.post(
@@ -53,6 +53,6 @@ router.post(
       context.postgresql_provider,
       req.body
     );
-    res.status(200).json(response);
+    res.status(ResponseCode.OK).json(response);
   }
 );

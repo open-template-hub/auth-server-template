@@ -9,22 +9,26 @@ import axios from 'axios';
 import capitalize from 'capitalize';
 import OAuth from 'oauth-1.0a';
 import { v4 as uuid } from 'uuid';
-import { BuilderUtil } from '../util/builder.util';
-import { ResponseCode } from '../constant';
-import { Parser } from '../util/parser.util';
+import {
+  BuilderUtil,
+  ResponseCode,
+  PostgreSqlProvider,
+  User,
+  EncryptionUtil,
+  ParserUtil,
+} from '@open-template-hub/common';
 import { SocialLoginRepository } from '../repository/social-login.repository';
 import { UserRepository } from '../repository/user.repository';
 import { TokenRepository } from '../repository/token.repository';
 import { AuthToken } from '../interface/auth-token.interface';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { User } from '../interface/user.interface';
-import { EncryptionUtil } from '../util/encryption.util';
+import { Environment } from '../../environment';
 
 export class SocialLoginController {
   constructor(
     private builder = new BuilderUtil(),
-    private parser = new Parser(),
-    private encryptionUtil = new EncryptionUtil()
+    private parser = new ParserUtil(),
+    private environment = new Environment(),
+    private encryptionUtil = new EncryptionUtil(environment.args())
   ) {}
 
   /**

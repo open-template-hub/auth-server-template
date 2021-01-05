@@ -5,8 +5,7 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { AuthController } from '../controller/auth.controller';
-import { Context } from '../interface/context.interface';
-import { User } from '../interface/user.interface';
+import { ResponseCode, User, Context } from '@open-template-hub/common';
 
 const subRoutes = {
   root: '/',
@@ -43,7 +42,7 @@ router.post(subRoutes.signup, async (req: Request, res: Response) => {
     password: req.body.password,
     email: req.body.email,
   } as User);
-  res.status(201).json(response);
+  res.status(ResponseCode.CREATED).json(response);
 });
 
 router.post(subRoutes.login, async (req: Request, res: Response) => {
@@ -55,7 +54,7 @@ router.post(subRoutes.login, async (req: Request, res: Response) => {
     password: req.body.password,
     email: req.body.email,
   } as User);
-  res.status(200).json({
+  res.status(ResponseCode.OK).json({
     accessToken: response.accessToken,
     refreshToken: response.refreshToken,
   });
@@ -66,7 +65,7 @@ router.post(subRoutes.logout, async (req: Request, res: Response) => {
   const authController = new AuthController();
   const context = res.locals.ctx as Context;
   await authController.logout(context.postgresql_provider, req.body.token);
-  res.status(204).json({});
+  res.status(ResponseCode.NO_CONTENT).json({});
 });
 
 router.post(subRoutes.token, async (req: Request, res: Response) => {
@@ -78,7 +77,7 @@ router.post(subRoutes.token, async (req: Request, res: Response) => {
     req.body.token
   );
   res
-    .status(200)
+    .status(ResponseCode.OK)
     .json({ accessToken: accessToken, refreshToken: req.body.token });
 });
 
@@ -90,7 +89,7 @@ router.get(subRoutes.verify, async (req: Request, res: Response) => {
     context.postgresql_provider,
     req.query.token as string
   );
-  res.status(200).json({});
+  res.status(ResponseCode.OK).json({});
 });
 
 router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
@@ -101,7 +100,7 @@ router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
     context.postgresql_provider,
     req.body.username
   );
-  res.status(200).json({});
+  res.status(ResponseCode.OK).json({});
 });
 
 router.get(
@@ -114,7 +113,7 @@ router.get(
       context.postgresql_provider,
       req.query.username as string
     );
-    res.status(200).json({ resetPasswordToken });
+    res.status(ResponseCode.OK).json({ resetPasswordToken });
   }
 );
 
@@ -130,5 +129,5 @@ router.post(subRoutes.resetPassword, async (req: Request, res: Response) => {
     } as User,
     req.body.token
   );
-  res.status(200).json({});
+  res.status(ResponseCode.OK).json({});
 });

@@ -1,11 +1,10 @@
-import { TokenUtil } from '../util/token.util';
 /**
  * @description holds info controller
  */
 
 import { UserRepository } from '../repository/user.repository';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { User } from '../interface/user.interface';
+import { PostgreSqlProvider, TokenUtil, User } from '@open-template-hub/common';
+import { Environment } from '../../environment';
 
 export class InfoController {
   /**
@@ -14,7 +13,8 @@ export class InfoController {
    * @param token token
    */
   me = async (db: PostgreSqlProvider, token: string) => {
-    const tokenUtil = new TokenUtil();
+    const environment = new Environment();
+    const tokenUtil = new TokenUtil(environment.args());
     const user = tokenUtil.verifyAccessToken(token) as User;
 
     const userRepository = new UserRepository(db);

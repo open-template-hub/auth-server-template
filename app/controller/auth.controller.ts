@@ -4,18 +4,22 @@
 
 import bcrypt from 'bcrypt';
 import { HttpError } from '../interface/http-error.interface';
-import { TokenUtil } from '../util/token.util';
-import { MailUtil } from '../util/mail.util';
-import { ResponseCode } from '../constant';
+import {
+  TokenUtil,
+  ResponseCode,
+  PostgreSqlProvider,
+  User,
+  MailUtil,
+} from '@open-template-hub/common';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { User } from '../interface/user.interface';
+import { Environment } from '../../environment';
 
 export class AuthController {
   constructor(
-    private mailUtil: MailUtil = new MailUtil(),
-    private tokenUtil: TokenUtil = new TokenUtil()
+    private environment = new Environment(),
+    private mailUtil: MailUtil = new MailUtil(environment.args()),
+    private tokenUtil: TokenUtil = new TokenUtil(environment.args())
   ) {}
 
   /**
@@ -40,7 +44,7 @@ export class AuthController {
       email: user.email,
     } as User);
 
-    const tokenUtil = new TokenUtil();
+    const tokenUtil = new TokenUtil(this.environment.args());
     const verificationToken = tokenUtil.generateVerificationToken(user);
 
     const isAutoVerify = process.env.AUTO_VERIFY || false;

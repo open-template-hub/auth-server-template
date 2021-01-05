@@ -2,7 +2,7 @@
  * @description holds social login repository
  */
 
-import { PostgreSqlProvider } from '../provider/postgre.provider';
+import { PostgreSqlProvider } from '@open-template-hub/common';
 
 export class SocialLoginRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
