@@ -3,10 +3,12 @@
  */
 
 import { HttpError } from '../interface/http-error.interface';
-import { ResponseCode } from '../constant';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { User } from '../interface/user.interface';
-import { UserRole } from '../enum/user-role.enum';
+import {
+  ResponseCode,
+  PostgreSqlProvider,
+  User,
+  UserRole,
+} from '@open-template-hub/common';
 
 export class UserRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}

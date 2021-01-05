@@ -3,11 +3,14 @@
  */
 
 import { HttpError } from '../interface/http-error.interface';
-import { ResponseCode } from '../constant';
-import { PostgreSqlProvider } from '../provider/postgre.provider';
-import { TokenUtil } from '../util/token.util';
+import {
+  ResponseCode,
+  TokenUtil,
+  PostgreSqlProvider,
+  User,
+} from '@open-template-hub/common';
 import { AuthToken } from '../interface/auth-token.interface';
-import { User } from '../interface/user.interface';
+import { Environment } from '../../environment';
 
 export class TokenRepository {
   constructor(private readonly provider: PostgreSqlProvider) {}
@@ -17,7 +20,8 @@ export class TokenRepository {
    * @param user user
    */
   generateTokens = async (user: User): Promise<AuthToken> => {
-    const tokenUtil = new TokenUtil();
+    const environment = new Environment();
+    const tokenUtil = new TokenUtil(environment.args());
     const accessToken = tokenUtil.generateAccessToken(user);
     const refreshToken = tokenUtil.generateRefreshToken(user);
 

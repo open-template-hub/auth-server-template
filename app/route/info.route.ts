@@ -5,7 +5,7 @@
 import Router from 'express-promise-router';
 import { Request, Response } from 'express';
 import { InfoController } from '../controller/info.controller';
-import { Context } from '../interface/context.interface';
+import { ResponseCode, Context } from '@open-template-hub/common';
 
 const subRoutes = {
   root: '/',
@@ -22,5 +22,5 @@ router.get(subRoutes.me, async (req: Request, res: Response) => {
     context.postgresql_provider,
     context.token
   );
-  res.status(200).json(response);
+  res.status(ResponseCode.OK).json(response);
 });
