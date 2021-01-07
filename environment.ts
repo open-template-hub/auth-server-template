@@ -1,11 +1,17 @@
 import { EnvArgs } from '@open-template-hub/common';
+import path from 'path';
 
 export class Environment {
   constructor(private _args: EnvArgs = {} as EnvArgs) {
-    const resetPasswordMailTemplatePath =
-      __dirname + '/assets/mail-templates/verify-account-mail-template.html';
-    const verifyAccountMailTemplatePath =
-      __dirname + '/assets/mail-templates/forget-password-mail-template.html';
+    const resetPasswordMailTemplatePath = path.join(
+      __dirname,
+      '/assets/mail-templates/verify-account-mail-template.html'
+    );
+
+    const verifyAccountMailTemplatePath = path.join(
+      __dirname,
+      '/assets/mail-templates/forget-password-mail-template.html'
+    );
 
     console.info(
       '> Environment::constructor => resetPasswordMailTemplatePath: ',
