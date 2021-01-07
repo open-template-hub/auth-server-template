@@ -83,9 +83,11 @@ RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 
 VERIFICATION_TOKEN_SECRET={Verification Token Secret}
 
-AUTO_VERIFY={Set True If Auto Verify On SignUp}
+AUTO_VERIFY={Set true If Auto Verify On SignUp}
 
 POSTGRESQL_CONNECTION_LIMIT={PostgreSQL Connection Limit In Pool}
+
+MAIL_SERVER_DISABLED={Set true If Mail server disabled}
 ```
 
 ## Social Login Configurations

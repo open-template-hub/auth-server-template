@@ -47,7 +47,7 @@ export class AuthController {
     const tokenUtil = new TokenUtil(this.environment.args());
     const verificationToken = tokenUtil.generateVerificationToken(user);
 
-    const isAutoVerify = process.env.AUTO_VERIFY || false;
+    const isAutoVerify = process.env.AUTO_VERIFY === 'true';
 
     if (isAutoVerify) {
       await this.verify(db, verificationToken);
@@ -64,8 +64,6 @@ export class AuthController {
    * @param user user
    */
   login = async (db: PostgreSqlProvider, user: User) => {
-    console.log(' >login::: User: ', user);
-
     if (!(user.username || user.email)) {
       let e = new Error('username or email required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -116,8 +114,6 @@ export class AuthController {
    * @param token token
    */
   token = async (db: PostgreSqlProvider, token: string) => {
-    console.log(' >token::: token: ', token);
-
     const tokenRepository = new TokenRepository(db);
     await tokenRepository.findToken(token);
     const user = this.tokenUtil.verifyRefreshToken(token) as User;
@@ -130,7 +126,6 @@ export class AuthController {
    * @param token token
    */
   verify = async (db: PostgreSqlProvider, token: string) => {
-    console.log(' >verify::: token: ', token);
     const user = this.tokenUtil.verifyVerificationToken(token) as User;
 
     const userRepository = new UserRepository(db);
