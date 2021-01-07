@@ -3,12 +3,12 @@ import path from 'path';
 
 export class Environment {
   constructor(private _args: EnvArgs = {} as EnvArgs) {
-    const resetPasswordMailTemplatePath = path.join(
+    const verifyAccountMailTemplatePath = path.join(
       __dirname,
       '/assets/mail-templates/verify-account-mail-template.html'
     );
 
-    const verifyAccountMailTemplatePath = path.join(
+    const resetPasswordMailTemplatePath = path.join(
       __dirname,
       '/assets/mail-templates/forget-password-mail-template.html'
     );
