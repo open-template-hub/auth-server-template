@@ -37,7 +37,7 @@ export class Environment {
       mailPort: process.env.MAIL_PORT,
       mailUsername: process.env.MAIL_USERNAME,
       mailPassword: process.env.MAIL_PASSWORD,
-      mailServerDisabled: process.env.MAIL_SERVER_DISABLED,
+      mailServerDisabled: process.env.MAIL_SERVER_DISABLED === 'true',
       clientUrl: process.env.CLIENT_URL,
       clientResetPasswordUrl: process.env.CLIENT_RESET_PASSWORD_URL,
       clientVerificationSuccessUrl: process.env.CLIENT_VERIFICATION_SUCCESS_URL,
