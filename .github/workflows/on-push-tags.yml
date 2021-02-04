@@ -1,7 +1,4 @@
-# Publish new release
-
-name: Node.js Package
-
+name: On Push Tags Workflows
 on:
   push:
     tags:
