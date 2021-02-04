@@ -5,12 +5,14 @@ on:
 
 jobs:
   pr-labeler:
+    name: "Add Label to PR"
     runs-on: ubuntu-latest
     steps:
       - uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   automate-project-columns:
+    name: "Update Kanban Column"
     runs-on: ubuntu-latest
     steps:
       - uses: alex-page/github-project-automation-plus@v0.3.0
@@ -19,8 +21,27 @@ jobs:
           column: In progress
           repo-token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
   milestone-binder:
+    name: "Add Milestone to PR"
     runs-on: ubuntu-latest
     steps:
       - uses: Code-Hex/auto-milestone-binder@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+  bump-version:
+    name: "Update Version"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token : ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+      - run: cat ./package.json
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - uses: phips28/gh-action-bump-version@master
+        with:
+          target-branch: 'develop'
+          tag-prefix: ''
+          token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+      - run: cat ./package.json
