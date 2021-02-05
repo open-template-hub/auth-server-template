@@ -1,0 +1,28 @@
+ name: PR Open to Master Workflows
+ on:
+   pull_request:
+     types: [opened]
+     branches:
+        - master
+ 
+ jobs:
+  bump-version:
+     name: "Update Version"
+     runs-on: ubuntu-latest
+
+     steps:
+       - uses: actions/checkout@v2
+         with:
+           token : ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+       - run: cat ./package.json
+       - uses: actions/setup-node@v1
+         with:
+           node-version: 12
+       - uses: phips28/gh-action-bump-version@master
+         with:
+           target-branch: 'develop'
+           tag-prefix: ''
+           token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       - run: cat ./package.json
