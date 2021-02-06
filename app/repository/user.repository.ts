@@ -2,12 +2,12 @@
  * @description holds user repository
  */
 
-import { HttpError } from '../interface/http-error.interface';
 import {
   ResponseCode,
   PostgreSqlProvider,
   User,
   UserRole,
+  HttpError
 } from '@open-template-hub/common';
 
 export class UserRepository {

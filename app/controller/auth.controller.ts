@@ -3,13 +3,13 @@
  */
 
 import bcrypt from 'bcrypt';
-import { HttpError } from '../interface/http-error.interface';
 import {
   TokenUtil,
   ResponseCode,
   PostgreSqlProvider,
   User,
   MailUtil,
+ HttpError
 } from '@open-template-hub/common';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';

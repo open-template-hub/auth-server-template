@@ -14,7 +14,7 @@
     "devStart": "nodemon --exec DEBUG=* ts-node auth-server.main.ts"
   },
   "dependencies": {
-    "@open-template-hub/common": "^1.0.8",
+    "@open-template-hub/common": "^1.0.25",
     "@types/bcrypt": "^3.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
