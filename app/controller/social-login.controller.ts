@@ -3,7 +3,6 @@
  */
 
 import bcrypt from 'bcrypt';
-import { HttpError } from '../interface/http-error.interface';
 
 import axios from 'axios';
 import capitalize from 'capitalize';
@@ -16,6 +15,7 @@ import {
   User,
   EncryptionUtil,
   ParserUtil,
+  HttpError
 } from '@open-template-hub/common';
 import { SocialLoginRepository } from '../repository/social-login.repository';
 import { UserRepository } from '../repository/user.repository';

@@ -2,12 +2,12 @@
  * @description holds token repository
  */
 
-import { HttpError } from '../interface/http-error.interface';
 import {
   ResponseCode,
   TokenUtil,
   PostgreSqlProvider,
   User,
+ HttpError
 } from '@open-template-hub/common';
 import { AuthToken } from '../interface/auth-token.interface';
 import { Environment } from '../../environment';
