@@ -1,28 +1,46 @@
- name: PR Open to Master Workflows
- on:
-   pull_request:
-     types: [opened]
-     branches:
-        - master
- 
- jobs:
-  bump-version:
-     name: "Update Version"
-     runs-on: ubuntu-latest
+name: PR Open to Master Workflows
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - master
 
-     steps:
-       - uses: actions/checkout@v2
-         with:
-           token : ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
-       - run: cat ./package.json
-       - uses: actions/setup-node@v1
-         with:
-           node-version: 12
-       - uses: phips28/gh-action-bump-version@master
-         with:
-           target-branch: 'develop'
-           tag-prefix: ''
-           token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       - run: cat ./package.json
+jobs:
+  postman-test-run:
+    name: "Postman Regression Test"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+          ref: develop
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run Postman Regression
+        run: |
+          npm install
+          npm run-script postmanDevelop --adminAuthToken=admin-auth-token=${{ secrets.ADMIN_AUTH_TOKEN }} --responseEncryptionSecret=response-encryption-secret=${{ secrets.RESPONSE_ENCRYPTION_SECRET }}
+
+      - name: Commit Report
+        run: |
+          git config --global user.name 'furknyavuz'
+          git config --global user.email 'furknyavuz@gmail.com'
+          git add .
+          git commit -m "Automated report"
+          git push
+
+      - name: Output the Run Details
+        uses: actions/upload-artifact@v2
+        with:
+          name: PostmanReports
+          path: ./assets/test-results

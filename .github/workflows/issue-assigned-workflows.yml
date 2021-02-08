@@ -5,7 +5,9 @@ on:
 
 jobs:
   automate-project-columns:
+    name: "Automate Project Columns"
     runs-on: ubuntu-latest
+    
     steps:
       - uses: alex-page/github-project-automation-plus@v0.3.0
         with:

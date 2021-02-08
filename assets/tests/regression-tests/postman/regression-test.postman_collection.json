@@ -1,0 +1,726 @@
+{
+	"info": {
+		"_postman_id": "54e9576b-ca26-407e-b195-2c4b6e95b36f",
+		"name": "auth-server-regression",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"item": [
+						{
+							"name": "Sign Up Success [201]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"pm.test(\"Response code is CREATED\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if (autoVerifyEnabled) {\r",
+											"   pm.test(\"Response contains Access Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('accessToken');\r",
+											"        pm.environment.set(\"access-token\", decryptedJson.accessToken);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Refresh Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('refreshToken');\r",
+											"        pm.environment.set(\"refresh-token\", decryptedJson.refreshToken);\r",
+											"    });\r",
+											"} else {\r",
+											"    pm.test(\"Response contains Created User Email\", function () {\r",
+											"        pm.expect(decrypted).to.include('email');\r",
+											"    });\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}\",\r\n \"password\": \"{{password}}\",\r\n \"email\": \"{{email}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/signup",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sign In",
+					"item": [
+						{
+							"name": "Sign In By Username Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if (autoVerifyEnabled) {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(200);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Access Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('accessToken');\r",
+											"        pm.environment.set(\"access-token\", decryptedJson.accessToken);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Refresh Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('refreshToken');\r",
+											"        pm.environment.set(\"refresh-token\", decryptedJson.refreshToken);\r",
+											"    });\r",
+											"} else {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(403);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Error Message\", function () {\r",
+											"        pm.expect(decrypted).to.include('message');\r",
+											"    });\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}\",\r\n \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In By Email Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if (autoVerifyEnabled) {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(200);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Access Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('accessToken');\r",
+											"        pm.environment.set(\"access-token\", decryptedJson.accessToken);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Refresh Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('refreshToken');\r",
+											"        pm.environment.set(\"refresh-token\", decryptedJson.refreshToken);\r",
+											"    });\r",
+											"} else {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(403);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Error Message\", function () {\r",
+											"        pm.expect(decrypted).to.include('message');\r",
+											"    });\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"email\": \"{{email}}\",\r\n \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In Failure [400]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"pm.test(\"Response code is Bad Request\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Error Message\", function () {\r",
+											"    pm.expect(decrypted).to.include('message');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Request New Token Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"var autoVerifyEnabled = pm.environment.get(\"auto-verify-enabled\");\r",
+											"\r",
+											"if (autoVerifyEnabled) {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(200);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Access Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('accessToken');\r",
+											"        pm.environment.set(\"access-token\", decryptedJson.accessToken);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Refresh Token\", function () {\r",
+											"        pm.expect(decrypted).to.include('refreshToken');\r",
+											"        pm.environment.set(\"refresh-token\", decryptedJson.refreshToken);\r",
+											"    });\r",
+											"} else {\r",
+											"    pm.test(\"Response code is OK\", function () {\r",
+											"        pm.response.to.have.status(401);\r",
+											"    });\r",
+											"\r",
+											"    pm.test(\"Response contains Error Message\", function () {\r",
+											"        pm.expect(decrypted).to.include('message');\r",
+											"    });\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"token\": \"{{refresh-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/token",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "Forget Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/forget-password",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"forget-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reset Password Token Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Reset Password Token\", function () {\r",
+											"    pm.expect(decrypted).to.include('resetPasswordToken');\r",
+											"    pm.environment.set(\"reset-password-token\", decryptedJson.resetPasswordToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin-auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reset Password Token Failure [403]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response code is Forbidden\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/reset-password-token?username={{username}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password-token"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}\",\r\n \"password\": \"{{changed-password}}\",\r\n \"token\": \"{{reset-password-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/reset-password",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign In With Changed Password Success [200]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseEncryptionSecret = pm.environment.get(\"response-encryption-secret\");\r",
+											"const encrypted = pm.response.json();\r",
+											"const decrypted = CryptoJS.RC4.decrypt(\r",
+											"      encrypted,\r",
+											"      responseEncryptionSecret\r",
+											"    ).toString(CryptoJS.enc.Utf8);\r",
+											"\r",
+											"const decryptedJson = JSON.parse(decrypted);\r",
+											"console.log(decryptedJson);\r",
+											"\r",
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Access Token\", function () {\r",
+											"    pm.expect(decrypted).to.include('accessToken');\r",
+											"    pm.environment.set(\"access-token\", decryptedJson.accessToken);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains Refresh Token\", function () {\r",
+											"    pm.expect(decrypted).to.include('refreshToken');\r",
+											"    pm.environment.set(\"refresh-token\", decryptedJson.refreshToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"username\": \"{{username}}\",\r\n \"password\": \"{{changed-password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sign Out",
+					"item": [
+						{
+							"name": "Sign Out Success [204]",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response code is No Content\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"token\": \"{{refresh-token}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/logout",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Get Reset Password Token Success [200] Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response code is OK\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin-auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/user?username={{username}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"user"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "{{username}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

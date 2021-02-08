@@ -94,6 +94,10 @@ MAIL_SERVER_DISABLED={Set true If Mail server disabled}
 
 To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](SOCIAL_LOGIN.md)** file.
 
+## Regression Tests
+
+To be able to run regression tests, refer to **[REGRESSION_TESTS.md](REGRESSION_TESTS.md)** file.
+
 ## Http Requests
 
 You can find list of available http request in the [requests](assets/requests) directory. You can run http requests directly via **WebStorm**, for more information check out: [jetbrains.com/help/idea/http-client-in-product-code-editor.html](https://jetbrains.com/help/idea/http-client-in-product-code-editor.html)

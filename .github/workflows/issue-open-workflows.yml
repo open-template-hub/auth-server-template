@@ -5,15 +5,20 @@ on:
 
 jobs:
   automate-project-columns:
+    name: "Automate Project Columns"
     runs-on: ubuntu-latest
+    
     steps:
       - uses: alex-page/github-project-automation-plus@v0.3.0
         with:
           project: Open Template Hub Servers
           column: To do
           repo-token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+
   milestone-binder:
+    name: "Milestone Binder"
     runs-on: ubuntu-latest
+    
     steps:
       - uses: Code-Hex/auto-milestone-binder@v1.0.1
         with:

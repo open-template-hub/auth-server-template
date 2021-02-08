@@ -53,3 +53,8 @@ Content-Type: application/json
  "password": "password",
  "token": "token"
 }
+
+### Delete User
+DELETE http://localhost:4001/auth/user?username=username
+Content-Type: application/json
+Authorization: Bearer token

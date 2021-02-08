@@ -5,9 +5,10 @@ on:
       - "master"
 
 jobs:
-  build:
-    name: "CI"
+  continuous-integration:
+    name: "Npm Continuous Integration"
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -15,3 +16,22 @@ jobs:
           node-version: 12
       - run: npm install
       - run: npm ci
+
+  bump-version:
+    name: "Update Version"
+    needs: continuous-integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token : ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+      - run: cat ./package.json
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - uses: phips28/gh-action-bump-version@master
+        with:
+          tag-prefix: ''
+          token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
+      - run: cat ./package.json
