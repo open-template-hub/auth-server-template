@@ -29,7 +29,7 @@ jobs:
       - name: Run Postman Regression
         run: |
           npm install
-          npm run-script postmanDevelop
+          npm run-script postmanDevelop --adminAuthToken=admin-auth-token=${{ secrets.ADMIN_AUTH_TOKEN }} --responseEncryptionSecret=response-encryption-secret=${{ secrets.RESPONSE_ENCRYPTION_SECRET }}
 
       - name: Commit Report
         run: |
