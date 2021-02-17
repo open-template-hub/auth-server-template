@@ -1,7 +1,8 @@
 name: PR Open to Master Workflows
+
 on:
   pull_request:
-    types: [opened]
+    types: [ opened ]
     branches:
       - master
 
@@ -11,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repo
+        uses: actions/checkout@v2
         with:
           token: ${{ secrets.MASTER_BRANCH_ACCESS_TOKEN }}
           ref: develop
@@ -21,25 +23,17 @@ jobs:
         with:
           node-version: 12
 
-      - name: Install newman
+      - name: Install Newman
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
 
-      - name: Run Postman Regression
+      - name: Run Regression Tests
         run: |
           npm install
           npm run-script postmanDevelop --adminAuthToken=admin-auth-token=${{ secrets.ADMIN_AUTH_TOKEN }} --responseEncryptionSecret=response-encryption-secret=${{ secrets.RESPONSE_ENCRYPTION_SECRET }}
 
-      - name: Commit Report
-        run: |
-          git config --global user.name 'furknyavuz'
-          git config --global user.email 'furknyavuz@gmail.com'
-          git add .
-          git commit -m "Automated report"
-          git push
-
-      - name: Output the Run Details
+      - name: Upload Test Results
         uses: actions/upload-artifact@v2
         with:
           name: PostmanReports
