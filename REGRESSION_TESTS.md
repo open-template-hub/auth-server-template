@@ -1,6 +1,7 @@
 # POSTMAN REGRESSION TESTS
 
 ## Prerequisite
+
 Please check README.md to get more information to configure environment
 
 ## Configuration
