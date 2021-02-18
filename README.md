@@ -52,7 +52,6 @@ npm -v
 
 Check project's current **nodejs** and **npm** version from **[package.json](package.json)**.
 
-
 ## Environment Variables
 
 If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.

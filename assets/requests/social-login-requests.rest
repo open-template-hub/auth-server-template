@@ -3,7 +3,7 @@ POST http://localhost:4001/social/login-url
 Content-Type: application/json
 
 {
- "key": "GITHUB"
+  "key": "GITHUB"
 }
 
 ### Social Login
@@ -11,9 +11,9 @@ POST http://localhost:4001/social/login
 Content-Type: application/json
 
 {
- "key": "GITHUB",
- "code": "code",
- "state": "state"
+  "key": "GITHUB",
+  "code": "code",
+  "state": "state"
 }
 
 ### Social Login With Access token
@@ -21,7 +21,7 @@ POST http://localhost:4001/social/login-with-access-token
 Content-Type: application/json
 
 {
- "key": "GITHUB",
- "accessToken": "",
- "tokenType": "Bearer"
+  "key": "GITHUB",
+  "accessToken": "",
+  "tokenType": "Bearer"
 }
