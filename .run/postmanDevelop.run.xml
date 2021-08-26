@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="postmanDevelop" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="postmanDevelop" />
+    </scripts>
+    <arguments value="--adminAuthToken=admin-auth-token=${OTH_ADMIN_AUTH_TOKEN} --responseEncryptionSecret=response-encryption-secret=${OTH_RESPONSE_ENCRYPTION_SECRET}" />
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

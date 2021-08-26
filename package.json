@@ -1,17 +1,12 @@
 {
-  "name": "auth-server",
+  "name": "auth-server-template",
+  "description": "Authentication Server Template supporting both regular signup and login processes and login with social networks that support OAuth and OAuth2.0",
   "version": "2.2.15",
-  "description": "Auth Server Template",
-  "main": "auth-server.main.ts",
   "license": "MIT",
-  "homepage": "https://github.com/open-template-hub/auth-server-nodejs-template#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
-  },
+  "main": "auth-server.main.ts",
   "scripts": {
-    "start": "ts-node auth-server.main.ts",
-    "devStart": "nodemon --exec DEBUG=* ts-node auth-server.main.ts",
+    "start": "node version-generator.ts > ./version.ts && ts-node auth-server.main.ts",
+    "startLocal": "nodemon --exec DEBUG=* ts-node auth-server.main.ts",
     "postmanLocal": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_local.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
     "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret"
   },
@@ -41,5 +36,30 @@
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
     "nodemon": "^2.0.2"
-  }
+  },
+  "git repository": "https://github.com/open-template-hub/auth-server-nodejs-templatee",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
+  },
+  "keywords": [
+    "nodejs",
+    "template",
+    "oauth",
+    "oauth2 express",
+    "authentication",
+    "server facebook-login",
+    "twitter-login google-login",
+    "social-login linkedin-login",
+    "nodejs-express github-login",
+    "twitch-login",
+    "backend",
+    "rest",
+    "node",
+    "nodejs",
+    "typescript",
+    "template",
+    "server template",
+    "open template hub"
+  ]
 }
