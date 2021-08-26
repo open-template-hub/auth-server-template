@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="install" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="install" />
+    <node-interpreter value="project" />
+    <envs>
+      <env name="PORT" value="4000" />
+      <env name="ACCESS_TOKEN_SECRET" value="443f000de3bb0f2cc55c86f7f4de55cf4b3cbb2e87a87f0a9eda4e7325429d070f6b7873efa098e577820a9c237b05f608654a5ecefd700961a4ac3deb84c6a0" />
+      <env name="REFRESH_TOKEN_SECRET" value="a13cf015a9811cd39ed981a8d48abeab6d9648dc908b0e97863b7f5084df658712081ef98efff039ae11d25d4379ff6c15a890424b2fd19386b9353e4236c2f1" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>
