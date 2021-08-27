@@ -11,7 +11,7 @@ export class InfoController {
   me = async ( db: PostgreSqlProvider, token: string ) => {
     const environment = new Environment();
     const tokenUtil = new TokenUtil( environment.args() );
-    const user: User = <User>tokenUtil.verifyAccessToken( token );
+    const user: any = tokenUtil.verifyAccessToken( token );
 
     const userRepository = new UserRepository( db );
     return userRepository.findEmailByUsername( user.username );

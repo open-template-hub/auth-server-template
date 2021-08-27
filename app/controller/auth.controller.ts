@@ -112,7 +112,7 @@ export class AuthController {
 
     const tokenRepository = new TokenRepository( db );
     await tokenRepository.findToken( token );
-    const user: User = <User>this.tokenUtil.verifyRefreshToken( token );
+    const user: any = this.tokenUtil.verifyRefreshToken( token );
     return this.tokenUtil.generateAccessToken( user );
   };
 
@@ -122,7 +122,7 @@ export class AuthController {
    * @param token token
    */
   verify = async ( db: PostgreSqlProvider, token: string ) => {
-    const user: User = <User>this.tokenUtil.verifyVerificationToken( token );
+    const user: any = this.tokenUtil.verifyVerificationToken( token );
 
     const userRepository = new UserRepository( db );
     await userRepository.verifyUser( user.username );
