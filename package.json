@@ -1,7 +1,7 @@
 {
   "name": "auth-server-template",
   "description": "Authentication Server Template supporting both regular signup and login processes and login with social networks that support OAuth and OAuth2.0",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "license": "MIT",
   "main": "auth-server.main.ts",
   "scripts": {
