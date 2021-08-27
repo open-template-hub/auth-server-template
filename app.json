@@ -18,6 +18,7 @@
     "linkedin-login",
     "twitter-login",
     "twitch-login",
-    "github-login"
+    "github-login",
+    "open-template-hub"
   ]
 }
