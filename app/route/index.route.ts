@@ -18,7 +18,7 @@ const subRoutes = {
   info: '/info',
 };
 
-export module Routes {
+export namespace Routes {
   var environment: Environment;
   var postgresql_provider: PostgreSqlProvider;
   const errorHandlerUtil = new ErrorHandlerUtil();
@@ -28,8 +28,7 @@ export module Routes {
 
   function populateRoutes( mainRoute: string, routes: Array<string> ) {
     var populated = Array<string>();
-    for ( var i = 0; i < routes.length; i++ ) {
-      const s = routes[ i ];
+    for ( const s of routes ) {
       populated.push( mainRoute + ( s === '/' ? '' : s ) );
     }
 

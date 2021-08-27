@@ -45,7 +45,7 @@ export class AuthController {
 
     if ( isAutoVerify ) {
       await this.verify( db, verificationToken );
-      return await this.login( db, user );
+      return this.login( db, user );
     } else {
       await this.mailUtil.sendAccountVerificationMail( user, verificationToken );
       return { email: user.email };
@@ -90,7 +90,7 @@ export class AuthController {
     }
 
     const tokenRepository = new TokenRepository( db );
-    return await tokenRepository.generateTokens( dbUser );
+    return tokenRepository.generateTokens( dbUser );
   };
 
   /**
@@ -112,7 +112,7 @@ export class AuthController {
 
     const tokenRepository = new TokenRepository( db );
     await tokenRepository.findToken( token );
-    const user = this.tokenUtil.verifyRefreshToken( token ) as User;
+    const user: User = <User>this.tokenUtil.verifyRefreshToken( token );
     return this.tokenUtil.generateAccessToken( user );
   };
 
@@ -122,7 +122,7 @@ export class AuthController {
    * @param token token
    */
   verify = async ( db: PostgreSqlProvider, token: string ) => {
-    const user = this.tokenUtil.verifyVerificationToken( token ) as User;
+    const user: User = <User>this.tokenUtil.verifyVerificationToken( token );
 
     const userRepository = new UserRepository( db );
     await userRepository.verifyUser( user.username );

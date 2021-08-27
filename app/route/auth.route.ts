@@ -2,7 +2,7 @@
  * @description holds auth routes
  */
 
-import { Context, ResponseCode, User } from '@open-template-hub/common';
+import { ResponseCode, User } from '@open-template-hub/common';
 import { Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { AuthController } from '../controller/auth.controller';
@@ -40,7 +40,7 @@ export const router = Router();
 router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
   // sign up
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   const response = await authController.signup( context.postgresql_provider, {
     username: req.body.username,
     password: req.body.password,
@@ -52,7 +52,7 @@ router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
 router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   // login
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   const response = await authController.login( context.postgresql_provider, {
     username: req.body.username,
     password: req.body.password,
@@ -67,7 +67,7 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
 router.post( subRoutes.logout, async ( req: Request, res: Response ) => {
   //  logout
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   await authController.logout( context.postgresql_provider, req.body.token );
   res.status( ResponseCode.NO_CONTENT ).json( {} );
 } );
@@ -75,7 +75,7 @@ router.post( subRoutes.logout, async ( req: Request, res: Response ) => {
 router.post( subRoutes.token, async ( req: Request, res: Response ) => {
   // get token
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   const accessToken = await authController.token(
       context.postgresql_provider,
       req.body.token
@@ -88,7 +88,7 @@ router.post( subRoutes.token, async ( req: Request, res: Response ) => {
 router.get( subRoutes.verify, async ( req: Request, res: Response ) => {
   // verify token
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   await authController.verify(
       context.postgresql_provider,
       req.query.token as string
@@ -99,7 +99,7 @@ router.get( subRoutes.verify, async ( req: Request, res: Response ) => {
 router.post( subRoutes.forgetPassword, async ( req: Request, res: Response ) => {
   // forget password
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   await authController.forgetPassword(
       context.postgresql_provider,
       req.body.username
@@ -112,7 +112,7 @@ router.get(
     async ( req: Request, res: Response ) => {
       // generate reset password token
       const authController = new AuthController();
-      const context = res.locals.ctx as Context;
+      const context = res.locals.ctx;
       const resetPasswordToken = await authController.forgetPassword(
           context.postgresql_provider,
           req.query.username as string,
@@ -125,7 +125,7 @@ router.get(
 router.post( subRoutes.resetPassword, async ( req: Request, res: Response ) => {
   // reset password
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   await authController.resetPassword(
       context.postgresql_provider,
       {
@@ -140,7 +140,7 @@ router.post( subRoutes.resetPassword, async ( req: Request, res: Response ) => {
 router.delete( subRoutes.user, async ( req: Request, res: Response ) => {
   // delete user
   const authController = new AuthController();
-  const context = res.locals.ctx as Context;
+  const context = res.locals.ctx;
   await authController.deleteUser(
       context.postgresql_provider,
       context.username,
