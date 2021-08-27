@@ -1,4 +1,4 @@
-import { PostgreSqlProvider, TokenUtil, User } from '@open-template-hub/common';
+import { PostgreSqlProvider, TokenUtil } from '@open-template-hub/common';
 import { Environment } from '../../environment';
 import { UserRepository } from '../repository/user.repository';
 
