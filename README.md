@@ -88,6 +88,8 @@ AUTO_VERIFY={Set true If Auto Verify On SignUp}
 POSTGRESQL_CONNECTION_LIMIT={PostgreSQL Connection Limit In Pool}
 
 MAIL_SERVER_DISABLED={Set true If Mail server disabled}
+
+ORCHESTRATION_SERVER_QUEUE_CHANNEL= {Orchestration Server MQ Channel Name}
 ```
 
 ## Social Login Configurations
