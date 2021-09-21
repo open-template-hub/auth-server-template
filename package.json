@@ -37,10 +37,10 @@
     "@types/cors": "^2.8.9",
     "nodemon": "^2.0.2"
   },
-  "git repository": "https://github.com/open-template-hub/auth-server-nodejs-template",
+  "git repository": "https://github.com/open-template-hub/auth-server-template",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
+    "url": "git+https://github.com/open-template-hub/auth-server-template.git"
   },
   "keywords": [
     "nodejs",
