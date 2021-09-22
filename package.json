@@ -11,7 +11,7 @@
     "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret"
   },
   "dependencies": {
-    "@open-template-hub/common": "^2.0.2",
+    "@open-template-hub/common": "^2.1.12",
     "@types/bcrypt": "^3.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
@@ -37,10 +37,10 @@
     "@types/cors": "^2.8.9",
     "nodemon": "^2.0.2"
   },
-  "git repository": "https://github.com/open-template-hub/auth-server-nodejs-template",
+  "git repository": "https://github.com/open-template-hub/auth-server-template",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-template-hub/auth-server-nodejs-template.git"
+    "url": "git+https://github.com/open-template-hub/auth-server-template.git"
   },
   "keywords": [
     "nodejs",
