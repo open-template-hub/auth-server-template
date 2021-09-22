@@ -6,6 +6,7 @@ import {
   AccountVerificationMailActionParams,
   ForgetPasswordMailActionParams,
   HttpError,
+  MailActionType,
   MessageQueueChannelType,
   MessageQueueProvider,
   PostgreSqlProvider,
@@ -62,16 +63,21 @@ export class AuthController {
     } else {
       var orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
+      var verificationParams = {
+        user: user.username,
+        email: user.email,
+        accountVerificationToken: verificationToken,
+        clientVerificationSuccessUrl:
+          this.environment.args().extentedArgs?.clientVerificationSuccessUrl,
+      } as AccountVerificationMailActionParams;
       var message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          user: user.username,
-          email: user.email,
-          accountVerificationToken: verificationToken,
-          clientVerificationSuccessUrl:
-            this.environment.args().extentedArgs?.clientVerificationSuccessUrl,
-        } as AccountVerificationMailActionParams,
+          verifyAccount: {
+            params: verificationParams,
+          },
+        } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
         message,
@@ -174,16 +180,21 @@ export class AuthController {
     if (sendEmail) {
       var orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
+      var forgetPasswordParams = {
+        user: user.username,
+        email: user.email,
+        passwordResetToken,
+        clientResetPasswordUrl:
+          this.environment.args().extentedArgs?.clientResetPasswordUrl,
+      } as ForgetPasswordMailActionParams;
       var message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          user: user.username,
-          email: user.email,
-          passwordResetToken,
-          clientResetPasswordUrl:
-            this.environment.args().extentedArgs?.clientResetPasswordUrl,
-        } as ForgetPasswordMailActionParams,
+          forgetPassword: {
+            params: forgetPasswordParams,
+          },
+        } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
         message,
