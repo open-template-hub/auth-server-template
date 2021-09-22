@@ -11,7 +11,7 @@
     "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret"
   },
   "dependencies": {
-    "@open-template-hub/common": "^2.1.12",
+    "@open-template-hub/common": "^2.1.14",
     "@types/bcrypt": "^3.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
