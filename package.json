@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@open-template-hub/common": "^2.1.14",
-    "@types/bcrypt": "^3.0.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
     "@types/dotenv": "^8.2.0",
@@ -32,7 +32,7 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
-    "@types/bcrypt": "^3.0.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
     "nodemon": "^2.0.2"
