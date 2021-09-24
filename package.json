@@ -25,7 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-promise-router": "^3.0.3",
+    "express-promise-router": "^4.1.0",
     "oauth-1.0a": "^2.2.6",
     "ts-node": "^8.1.0",
     "typescript": "^3.4.5",
