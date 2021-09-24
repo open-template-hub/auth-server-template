@@ -27,7 +27,7 @@
     "express": "^4.17.1",
     "express-promise-router": "^3.0.3",
     "oauth-1.0a": "^2.2.6",
-    "ts-node": "^8.1.0",
+    "ts-node": "^10.2.1",
     "typescript": "^3.4.5",
     "uuid": "^7.0.3"
   },
