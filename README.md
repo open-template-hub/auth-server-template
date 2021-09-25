@@ -57,39 +57,39 @@ Check project's current **nodejs** and **npm** version from **[package.json](pac
 If you don't give **RESPONSE_ENCRYPTION_SECRET**, response encryption mechanism will be disabled automatically.
 
 ```applescript
-PORT={Port}
+PORT=4001
+
+PROJECT=OTH
+MODULE=AuthServer
+ENVIRONMENT=Local
+
+CLIENT_URL=http://localhost:4200
+CLIENT_RESET_PASSWORD_URL=http://localhost:4200/reset-password
+CLIENT_VERIFICATION_SUCCESS_URL=http://localhost:4200/verify-account
+
+DATABASE_URL={Database Connection Url}
+POSTGRESQL_CONNECTION_LIMIT={Postgresql Connection Limit}
+
+CLOUDAMQP_APIKEY={MQ Api Key}
+CLOUDAMQP_URL={MQ Connection Url}
+
+AUTH_SERVER_QUEUE_CHANNEL=oth_auth_queue
+ORCHESTRATION_SERVER_QUEUE_CHANNEL=oth_orchestration_queue
+
+AUTO_VERIFY=false
 
 ACCESS_TOKEN_EXPIRE=1hour
 ACCESS_TOKEN_SECRET={Access Token Secret}
-
-CLIENT_RESET_PASSWORD_URL=/reset-password
-CLIENT_URL=http://localhost:4200
-CLIENT_VERIFICATION_SUCCESS_URL=/verify-account
-
-DATABASE_URL={Database Connection Url}
-
-MAIL_HOST={SMTP Host}
-MAIL_PASSWORD={Mail Password}
-MAIL_PORT={SMTP Port}
-MAIL_USERNAME={Mail Address}
 
 REFRESH_TOKEN_EXPIRE=30days
 REFRESH_TOKEN_SECRET={Refresh Token Secret}
 
 RESET_PASSWORD_TOKEN_EXPIRE=1day
-RESET_PASSWORD_TOKEN_SECRET={Reset Password Token Secret}
+RESET_PASSWORD_TOKEN_SECRET={Reset Token Secret}
+
+VERIFICATION_TOKEN_SECRET={Verification Token Secret
 
 RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
-
-VERIFICATION_TOKEN_SECRET={Verification Token Secret}
-
-AUTO_VERIFY={Set true If Auto Verify On SignUp}
-
-POSTGRESQL_CONNECTION_LIMIT={PostgreSQL Connection Limit In Pool}
-
-MAIL_SERVER_DISABLED={Set true If Mail server disabled}
-
-ORCHESTRATION_SERVER_QUEUE_CHANNEL= {Orchestration Server MQ Channel Name}
 ```
 
 ## Social Login Configurations
