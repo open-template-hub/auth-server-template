@@ -94,11 +94,11 @@ RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 
 ## Social Login Configurations
 
-To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](SOCIAL_LOGIN.md)** file.
+To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](docs/SOCIAL_LOGIN.md)** file.
 
 ## Regression Tests
 
-To be able to run regression tests, refer to **[REGRESSION_TESTS.md](REGRESSION_TESTS.md)** file.
+To be able to run regression tests, refer to **[REGRESSION_TESTS.md](docs/REGRESSION_TESTS.md)** file.
 
 ## Http Requests
 
