@@ -1,6 +1,6 @@
 {
   "name": "auth-server-template",
-  "description": "Authentication Server Template supporting both regular signup and login processes and login with social networks that support OAuth and OAuth2.0",
+  "description": "Auth Server Template is an open source authentication server that has simple and generic design to connect your authentication system with every OAuth 2.0 and OAuth supporting third party companies like Google, Facebook, Twitter or LinkedIn. We are also supporting regular username password authentication system",
   "version": "3.0.0",
   "license": "MIT",
   "main": "auth-server.main.ts",
@@ -8,7 +8,8 @@
     "start": "node version-generator.ts > ./version.ts && ts-node auth-server.main.ts",
     "startLocal": "nodemon --exec DEBUG=* ts-node auth-server.main.ts",
     "postmanLocal": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_local.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
-    "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret"
+    "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
+    "outdated": "node dependency-checker.ts > docs/OUTDATED.md"
   },
   "dependencies": {
     "@open-template-hub/common": "^2.1.15",

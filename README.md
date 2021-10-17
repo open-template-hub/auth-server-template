@@ -17,7 +17,7 @@ Open Template Hub - Auth Server Template v2
 [![Postman](https://img.shields.io/badge/Postman-Test%20Results-FF6C37?style=for-the-badge&logo=postman)](https://github.com/open-template-hub/auth-server-template/blob/develop/assets/test-results/postman.html)
 [![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=for-the-badge&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
 
-Authentication Server Template supporting both regular signup and login processes and login with social networks that support OAuth and OAuth2.0
+Auth Server Template is an open source authentication server that has simple and generic design to connect your authentication system with every OAuth 2.0 and OAuth supporting third party companies like Google, Facebook, Twitter or LinkedIn. We are also supporting regular username password authentication system
 
 ## Ways to Begin
 
@@ -94,11 +94,11 @@ RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
 
 ## Social Login Configurations
 
-To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](SOCIAL_LOGIN.md)** file.
+To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](docs/SOCIAL_LOGIN.md)** file.
 
 ## Regression Tests
 
-To be able to run regression tests, refer to **[REGRESSION_TESTS.md](REGRESSION_TESTS.md)** file.
+To be able to run regression tests, refer to **[REGRESSION_TESTS.md](docs/REGRESSION_TESTS.md)** file.
 
 ## Http Requests
 
@@ -123,11 +123,15 @@ You can find list of available http request in the [requests](assets/requests) d
 
 ## Contributing
 
-* Fork it
-* Create your update branch (git checkout -b my-feature-branch)
-* Commit your changes (git commit -am 'Add some features')
-* Push to the branch (git push origin my-feature-branch)
-* Create new Pull Request
+Refer to **[CONTRIBUTING.md](https://github.com/open-template-hub/.github/blob/master/docs/CONTRIBUTING.md)** to see how to contribute to Open Template Hub.
+
+<br/>
+
+## Code of Conduct
+
+Refer to **[CODE_OF_CONDUCT.md](https://github.com/open-template-hub/.github/blob/master/docs/CODE_OF_CONDUCT.md)** to see contributor covenant code of conduct.
+
+<br/>
 
 ## LICENSE
 
