@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v2
+Open Template Hub - Auth Server Template v3
 </h1>
 
 [![License](https://img.shields.io/github/license/open-template-hub/auth-server-template?color=43b043&style=for-the-badge)](LICENSE)
