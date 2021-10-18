@@ -17,7 +17,7 @@ Open Template Hub - Auth Server Template v3
 [![Postman](https://img.shields.io/badge/Postman-Test%20Results-FF6C37?style=for-the-badge&logo=postman)](https://github.com/open-template-hub/auth-server-template/blob/develop/assets/test-results/postman.html)
 [![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=for-the-badge&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
 
-Auth Server Template is an generic open source authentication server that has simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third party companies (like Google, Facebook, Twitter or LinkedIn). It also supports basic username password authentication system.
+Auth Server Template is a generic open source authentication server that has simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third party companies (like Google, Facebook, Twitter or LinkedIn). It also supports basic username password authentication system.
 
 ## Ways to Begin
 
