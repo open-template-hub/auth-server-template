@@ -17,7 +17,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | --- | --- | --- | --- | --- |
 | @open-template-hub/common   |  2.1.15   | 2.1.15   |  3.0.1   | auth-server-template |
 | @types/bcrypt               |   3.0.1   |  3.0.1   |  5.0.0   | auth-server-template |
-| axios                       |  0.21.4   | 0.21.4   | 0.23.0   | auth-server-template |
+| axios                       |  0.21.4   | 0.21.4   | 0.24.0   | auth-server-template |
 | dotenv                      |   8.6.0   |  8.6.0   | 10.0.0   | auth-server-template |
 | express-promise-router      |   3.0.3   |  3.0.3   |  4.1.0   | auth-server-template |
 | ts-node                     |  8.10.2   | 8.10.2   | 10.4.0   | auth-server-template |
