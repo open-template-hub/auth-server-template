@@ -19,7 +19,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | @types/bcrypt               |   3.0.1   |  3.0.1   |  5.0.0   | auth-server-template |
 | axios                       |  0.21.4   | 0.21.4   | 0.24.0   | auth-server-template |
 | dotenv                      |   8.6.0   |  8.6.0   | 10.0.0   | auth-server-template |
-| express-promise-router      |   3.0.3   |  3.0.3   |  4.1.0   | auth-server-template |
+| express-promise-router      |   3.0.3   |  3.0.3   |  4.1.1   | auth-server-template |
 | ts-node                     |  8.10.2   | 8.10.2   | 10.4.0   | auth-server-template |
 | typescript                  |  3.9.10   | 3.9.10   |  4.5.2   | auth-server-template |
 
