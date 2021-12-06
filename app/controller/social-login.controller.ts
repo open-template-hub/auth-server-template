@@ -132,7 +132,7 @@ export class SocialLoginController {
       } else {
         throw new Error( 'Method Not Implemented' );
       }
-    } catch ( e ) {
+    } catch ( e: any ) {
       console.error( e );
       e.responseCode = ResponseCode.FORBIDDEN;
       throw e;
@@ -470,11 +470,14 @@ export class SocialLoginController {
     };
 
     let headers = oauth.toHeader( oauth.authorize( request_data ) );
-
-    const oAuthRequestTokenResponse = await axios.post<any>(
+    
+    let axiosHeader: Record<string, string> = {};
+    axiosHeader.Authorization = headers.Authorization;
+    
+    const oAuthRequestTokenResponse: any = await axios.post<any>(
         `${ config.request_token_uri }`,
         {},
-        { headers }
+        { headers: axiosHeader }
     );
 
     const urlParams = new URLSearchParams( oAuthRequestTokenResponse.data );
