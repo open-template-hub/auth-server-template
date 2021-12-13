@@ -1,0 +1,27 @@
+{
+  "name": "auth-server-template",
+  "description": "Auth Server Template is a generic open-source authentication server that has a simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third-party companies (like Google, Facebook, Twitter, or LinkedIn). It also supports a basic username-password authentication system.",
+  "website": "https://opentemplatehub.com/product/server/auth-server-template",
+  "repository": "https://github.com/open-template-hub/auth-server-template",
+  "logo": "https://raw.githubusercontent.com/open-template-hub/open-template-hub.github.io/master/assets/logo/server/auth-server-logo.png",
+  "keywords": [
+    "nodejs",
+    "template",
+    "oauth",
+    "oauth2 express",
+    "authentication",
+    "server facebook-login",
+    "twitter-login google-login",
+    "social-login linkedin-login",
+    "nodejs-express github-login",
+    "twitch-login",
+    "backend",
+    "rest",
+    "node",
+    "nodejs",
+    "typescript",
+    "template",
+    "server template",
+    "open template hub"
+  ]
+}

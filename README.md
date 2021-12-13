@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v2
+Open Template Hub - Auth Server Template v3
 </h1>
 
 [![License](https://img.shields.io/github/license/open-template-hub/auth-server-template?color=43b043&style=for-the-badge)](LICENSE)
@@ -15,9 +15,8 @@ Open Template Hub - Auth Server Template v2
 [![Release](https://img.shields.io/github/release/open-template-hub/auth-server-template?include_prereleases&color=43b043&style=for-the-badge)](https://github.com/open-template-hub/auth-server-template/releases)
 [![SonarCloud](https://img.shields.io/sonar/quality_gate/open-template-hub_auth-server-template?server=https%3A%2F%2Fsonarcloud.io&label=Sonar%20Cloud&style=for-the-badge&logo=sonarcloud)](https://sonarcloud.io/dashboard?id=open-template-hub_auth-server-template)
 [![Postman](https://img.shields.io/badge/Postman-Test%20Results-FF6C37?style=for-the-badge&logo=postman)](https://github.com/open-template-hub/auth-server-template/blob/develop/assets/test-results/postman.html)
-[![BTC](https://img.shields.io/badge/Donate-BTC-ORANGE?color=F5922F&style=for-the-badge&logo=bitcoin)](https://commerce.coinbase.com/checkout/8313af5f-de48-498d-b2cb-d98819ca7d5e)
 
-Auth Server Template is an open source authentication server that has simple and generic design to connect your authentication system with every OAuth 2.0 and OAuth supporting third party companies like Google, Facebook, Twitter or LinkedIn. We are also supporting regular username password authentication system
+Auth Server Template is a generic open-source authentication server that has a simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third-party companies (like Google, Facebook, Twitter, or LinkedIn). It also supports a basic username-password authentication system.
 
 ## Ways to Begin
 

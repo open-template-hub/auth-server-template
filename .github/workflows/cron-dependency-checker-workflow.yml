@@ -23,8 +23,6 @@ jobs:
         run: npm i
       - name: Npm Outdated
         run: npm run outdated
-      - name: Build
-        run: npm run buildProd
 
       - name: Git Commit and Push
         run: |
