@@ -74,9 +74,12 @@ export class AuthController {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          verifyAccount: {
-            params: verificationParams,
+          mailType: {
+            verifyAccount: {
+              params: verificationParams,
+            }
           },
+          language: "en" // TODO: Make dynamic
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -191,9 +194,12 @@ export class AuthController {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          forgetPassword: {
-            params: forgetPasswordParams,
+          mailType: {
+            forgetPassword: {
+              params: forgetPasswordParams,
+            }
           },
+          language: "en" // TODO: Make dynamic
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
