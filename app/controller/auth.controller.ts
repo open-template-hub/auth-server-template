@@ -29,6 +29,7 @@ export class AuthController {
   /**
    * sign up user
    * @param db database
+   * @param message_queue_provider message queue
    * @param user user
    */
   signup = async (
@@ -68,7 +69,7 @@ export class AuthController {
         email: user.email,
         accountVerificationToken: verificationToken,
         clientVerificationSuccessUrl:
-          this.environment.args().extentedArgs?.clientVerificationSuccessUrl,
+          this.environment.args().extendedArgs?.clientVerificationSuccessUrl,
       } as AccountVerificationMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
@@ -188,7 +189,7 @@ export class AuthController {
         email: user.email,
         passwordResetToken,
         clientResetPasswordUrl:
-          this.environment.args().extentedArgs?.clientResetPasswordUrl,
+          this.environment.args().extendedArgs?.clientResetPasswordUrl,
       } as ForgetPasswordMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
