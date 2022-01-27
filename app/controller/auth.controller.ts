@@ -61,16 +61,16 @@ export class AuthController {
       await this.verify(db, verificationToken);
       return this.login(db, user);
     } else {
-      var orchestrationChannelTag =
+      const orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
-      var verificationParams = {
+      const verificationParams = {
         user: user.username,
         email: user.email,
         accountVerificationToken: verificationToken,
         clientVerificationSuccessUrl:
           this.environment.args().extentedArgs?.clientVerificationSuccessUrl,
       } as AccountVerificationMailActionParams;
-      var message = {
+      const message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
@@ -181,16 +181,16 @@ export class AuthController {
     const passwordResetToken = this.tokenUtil.generatePasswordResetToken(user);
 
     if (sendEmail) {
-      var orchestrationChannelTag =
+      const orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
-      var forgetPasswordParams = {
+      const forgetPasswordParams = {
         user: user.username,
         email: user.email,
         passwordResetToken,
         clientResetPasswordUrl:
           this.environment.args().extentedArgs?.clientResetPasswordUrl,
       } as ForgetPasswordMailActionParams;
-      var message = {
+      const message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
