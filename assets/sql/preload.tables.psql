@@ -25,7 +25,19 @@ create TABLE IF NOT EXISTS social_logins
 
 create TABLE IF NOT EXISTS oauth_v1_config_params
 (
-  social_login_key text NOT NULL UNIQUE
+  social_login_key text NOT NULL UNIQUE,
+  client_id text NOT NULL,
+  client_secret text NOT NULL,
+  redirect_uri text NOT NULL,
+  login_uri text NOT NULL,
+  access_token_uri text NOT NULL,
+  access_token_query_param_field_path text NOT NULL,
+  user_data_uri text NOT NULL,
+  external_user_id_query_param_field_path text NOT NULL,
+  external_user_email_query_param_field_path text,
+  external_username_query_param_field_path text,
+  request_token_uri text NOT NULL,
+  access_token_request_method text NOT NULL
 );
 
 create TABLE IF NOT EXISTS oauth_v2_config_params
