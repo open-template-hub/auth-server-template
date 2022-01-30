@@ -45,7 +45,8 @@ router.post(subRoutes.signup, async (req: Request, res: Response) => {
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,
-    } as User
+    } as User,
+    req.body.languageCode
   );
   res.status(ResponseCode.CREATED).json(response);
 });
