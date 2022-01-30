@@ -105,7 +105,8 @@ router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
   await authController.forgetPassword(
     context.postgresql_provider,
     context.message_queue_provider,
-    req.body.username
+    req.body.username,
+    req.body.languageCode
   );
   res.status(ResponseCode.NO_CONTENT).json({});
 });
