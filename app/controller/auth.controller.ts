@@ -35,7 +35,8 @@ export class AuthController {
   signup = async (
     db: PostgreSqlProvider,
     message_queue_provider: MessageQueueProvider,
-    user: User
+    user: User,
+    languageCode?: string
   ) => {
     if (!user.password || !user.username || !user.email) {
       let e = new Error('username, password and email required') as HttpError;
@@ -80,7 +81,7 @@ export class AuthController {
               params: verificationParams,
             }
           },
-          language: "en" // TODO: Make dynamic
+          language: languageCode
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -158,7 +159,7 @@ export class AuthController {
    * @param db database
    * @param token token
    */
-  verify = async (db: PostgreSqlProvider, token: string) => {
+  verify = async (db: PostgreSqlProvider, token: string, languageCode?: string) => {
     const user: any = this.tokenUtil.verifyVerificationToken(token);
 
     const userRepository = new UserRepository(db);
@@ -175,7 +176,8 @@ export class AuthController {
     db: PostgreSqlProvider,
     message_queue_provider: MessageQueueProvider,
     username: string,
-    sendEmail: boolean = true
+    sendEmail: boolean = true,
+    languageCode?: string
   ) => {
     const userRepository = new UserRepository(db);
     const user = await userRepository.findEmailAndPasswordByUsername(username);
@@ -200,7 +202,7 @@ export class AuthController {
               params: forgetPasswordParams,
             }
           },
-          language: "en" // TODO: Make dynamic
+          language: languageCode
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
