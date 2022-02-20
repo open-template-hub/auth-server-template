@@ -3,6 +3,7 @@ import {
   EnvArgs,
   ExtendedArgs,
   TokenArgs,
+  TwoFactorArgs,
 } from '@open-template-hub/common';
 
 export class Environment {
@@ -39,11 +40,18 @@ export class Environment {
         process.env.ORCHESTRATION_SERVER_QUEUE_CHANNEL,
     };
 
+    const twoFactorCodeArgs = {
+      twoFactorCodeExpire: process.env.TWO_FACTOR_EXPIRE,
+      twoFactorCodeLength: process.env.TWO_FACTOR_CODE_LENGTH,
+      twoFactorCodeType: process.env.TWO_FACTOR_CODE_TYPE
+    } as TwoFactorArgs
+
     this._args = {
       tokenArgs,
       dbArgs,
       mqArgs,
       extendedArgs,
+      twoFactorCodeArgs
     } as EnvArgs;
   }
 

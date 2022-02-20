@@ -89,6 +89,10 @@ RESET_PASSWORD_TOKEN_SECRET={Reset Token Secret}
 VERIFICATION_TOKEN_SECRET={Verification Token Secret
 
 RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}
+
+TWO_FACTOR_EXPIRE=90
+TWO_FACTOR_CODE_LENGTH=5
+TWO_FACTOR_CODE_TYPE=numeric
 ```
 
 ## Social Login Configurations
