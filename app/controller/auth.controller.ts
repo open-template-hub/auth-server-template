@@ -170,14 +170,15 @@ export class AuthController {
    * sends password reset mail
    * @param db database
    * @param username username
+   * @param languageCode language code
    * @param sendEmail don't send email if false
    */
   forgetPassword = async (
     db: PostgreSqlProvider,
     message_queue_provider: MessageQueueProvider,
     username: string,
-    sendEmail: boolean = true,
-    languageCode?: string
+    languageCode?: string,
+    sendEmail: boolean = true
   ) => {
     const userRepository = new UserRepository(db);
     const user = await userRepository.findEmailAndPasswordByUsername(username);

@@ -37,6 +37,10 @@ if [ ! -f .env ]; then
     echo "VERIFICATION_TOKEN_SECRET={Verification Token Secret"
 
     echo "RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}"
+
+    echo "TWO_FACTOR_EXPIRE=90"
+    echo "TWO_FACTOR_CODE_LENGTH=5" 
+    echo "TWO_FACTOR_CODE_TYPE=numeric"
   } >>.env
 else
   echo ".env file already exists. Nothing to do..."

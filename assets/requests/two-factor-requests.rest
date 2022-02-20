@@ -1,0 +1,18 @@
+### Request
+POST http://localhost:4001/2fa/request
+Content-Type: application/json
+Authorization: Bearer token 
+
+{
+  "phoneNumber": "+1111111",
+  "languageCode": "en"
+}
+
+### Verify
+POST http://localhost:4001/2fa/verify
+Content-Type: application/json
+Authorization: Bearer token
+
+{
+  "code": "95680"
+}

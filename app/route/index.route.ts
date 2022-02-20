@@ -27,6 +27,9 @@ import {
   publicRoutes as socialLoginPublicRoutes,
   router as socialLoginRouter,
 } from './social-login.route';
+import {
+  router as twoFactorCodeRouter,
+} from './two-factor-code.route';
 
 const subRoutes = {
   root: '/',
@@ -34,6 +37,7 @@ const subRoutes = {
   auth: '/auth',
   social: '/social',
   info: '/info',
+  twoFactorCode: '/2fa'
 };
 
 export namespace Routes {
@@ -140,6 +144,7 @@ export namespace Routes {
     app.use(subRoutes.auth, authRouter);
     app.use(subRoutes.social, socialLoginRouter);
     app.use(subRoutes.info, infoRouter);
+    app.use(subRoutes.twoFactorCode, twoFactorCodeRouter);
 
     // Use for error handling
     app.use(function (

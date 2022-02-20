@@ -121,6 +121,7 @@ router.get(
       context.postgresql_provider,
       context.message_queue_provider,
       req.query.username as string,
+      undefined,
       true
     );
     res.status(ResponseCode.OK).json({ resetPasswordToken });
