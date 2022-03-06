@@ -6,12 +6,17 @@ import {
     SmsActionType,
     QueueMessage,
     HttpError,
-    ResponseCode
+    ResponseCode,
+    TokenDefaults,
+    TokenUtil,
+    User
 } from "@open-template-hub/common";
 import { Environment } from "../../environment";
 import { TwoFactorCode } from "../interface/two-factor-code.interface";
 import { TwoFactorCodeRepository } from "../repository/two-factor.repository";
 import crypto from 'crypto';
+import { UserRepository } from "../repository/user.repository";
+import { AuthController } from "./auth.controller";
 
 export class TwoFactorCodeController {
     constructor(
@@ -48,6 +53,8 @@ export class TwoFactorCodeController {
             messageQueueProvider,
             twoFactorCode
         );
+
+        return { expire: twoFactorCode.expiry };
     }
 
     private randomString( length: number, chars: string ): string {
@@ -117,7 +124,8 @@ export class TwoFactorCodeController {
     verify = async(
       db: PostgreSqlProvider,
       username: string,
-      twoFactorCode: string
+      twoFactorCode: string,
+      isInitialVerification: boolean = true
     ) => {
       const twoFactorCodeRepository = new TwoFactorCodeRepository( db );
 
@@ -127,8 +135,6 @@ export class TwoFactorCodeController {
 
       // expiry check
       if( twoFactorCodeResponse.expiry < new Date().getTime().toString() ) {
-        console.log( "Expiry ", twoFactorCodeResponse.expiry );
-        console.log( "now ", new Date().getTime().toString() )
         let e = new Error('Code Expired') as HttpError;
         e.responseCode = ResponseCode.BAD_REQUEST;
         console.error(e);
@@ -142,5 +148,44 @@ export class TwoFactorCodeController {
         console.error(e);
         throw e; 
       }
+
+      if( isInitialVerification ) {
+        const userRepository = new UserRepository( db );
+
+        await userRepository.addPhoneNumberToUser( twoFactorCodeResponse.phone_number, username );
+        await userRepository.updateTwoFactorEnabled( true, username );
+      }
+    }
+
+    loginVerify = async(
+      db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
+      code: string,
+      preAuthToken: string
+    ) => {
+      const environment = new Environment();
+      const tokenUtil = new TokenUtil( environment.args() );
+
+      const decrpytedPreAuthToken = tokenUtil.verifyPreAuthToken( preAuthToken ) as any;
+
+      if( !decrpytedPreAuthToken.username ) {
+        let e = new Error('Invalid token') as HttpError;
+        e.responseCode = ResponseCode.BAD_REQUEST;
+        console.error(e);
+        throw e;
+      } 
+
+      await this.verify( db, decrpytedPreAuthToken.username as string, code, false )
+
+      const userRepository = new UserRepository(db);
+      let dbUser = await userRepository.findUserByUsernameOrEmail( decrpytedPreAuthToken.username as string ); 
+
+      const user = {
+        username: dbUser.username,
+        password: dbUser.password,
+      } as User
+
+      const authController = new AuthController()
+      return authController.twoFactorVerifiedLogin( db, dbUser );
     }
 }

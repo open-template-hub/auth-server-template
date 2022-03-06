@@ -27,7 +27,8 @@ import {
   publicRoutes as socialLoginPublicRoutes,
   router as socialLoginRouter,
 } from './social-login.route';
-import {
+import { 
+  publicRoutes as twoFactorCodePublicRoutes,
   router as twoFactorCodeRouter,
 } from './two-factor-code.route';
 
@@ -91,6 +92,7 @@ export namespace Routes {
       ...populateRoutes(subRoutes.monitor, monitorPublicRoutes),
       ...populateRoutes(subRoutes.auth, authPublicRoutes),
       ...populateRoutes(subRoutes.social, socialLoginPublicRoutes),
+      ...populateRoutes(subRoutes.twoFactorCode, twoFactorCodePublicRoutes),
     ];
     console.log('Public Routes: ', publicRoutes);
 
