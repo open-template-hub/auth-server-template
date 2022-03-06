@@ -339,6 +339,7 @@ export class SocialLoginController {
   getAccessTokenDataForOauthV2 = async ( config: any, params: any ) => {
     const headers = {
       Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     };
     const accessTokenParams = [
       config.client_id,

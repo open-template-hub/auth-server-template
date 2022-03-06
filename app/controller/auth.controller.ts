@@ -4,6 +4,7 @@
 
 import {
   AccountVerificationMailActionParams,
+  AuthUtil,
   ForgetPasswordMailActionParams,
   HttpError,
   MailActionType,
@@ -17,8 +18,10 @@ import {
 } from '@open-template-hub/common';
 import bcrypt from 'bcrypt';
 import { Environment } from '../../environment';
+import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
   constructor(
@@ -29,12 +32,14 @@ export class AuthController {
   /**
    * sign up user
    * @param db database
+   * @param message_queue_provider message queue
    * @param user user
    */
   signup = async (
     db: PostgreSqlProvider,
     message_queue_provider: MessageQueueProvider,
-    user: User
+    user: User,
+    languageCode?: string
   ) => {
     if (!user.password || !user.username || !user.email) {
       let e = new Error('username, password and email required') as HttpError;
@@ -59,24 +64,27 @@ export class AuthController {
 
     if (isAutoVerify) {
       await this.verify(db, verificationToken);
-      return this.login(db, user);
+      return this.login(db, message_queue_provider, user);
     } else {
-      var orchestrationChannelTag =
+      const orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
-      var verificationParams = {
+      const verificationParams = {
         user: user.username,
         email: user.email,
         accountVerificationToken: verificationToken,
         clientVerificationSuccessUrl:
-          this.environment.args().extentedArgs?.clientVerificationSuccessUrl,
+          this.environment.args().extendedArgs?.clientVerificationSuccessUrl,
       } as AccountVerificationMailActionParams;
-      var message = {
+      const message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          verifyAccount: {
-            params: verificationParams,
+          mailType: {
+            verifyAccount: {
+              params: verificationParams,
+            }
           },
+          language: languageCode
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -92,7 +100,8 @@ export class AuthController {
    * @param db database
    * @param user user
    */
-  login = async (db: PostgreSqlProvider, user: User) => {
+  login = async (db: PostgreSqlProvider, messageQueueProvider: MessageQueueProvider, user: User, skipTwoFactorControl: boolean = false) => {
+
     if (!(user.username || user.email)) {
       let e = new Error('username or email required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -123,9 +132,55 @@ export class AuthController {
       throw e;
     }
 
-    const tokenRepository = new TokenRepository(db);
-    return tokenRepository.generateTokens(dbUser);
+    if( !skipTwoFactorControl && dbUser.two_factor_enabled ) {
+      const environment = new Environment();
+      const tokenUtil = new TokenUtil( environment.args() );
+      const twoFactorCodeController = new TwoFactorCodeController();
+      
+      const preAuthToken = tokenUtil.generatePreAuthToken( user );
+
+      const twoFactorCode = {
+        username: dbUser.username,
+        phoneNumber: dbUser.phone_number
+      } as TwoFactorCode
+
+      const twoFactorRequestResponse = await twoFactorCodeController.request( db, messageQueueProvider, twoFactorCode );
+
+      return {
+        preAuthToken,
+        expiry: twoFactorRequestResponse.expire,
+        maskedPhoneNumber: this.maskPhoneNumber( dbUser.phone_number )
+      };
+    } else {
+      const tokenRepository = new TokenRepository(db);
+      const genereateTokenResponse = await tokenRepository.generateTokens(dbUser);
+      return {
+        accessToken: genereateTokenResponse.accessToken,
+        refreshToken: genereateTokenResponse.refreshToken
+      };
+    }
   };
+
+  twoFactorVerifiedLogin = async ( db: PostgreSqlProvider, user: any ) => {
+    const tokenRepository = new TokenRepository( db );
+    const genereateTokenResponse = await tokenRepository.generateTokens( user );
+    return {
+      accessToken: genereateTokenResponse.accessToken,
+      refreshToken: genereateTokenResponse.refreshToken
+    };
+  }
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for(let i = 0; i < number.length; i++) {
+      if( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 
   /**
    * logout user
@@ -154,7 +209,7 @@ export class AuthController {
    * @param db database
    * @param token token
    */
-  verify = async (db: PostgreSqlProvider, token: string) => {
+  verify = async (db: PostgreSqlProvider, token: string, languageCode?: string) => {
     const user: any = this.tokenUtil.verifyVerificationToken(token);
 
     const userRepository = new UserRepository(db);
@@ -165,12 +220,14 @@ export class AuthController {
    * sends password reset mail
    * @param db database
    * @param username username
+   * @param languageCode language code
    * @param sendEmail don't send email if false
    */
   forgetPassword = async (
     db: PostgreSqlProvider,
     message_queue_provider: MessageQueueProvider,
     username: string,
+    languageCode?: string,
     sendEmail: boolean = true
   ) => {
     const userRepository = new UserRepository(db);
@@ -178,22 +235,25 @@ export class AuthController {
     const passwordResetToken = this.tokenUtil.generatePasswordResetToken(user);
 
     if (sendEmail) {
-      var orchestrationChannelTag =
+      const orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
-      var forgetPasswordParams = {
+      const forgetPasswordParams = {
         user: user.username,
         email: user.email,
         passwordResetToken,
         clientResetPasswordUrl:
-          this.environment.args().extentedArgs?.clientResetPasswordUrl,
+          this.environment.args().extendedArgs?.clientResetPasswordUrl,
       } as ForgetPasswordMailActionParams;
-      var message = {
+      const message = {
         sender: MessageQueueChannelType.AUTH,
         receiver: MessageQueueChannelType.MAIL,
         message: {
-          forgetPassword: {
-            params: forgetPasswordParams,
+          mailType: {
+            forgetPassword: {
+              params: forgetPasswordParams,
+            }
           },
+          language: languageCode
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -254,4 +314,28 @@ export class AuthController {
 
     await userRepository.deleteUserByUsername(user.username);
   };
+
+  getSubmittedPhoneNumber = async (
+    db: PostgreSqlProvider,
+    username: string
+  ) => {
+    const userRepository = new UserRepository(db);
+    const phoneNumberResponse = await userRepository.findVerifiedPhoneNumberByUsername( username );
+
+    let phoneNumber;
+    if( phoneNumberResponse?.length > 0 && phoneNumberResponse[0].phone_number ) {
+      phoneNumber = this.maskPhoneNumber( phoneNumberResponse[0].phone_number );
+    }
+
+    return phoneNumber
+  }
+
+deleteSubmittedPhoneNumber = async (
+  db: PostgreSqlProvider,
+  username: string
+) => {
+  const userRepository = new UserRepository(db);
+
+  await userRepository.deletedSubmittedPhoneNumberByUsername( username );
+};
 }

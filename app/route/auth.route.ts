@@ -2,7 +2,7 @@
  * @description holds auth routes
  */
 
-import { ResponseCode, User } from '@open-template-hub/common';
+import { MessageQueueProvider, ResponseCode, User } from '@open-template-hub/common';
 import { Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { AuthController } from '../controller/auth.controller';
@@ -18,6 +18,7 @@ const subRoutes = {
   resetPassword: '/reset-password',
   resetPasswordToken: '/reset-password-token',
   user: '/user',
+  submittedPhoneNumber: '/submitted-phone-number'
 };
 
 export const publicRoutes = [
@@ -45,7 +46,8 @@ router.post(subRoutes.signup, async (req: Request, res: Response) => {
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,
-    } as User
+    } as User,
+    req.body.languageCode
   );
   res.status(ResponseCode.CREATED).json(response);
 });
@@ -54,15 +56,13 @@ router.post(subRoutes.login, async (req: Request, res: Response) => {
   // login
   const authController = new AuthController();
   const context = res.locals.ctx;
-  const response = await authController.login(context.postgresql_provider, {
+  const response = await authController.login(context.postgresql_provider, context.message_queue_provider, {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
   } as User);
-  res.status(ResponseCode.OK).json({
-    accessToken: response.accessToken,
-    refreshToken: response.refreshToken,
-  });
+
+  res.status( ResponseCode.OK ).json(response);
 });
 
 router.post(subRoutes.logout, async (req: Request, res: Response) => {
@@ -104,7 +104,8 @@ router.post(subRoutes.forgetPassword, async (req: Request, res: Response) => {
   await authController.forgetPassword(
     context.postgresql_provider,
     context.message_queue_provider,
-    req.body.username
+    req.body.username,
+    req.body.languageCode
   );
   res.status(ResponseCode.NO_CONTENT).json({});
 });
@@ -119,6 +120,7 @@ router.get(
       context.postgresql_provider,
       context.message_queue_provider,
       req.query.username as string,
+      undefined,
       true
     );
     res.status(ResponseCode.OK).json({ resetPasswordToken });
@@ -153,3 +155,29 @@ router.delete(subRoutes.user, async (req: Request, res: Response) => {
   );
   res.status(ResponseCode.NO_CONTENT).json({});
 });
+
+router.get(
+  subRoutes.submittedPhoneNumber,
+  async (req: Request, res: Response) => {
+    const authController = new AuthController();
+    const context = res.locals.ctx;
+    const submittedPhoneNumber = await authController.getSubmittedPhoneNumber(
+      context.postgresql_provider,
+      context.username
+    );
+    res.status(ResponseCode.OK).json({ phoneNumber: submittedPhoneNumber });
+  }
+);
+
+router.delete(
+  subRoutes.submittedPhoneNumber,
+  async (req: Request, res: Response) => {
+    const authController = new AuthController();
+    const context = res.locals.ctx;
+    await authController.deleteSubmittedPhoneNumber(
+      context.postgresql_provider,
+      context.username
+    );
+    res.status(ResponseCode.OK).json({ });
+  }
+);

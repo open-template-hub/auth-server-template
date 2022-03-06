@@ -31,8 +31,8 @@ export class SocialLoginRepository {
       ] );
 
       res = {
-        v1Config: v1.rowCount > 0 ? v1.rows[ 0 ] : null,
-        v2Config: v2.rowCount > 0 ? v2.rows[ 0 ] : null,
+        v1Config: v1.rowCount > 0 ? v1.rows[ 0 ] : undefined,
+        v2Config: v2.rowCount > 0 ? v2.rows[ 0 ] : undefined,
       };
     } catch ( error ) {
       console.error( error );
