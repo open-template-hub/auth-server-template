@@ -7,8 +7,13 @@ import { TwoFactorCode } from '../interface/two-factor-code.interface';
 const subRoutes = {
   root: '/',
   request: '/request',
-  verify: '/verify'
+  verify: '/verify',
+  loginVerify: '/loginVerify'
 };
+
+export const publicRoutes = [
+  subRoutes.loginVerify
+];
 
 export const router = Router();
 
@@ -16,7 +21,7 @@ router.post(subRoutes.request, async (req: Request, res: Response) => {
   const twoFactorCodeController = new TwoFactorCodeController();
   const context = res.locals.ctx;
 
-  await twoFactorCodeController.request(
+  const response = await twoFactorCodeController.request(
     context.postgresql_provider,
     context.message_queue_provider,
     {
@@ -26,7 +31,7 @@ router.post(subRoutes.request, async (req: Request, res: Response) => {
     } as TwoFactorCode
   );
   
-  res.status(ResponseCode.OK).json({});
+  res.status( ResponseCode.OK ).json( response );
 });
 
 router.post( subRoutes.verify, async (req: Request, res: Response ) => {
@@ -40,4 +45,18 @@ router.post( subRoutes.verify, async (req: Request, res: Response ) => {
   )
  
   res.status(ResponseCode.OK).json( {} );
+})
+
+router.post( subRoutes.loginVerify, async (req: Request, res: Response ) => {
+  const twoFactorCodeController = new TwoFactorCodeController();
+  const context = res.locals.ctx;
+
+  const loginVerifyResponse = await twoFactorCodeController.loginVerify(
+    context.postgresql_provider,
+    context.message_queue_provider,
+    req.body.code,
+    req.body.preAuthToken
+  )
+ 
+  return res.status( ResponseCode.OK ).json( loginVerifyResponse );
 })

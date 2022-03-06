@@ -4,6 +4,7 @@
 
 import {
   AccountVerificationMailActionParams,
+  AuthUtil,
   ForgetPasswordMailActionParams,
   HttpError,
   MailActionType,
@@ -17,8 +18,10 @@ import {
 } from '@open-template-hub/common';
 import bcrypt from 'bcrypt';
 import { Environment } from '../../environment';
+import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
   constructor(
@@ -61,7 +64,7 @@ export class AuthController {
 
     if (isAutoVerify) {
       await this.verify(db, verificationToken);
-      return this.login(db, user);
+      return this.login(db, message_queue_provider, user);
     } else {
       const orchestrationChannelTag =
         this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
@@ -97,7 +100,8 @@ export class AuthController {
    * @param db database
    * @param user user
    */
-  login = async (db: PostgreSqlProvider, user: User) => {
+  login = async (db: PostgreSqlProvider, messageQueueProvider: MessageQueueProvider, user: User, skipTwoFactorControl: boolean = false) => {
+
     if (!(user.username || user.email)) {
       let e = new Error('username or email required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -128,9 +132,55 @@ export class AuthController {
       throw e;
     }
 
-    const tokenRepository = new TokenRepository(db);
-    return tokenRepository.generateTokens(dbUser);
+    if( !skipTwoFactorControl && dbUser.two_factor_enabled ) {
+      const environment = new Environment();
+      const tokenUtil = new TokenUtil( environment.args() );
+      const twoFactorCodeController = new TwoFactorCodeController();
+      
+      const preAuthToken = tokenUtil.generatePreAuthToken( user );
+
+      const twoFactorCode = {
+        username: dbUser.username,
+        phoneNumber: dbUser.phone_number
+      } as TwoFactorCode
+
+      const twoFactorRequestResponse = await twoFactorCodeController.request( db, messageQueueProvider, twoFactorCode );
+
+      return {
+        preAuthToken,
+        expiry: twoFactorRequestResponse.expire,
+        maskedPhoneNumber: this.maskPhoneNumber( dbUser.phone_number )
+      };
+    } else {
+      const tokenRepository = new TokenRepository(db);
+      const genereateTokenResponse = await tokenRepository.generateTokens(dbUser);
+      return {
+        accessToken: genereateTokenResponse.accessToken,
+        refreshToken: genereateTokenResponse.refreshToken
+      };
+    }
   };
+
+  twoFactorVerifiedLogin = async ( db: PostgreSqlProvider, user: any ) => {
+    const tokenRepository = new TokenRepository( db );
+    const genereateTokenResponse = await tokenRepository.generateTokens( user );
+    return {
+      accessToken: genereateTokenResponse.accessToken,
+      refreshToken: genereateTokenResponse.refreshToken
+    };
+  }
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for(let i = 0; i < number.length; i++) {
+      if( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 
   /**
    * logout user
@@ -264,4 +314,28 @@ export class AuthController {
 
     await userRepository.deleteUserByUsername(user.username);
   };
+
+  getSubmittedPhoneNumber = async (
+    db: PostgreSqlProvider,
+    username: string
+  ) => {
+    const userRepository = new UserRepository(db);
+    const phoneNumberResponse = await userRepository.findVerifiedPhoneNumberByUsername( username );
+
+    let phoneNumber;
+    if( phoneNumberResponse?.length > 0 && phoneNumberResponse[0].phone_number ) {
+      phoneNumber = this.maskPhoneNumber( phoneNumberResponse[0].phone_number );
+    }
+
+    return phoneNumber
+  }
+
+deleteSubmittedPhoneNumber = async (
+  db: PostgreSqlProvider,
+  username: string
+) => {
+  const userRepository = new UserRepository(db);
+
+  await userRepository.deletedSubmittedPhoneNumberByUsername( username );
+};
 }

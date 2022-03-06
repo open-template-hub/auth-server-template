@@ -32,7 +32,7 @@ export class UserRepository {
     let res;
     try {
       res = await this.provider.query(
-          'SELECT username, password, verified, role FROM users WHERE username = $1 or email = $1',
+          'SELECT username, password, verified, role, phone_number, two_factor_enabled FROM users WHERE username = $1 or email = $1',
           [ username ]
       );
       this.shouldHaveSingleRow( res );
@@ -108,6 +108,30 @@ export class UserRepository {
     }
   };
 
+  addPhoneNumberToUser = async( phoneNumber: string, username: string ) => {
+    try {
+      await this.provider.query(
+        'UPDATE users SET phone_number = $1 where username = $2',
+        [ phoneNumber, username ]
+      )
+    } catch ( error ) {
+      console.error( error );
+      throw error;
+    }
+  }
+
+  updateTwoFactorEnabled = async( isTwoFactorEnabled: boolean, username: string ) => {
+    try {
+      await this.provider.query(
+        'UPDATE users set two_factor_enabled = $1 where username = $2',
+        [ isTwoFactorEnabled, username ]
+      )
+    } catch ( error ) {
+      console.error( error );
+      throw error;
+    }
+  }
+
   /**
    * updates user password by username
    * @param user user
@@ -154,6 +178,39 @@ export class UserRepository {
       let e = new Error( 'internal server error' ) as HttpError;
       e.responseCode = ResponseCode.INTERNAL_SERVER_ERROR;
       throw e;
+    }
+  };
+
+  findVerifiedPhoneNumberByUsername = async ( username: string ) => {
+    let res;
+    try {
+      res = await this.provider.query(
+          'SELECT phone_number FROM users WHERE username = $1',
+          [ username ]
+      );
+    } catch ( error ) {
+      console.error( error );
+      throw error;
+    } 
+    
+    return res.rows
+  }
+
+  deletedSubmittedPhoneNumberByUsername = async ( username: string ) => {
+    try {
+      await this.provider.query(
+          'UPDATE users SET phone_number = null WHERE username = $1',
+          [ username ]
+      );
+
+      await this.provider.query(
+        'UPDATE users SET two_factor_enabled = false WHERE username = $1',
+        [ username ]
+      );
+
+    } catch ( error ) {
+      console.error( error );
+      throw error;
     }
   };
 }

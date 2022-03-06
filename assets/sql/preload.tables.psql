@@ -7,8 +7,10 @@ create TABLE IF NOT EXISTS users
   username text NOT NULL PRIMARY KEY,
   password text NOT NULL,
   email text UNIQUE,
-  verified boolean,
-  role text
+  verified boolean DEFAULT FALSE,
+  role text,
+  phone_number text,
+  two_factor_enabled boolean DEFAULT FALSE
 );
 
 create TABLE IF NOT EXISTS tokens

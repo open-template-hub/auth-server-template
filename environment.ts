@@ -20,6 +20,9 @@ export class Environment {
       responseEncryptionSecret: process.env.RESPONSE_ENCRYPTION_SECRET,
 
       verificationTokenSecret: process.env.VERIFICATION_TOKEN_SECRET,
+
+      preAuthTokenSecret: process.env.PREAUTH_TOKEN_SECRET,
+      preAuthTokenExpire: process.env.PREAUTH_TOKEN_EXPIRE
     } as TokenArgs;
 
     const dbArgs = {
