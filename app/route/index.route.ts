@@ -3,7 +3,8 @@
  */
 
 import {
-  context, DebugLogUtil,
+  context,
+  DebugLogUtil,
   EncryptionUtil,
   ErrorHandlerUtil,
   MessageQueueProvider,
@@ -13,24 +14,11 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import { Environment } from '../../environment';
 import { AuthQueueConsumer } from '../consumer/auth-queue.consumer';
-import {
-  adminRoutes as authAdminRoutes,
-  publicRoutes as authPublicRoutes,
-  router as authRouter,
-} from './auth.route';
+import { router as authRouter } from './auth.route';
 import { router as infoRouter } from './info.route';
-import {
-  publicRoutes as monitorPublicRoutes,
-  router as monitorRouter,
-} from './monitor.route';
-import {
-  publicRoutes as socialLoginPublicRoutes,
-  router as socialLoginRouter,
-} from './social-login.route';
-import { 
-  publicRoutes as twoFactorCodePublicRoutes,
-  router as twoFactorCodeRouter,
-} from './two-factor-code.route';
+import { router as monitorRouter } from './monitor.route';
+import { router as socialLoginRouter } from './social-login.route';
+import { router as twoFactorCodeRouter } from './two-factor-code.route';
 
 const subRoutes = {
   root: '/',
@@ -38,7 +26,7 @@ const subRoutes = {
   auth: '/auth',
   social: '/social',
   info: '/info',
-  twoFactorCode: '/2fa'
+  twoFactorCode: '/2fa',
 };
 
 export namespace Routes {
@@ -47,22 +35,10 @@ export namespace Routes {
   var postgresql_provider: PostgreSqlProvider;
   let errorHandlerUtil: ErrorHandlerUtil;
   const debugLogUtil = new DebugLogUtil();
-  
-  var publicRoutes: string[] = [];
-  var adminRoutes: string[] = [];
-
-  function populateRoutes(mainRoute: string, routes: Array<string>) {
-    var populated = Array<string>();
-    for (const s of routes) {
-      populated.push(mainRoute + (s === '/' ? '' : s));
-    }
-
-    return populated;
-  }
 
   export function mount(app: any) {
     environment = new Environment();
-    errorHandlerUtil = new ErrorHandlerUtil( debugLogUtil, environment.args() );
+    errorHandlerUtil = new ErrorHandlerUtil(debugLogUtil, environment.args());
 
     message_queue_provider = new MessageQueueProvider(environment.args());
 
@@ -87,17 +63,6 @@ export namespace Routes {
     preloadUtil
       .preload(undefined, postgresql_provider)
       .then(() => console.log('DB preloads are completed.'));
-
-    publicRoutes = [
-      ...populateRoutes(subRoutes.monitor, monitorPublicRoutes),
-      ...populateRoutes(subRoutes.auth, authPublicRoutes),
-      ...populateRoutes(subRoutes.social, socialLoginPublicRoutes),
-      ...populateRoutes(subRoutes.twoFactorCode, twoFactorCodePublicRoutes),
-    ];
-    console.log('Public Routes: ', publicRoutes);
-
-    adminRoutes = [...populateRoutes(subRoutes.auth, authAdminRoutes)];
-    console.log('Admin Routes: ', adminRoutes);
 
     const responseInterceptor = (
       req: Request,
@@ -127,8 +92,6 @@ export namespace Routes {
         res.locals.ctx = await context(
           req,
           environment.args(),
-          publicRoutes,
-          adminRoutes,
           undefined,
           postgresql_provider,
           message_queue_provider

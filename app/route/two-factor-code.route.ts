@@ -1,4 +1,8 @@
-import { ResponseCode } from '@open-template-hub/common';
+import {
+  authorizedBy,
+  ResponseCode,
+  UserRole,
+} from '@open-template-hub/common';
 import { Request, Response } from 'express';
 import Router from 'express-promise-router';
 import { TwoFactorCodeController } from '../controller/two-factor.controller';
@@ -8,46 +12,50 @@ const subRoutes = {
   root: '/',
   request: '/request',
   verify: '/verify',
-  loginVerify: '/loginVerify'
+  loginVerify: '/loginVerify',
 };
-
-export const publicRoutes = [
-  subRoutes.loginVerify
-];
 
 export const router = Router();
 
-router.post(subRoutes.request, async (req: Request, res: Response) => {
-  const twoFactorCodeController = new TwoFactorCodeController();
-  const context = res.locals.ctx;
+router.post(
+  subRoutes.request,
+  authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
+  async (req: Request, res: Response) => {
+    const twoFactorCodeController = new TwoFactorCodeController();
+    const context = res.locals.ctx;
 
-  const response = await twoFactorCodeController.request(
-    context.postgresql_provider,
-    context.message_queue_provider,
-    {
+    const response = await twoFactorCodeController.request(
+      context.postgresql_provider,
+      context.message_queue_provider,
+      {
         username: context.username,
         phoneNumber: req.body.phoneNumber,
-        languageCode: req.body.languageCode
-    } as TwoFactorCode
-  );
-  
-  res.status( ResponseCode.OK ).json( response );
-});
+        languageCode: req.body.languageCode,
+      } as TwoFactorCode
+    );
 
-router.post( subRoutes.verify, async (req: Request, res: Response ) => {
-  const twoFactorCodeController = new TwoFactorCodeController();
-  const context = res.locals.ctx;
+    res.status(ResponseCode.OK).json(response);
+  }
+);
 
-  await twoFactorCodeController.verify(
-    context.postgresql_provider,
-    context.username,
-    req.body.code
-  )
- 
-  res.status(ResponseCode.OK).json( {} );
-})
+router.post(
+  subRoutes.verify,
+  authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
+  async (req: Request, res: Response) => {
+    const twoFactorCodeController = new TwoFactorCodeController();
+    const context = res.locals.ctx;
 
-router.post( subRoutes.loginVerify, async (req: Request, res: Response ) => {
+    await twoFactorCodeController.verify(
+      context.postgresql_provider,
+      context.username,
+      req.body.code
+    );
+
+    res.status(ResponseCode.OK).json({});
+  }
+);
+
+router.post(subRoutes.loginVerify, async (req: Request, res: Response) => {
   const twoFactorCodeController = new TwoFactorCodeController();
   const context = res.locals.ctx;
 
@@ -56,7 +64,7 @@ router.post( subRoutes.loginVerify, async (req: Request, res: Response ) => {
     context.message_queue_provider,
     req.body.code,
     req.body.preAuthToken
-  )
- 
-  return res.status( ResponseCode.OK ).json( loginVerifyResponse );
-})
+  );
+
+  return res.status(ResponseCode.OK).json(loginVerifyResponse);
+});
