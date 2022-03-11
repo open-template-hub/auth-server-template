@@ -19,7 +19,7 @@ export class UserRepository {
   insertUser = async (user: User) => {
     try {
       await this.provider.query(
-        'INSERT INTO users(username, password, role, email) VALUES($1, $2, $3)',
+        'INSERT INTO users(username, password, role, email) VALUES($1, $2, $3, $4)',
         [user.username, user.password, user.role, user.email]
       );
     } catch (error) {
