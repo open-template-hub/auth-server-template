@@ -1,12 +1,18 @@
-import { AuthActionType } from '@open-template-hub/common';
+import {
+  AuthActionType,
+  ContextArgs,
+  QueueConsumer,
+} from '@open-template-hub/common';
 
-export class AuthQueueConsumer {
+export class AuthQueueConsumer implements QueueConsumer {
   private channel: any;
+  private ctxArgs: ContextArgs = {} as ContextArgs;
 
   constructor() {}
 
-  init = (channel: string) => {
+  init = (channel: string, ctxArgs: ContextArgs) => {
     this.channel = channel;
+    this.ctxArgs = ctxArgs;
     return this;
   };
 
