@@ -7,7 +7,6 @@ import {
     QueueMessage,
     HttpError,
     ResponseCode,
-    TokenDefaults,
     TokenUtil,
     User
 } from "@open-template-hub/common";
