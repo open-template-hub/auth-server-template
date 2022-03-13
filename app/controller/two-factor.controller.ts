@@ -17,6 +17,8 @@ import { TwoFactorCodeRepository } from "../repository/two-factor.repository";
 import crypto from 'crypto';
 import { UserRepository } from "../repository/user.repository";
 import { AuthController } from "./auth.controller";
+import { isCommaListExpression } from "typescript";
+import { SocialLoginController } from "./social-login.controller";
 
 export class TwoFactorCodeController {
     constructor(
@@ -49,10 +51,10 @@ export class TwoFactorCodeController {
             twoFactorCode.expiry
         );
 
-        await this.sendTwoFactorRequestToQueue(
+        /*await this.sendTwoFactorRequestToQueue(
             messageQueueProvider,
             twoFactorCode
-        );
+        );*/
 
         return { expire: twoFactorCode.expiry };
     }
@@ -187,5 +189,38 @@ export class TwoFactorCodeController {
 
       const authController = new AuthController()
       return authController.twoFactorVerifiedLogin( db, dbUser );
+    }
+
+    socialLoginVerify = async(
+      db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
+      code: string,
+      preAuthToken: string,
+      data: any
+    ) => {
+      const environment = new Environment();
+      const tokenUtil = new TokenUtil( environment.args() );
+
+      const decrpytedPreAuthToken = tokenUtil.verifyPreAuthToken( preAuthToken ) as any;
+
+      if( !decrpytedPreAuthToken.username ) {
+        let e = new Error('Invalid token') as HttpError;
+        e.responseCode = ResponseCode.BAD_REQUEST;
+        console.error(e);
+        throw e;
+      } 
+
+      await this.verify( db, decrpytedPreAuthToken.username as string, code, false )
+
+      const userRepository = new UserRepository(db);
+      let dbUser = await userRepository.findUserByUsernameOrEmail( decrpytedPreAuthToken.username as string ); 
+
+      const user = {
+        username: dbUser.username,
+        password: dbUser.password,
+      } as User
+
+      const socialLoginController = new SocialLoginController()
+      return socialLoginController.login( db, messageQueueProvider, data );
     }
 }

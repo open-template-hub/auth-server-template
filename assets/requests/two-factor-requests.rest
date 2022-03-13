@@ -1,18 +1,19 @@
 ### Request
 POST http://localhost:4001/2fa/request
 Content-Type: application/json
-Authorization: Bearer token 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lcnQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2NDU4NzU2NjYsImV4cCI6MTY0NTk2MjA2Nn0.8sPved8IQn4bfosiZebRB0ItnorZXxaaSKMXV0lITbs
 
 {
-  "phoneNumber": "+1111111",
+  "phoneNumber": "+905425957818",
   "languageCode": "en"
 }
 
 ### Verify
 POST http://localhost:4001/2fa/verify
 Content-Type: application/json
-Authorization: Bearer token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lcnQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE2NDU4NzU2NjYsImV4cCI6MTY0NTk2MjA2Nn0.8sPved8IQn4bfosiZebRB0ItnorZXxaaSKMXV0lITbs
 
 {
-  "code": "95680"
+  "code": "97127",
+  "isInitialVerification": false
 }

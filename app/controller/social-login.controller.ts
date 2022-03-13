@@ -10,6 +10,8 @@ import {
   PostgreSqlProvider,
   ResponseCode,
   User,
+  TokenUtil,
+  MessageQueueProvider
 } from '@open-template-hub/common';
 
 import axios from 'axios';
@@ -19,16 +21,19 @@ import OAuth from 'oauth-1.0a';
 import { v4 as uuid } from 'uuid';
 import { Environment } from '../../environment';
 import { AuthToken } from '../interface/auth-token.interface';
+import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { SocialLoginRepository } from '../repository/social-login.repository';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { TwoFactorCodeController } from './two-factor.controller';
 
 export class SocialLoginController {
   constructor(
       private builder = new BuilderUtil(),
       private parser = new ParserUtil(),
       private environment = new Environment(),
-      private encryptionUtil = new EncryptionUtil( environment.args() )
+      private encryptionUtil = new EncryptionUtil( environment.args() ),
+      private tokenUtil: TokenUtil = new TokenUtil(environment.args())
   ) {
   }
 
@@ -79,7 +84,7 @@ export class SocialLoginController {
    * @param db database
    * @param data social login data
    */
-  login = async ( db: PostgreSqlProvider, data: any ) => {
+  login = async ( db: PostgreSqlProvider, messageQueueProvider: MessageQueueProvider, data: any ) => {
     if ( !data.key ) {
       let e = new Error( 'key required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -92,9 +97,9 @@ export class SocialLoginController {
     );
 
     if ( socialLoginParams.v2Config ) {
-      return this.loginForOauthV2( db, socialLoginParams.v2Config, data );
+      return this.loginForOauthV2( db, messageQueueProvider, socialLoginParams.v2Config, data );
     } else if ( socialLoginParams.v1Config ) {
-      return this.loginForOauthV1( db, socialLoginParams.v1Config, data );
+      return this.loginForOauthV1( db, messageQueueProvider, socialLoginParams.v1Config, data );
     } else {
       let e = new Error( 'config not found!' ) as HttpError;
       e.responseCode = ResponseCode.INTERNAL_SERVER_ERROR;
@@ -109,6 +114,7 @@ export class SocialLoginController {
    */
   loginWithAccessToken = async (
       db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
       data: any
   ): Promise<AuthToken> => {
     try {
@@ -125,6 +131,7 @@ export class SocialLoginController {
 
         return await this.loginWithAccessTokenForOauthV2(
             db,
+            messageQueueProvider,
             accessTokenData,
             socialLoginParams.v2Config,
             data
@@ -147,8 +154,10 @@ export class SocialLoginController {
    */
   loginForOauthV1 = async (
       db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
       config: any,
-      params: any
+      params: any,
+      skipTwoFactorControl: boolean = false
   ) => {
     let accessTokenData = await this.getAccessTokenDataForOauthV1(
         config,
@@ -169,7 +178,7 @@ export class SocialLoginController {
       throw e;
     }
 
-    return this.loginUserWithUserData( db, params.key, userData );
+    return this.loginUserWithUserData( db, messageQueueProvider, params.key, userData, skipTwoFactorControl );
   };
 
   /**
@@ -180,8 +189,10 @@ export class SocialLoginController {
    */
   loginForOauthV2 = async (
       db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
       config: any,
-      params: any
+      params: any,
+      skipTwoFactorControl: boolean = false
   ) => {
     let accessTokenData = await this.getAccessTokenDataForOauthV2(
         config,
@@ -196,9 +207,11 @@ export class SocialLoginController {
 
     return this.loginWithAccessTokenForOauthV2(
         db,
+        messageQueueProvider,
         accessTokenData,
         config,
-        params
+        params,
+        skipTwoFactorControl
     );
   };
 
@@ -211,10 +224,12 @@ export class SocialLoginController {
    */
   loginWithAccessTokenForOauthV2 = async (
       db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
       accessTokenData: any,
       config: any,
-      params: any
-  ): Promise<AuthToken> => {
+      params: any,
+      skipTwoFactorControl: boolean = false
+  ) => {
     let userData = await this.getUserDataWithAccessToken(
         accessTokenData,
         config
@@ -226,8 +241,20 @@ export class SocialLoginController {
       throw e;
     }
 
-    return this.loginUserWithUserData( db, params.key, userData );
+    return this.loginUserWithUserData( db, messageQueueProvider, params.key, userData, skipTwoFactorControl );
   };
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for(let i = 0; i < number.length; i++) {
+      if( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 
   /**
    * gets user data with access token
@@ -395,8 +422,10 @@ export class SocialLoginController {
    */
   loginUserWithUserData = async (
       db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
       key: string,
-      userData: any
+      userData: any,
+      skipTwoFactorControl: boolean
   ): Promise<AuthToken> => {
     // checking social login mapping to determine if signup or login
     const socialLoginRepository = new SocialLoginRepository( db );
@@ -409,7 +438,37 @@ export class SocialLoginController {
 
     if ( socialLoginUser ) {
       // login user, generate token
-      return tokenRepository.generateTokens( socialLoginUser );
+
+      const userRepository = new UserRepository(db);
+      const username = socialLoginUser.username;
+      let dbUser = await userRepository.findUserByUsernameOrEmail( username );
+  
+      if ( !skipTwoFactorControl && dbUser.two_factor_enabled ) {
+        const environment = new Environment();
+        const tokenUtil = new TokenUtil( environment.args() );
+        const twoFactorCodeController = new TwoFactorCodeController();
+        
+        const user = {
+          username: dbUser.external_user_id
+        } as User;
+  
+        const preAuthToken = tokenUtil.generatePreAuthToken( user );
+    
+        const twoFactorCode = {
+          username: dbUser.username,
+          phoneNumber: dbUser.phone_number
+        } as TwoFactorCode
+    
+        const twoFactorRequestResponse = await twoFactorCodeController.request( db, messageQueueProvider, twoFactorCode );
+    
+        return {
+          preAuthToken,
+          expiry: twoFactorRequestResponse.expire,
+          maskedPhoneNumber: this.maskPhoneNumber( dbUser.phone_number )
+        } as any;
+      } else {
+        return tokenRepository.generateTokens( socialLoginUser );
+      }
     } else {
       // signup user and generate token
       const autoGeneratedUserName = uuid();

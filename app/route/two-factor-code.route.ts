@@ -8,7 +8,8 @@ const subRoutes = {
   root: '/',
   request: '/request',
   verify: '/verify',
-  loginVerify: '/loginVerify'
+  loginVerify: '/loginVerify',
+  socialLoginVerify: '/socialLoginVerify'
 };
 
 export const publicRoutes = [
@@ -59,4 +60,19 @@ router.post( subRoutes.loginVerify, async (req: Request, res: Response ) => {
   )
  
   return res.status( ResponseCode.OK ).json( loginVerifyResponse );
+})
+
+router.post( subRoutes.socialLoginVerify, async (req: Request, res: Response ) => {
+  const twoFactorCodeController = new TwoFactorCodeController();
+  const context = res.locals.ctx;
+
+  const socialLoginVerifyResponse = await twoFactorCodeController.socialLoginVerify(
+    context.postgresql_provider,
+    context.message_queue_provider,
+    req.body.code,
+    req.body.preAuthToken,
+    req.body.data
+  )
+ 
+  return res.status( ResponseCode.OK ).json( socialLoginVerifyResponse );
 })

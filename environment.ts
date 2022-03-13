@@ -22,7 +22,6 @@ export class Environment {
       verificationTokenSecret: process.env.VERIFICATION_TOKEN_SECRET,
 
       preAuthTokenSecret: process.env.PREAUTH_TOKEN_SECRET,
-      preAuthTokenExpire: process.env.PREAUTH_TOKEN_EXPIRE
     } as TokenArgs;
 
     const dbArgs = {

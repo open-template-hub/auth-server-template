@@ -39,6 +39,7 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
   const response = await socialLoginController.login(
       context.postgresql_provider,
+      context.message_queue_provider,
       req.body
   );
   res.status( ResponseCode.OK ).json( response );
@@ -51,6 +52,7 @@ router.post(
       const context = res.locals.ctx;
       const response = await socialLoginController.loginWithAccessToken(
           context.postgresql_provider,
+          context.message_queue_provider,
           req.body
       );
       res.status( ResponseCode.OK ).json( response );
