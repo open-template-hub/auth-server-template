@@ -12,11 +12,9 @@ const subRoutes = {
   alive: '/alive',
 };
 
-export const publicRoutes = [ subRoutes.alive ];
-
 export const router = Router();
 
-router.get( subRoutes.alive, async ( req: Request, res: Response ) => {
+router.get(subRoutes.alive, async (req: Request, res: Response) => {
   // check system is alive
-  res.status( ResponseCode.OK ).json( { version } );
-} );
+  res.status(ResponseCode.OK).json({ version });
+});

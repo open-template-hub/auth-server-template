@@ -2,24 +2,28 @@
  * @description holds user repository
  */
 
-import { HttpError, PostgreSqlProvider, ResponseCode, User } from '@open-template-hub/common';
+import {
+  HttpError,
+  PostgreSqlProvider,
+  ResponseCode,
+  User,
+} from '@open-template-hub/common';
 
 export class UserRepository {
-  constructor( private readonly provider: PostgreSqlProvider ) {
-  }
+  constructor(private readonly provider: PostgreSqlProvider) {}
 
   /**
    * creates user
    * @param user user
    */
-  insertUser = async ( user: User ) => {
+  insertUser = async (user: User) => {
     try {
       await this.provider.query(
-          'INSERT INTO users(username, password, email) VALUES($1, $2, $3)',
-          [ user.username, user.password, user.email ]
+        'INSERT INTO users(username, password, role, email) VALUES($1, $2, $3, $4)',
+        [user.username, user.password, user.role, user.email]
       );
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };
@@ -28,122 +32,125 @@ export class UserRepository {
    * gets user by username or email
    * @param username username
    */
-  findUserByUsernameOrEmail = async ( username: string ) => {
+  findUserByUsernameOrEmail = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
-          'SELECT username, password, verified, role, phone_number, two_factor_enabled FROM users WHERE username = $1 or email = $1',
-          [ username ]
+        'SELECT username, password, verified, role, phone_number, two_factor_enabled FROM users WHERE username = $1 or email = $1',
+        [username]
       );
-      this.shouldHaveSingleRow( res );
-    } catch ( error ) {
-      console.error( error );
+      this.shouldHaveSingleRow(res);
+    } catch (error) {
+      console.error(error);
       throw error;
     }
-    return res.rows[ 0 ];
+    return res.rows[0];
   };
 
   /**
    * gets email by username
    * @param username username
    */
-  findEmailByUsername = async ( username: string ) => {
+  findEmailByUsername = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
-          'SELECT username, email FROM users WHERE username = $1',
-          [ username ]
+        'SELECT username, email FROM users WHERE username = $1',
+        [username]
       );
-      this.shouldHaveSingleRow( res );
-    } catch ( error ) {
-      console.error( error );
+      this.shouldHaveSingleRow(res);
+    } catch (error) {
+      console.error(error);
       throw error;
     }
-    return res.rows[ 0 ];
+    return res.rows[0];
   };
 
   /**
    * gets email and password by username
    * @param username username
    */
-  findEmailAndPasswordByUsername = async ( username: string ) => {
+  findEmailAndPasswordByUsername = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
-          'SELECT username, email, password FROM users WHERE username = $1',
-          [ username ]
+        'SELECT username, email, password FROM users WHERE username = $1',
+        [username]
       );
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
 
-    if ( res.rows.length === 0 ) {
-      let e = new Error( 'bad credentials' ) as HttpError;
+    if (res.rows.length === 0) {
+      let e = new Error('bad credentials') as HttpError;
       e.responseCode = ResponseCode.FORBIDDEN;
       throw e;
-    } else if ( res.rows.length > 1 ) {
-      console.error( 'ambiguous token' );
-      let e = new Error( 'internal server error' ) as HttpError;
+    } else if (res.rows.length > 1) {
+      console.error('ambiguous token');
+      let e = new Error('internal server error') as HttpError;
       e.responseCode = ResponseCode.INTERNAL_SERVER_ERROR;
       throw e;
     }
 
-    return res.rows[ 0 ];
+    return res.rows[0];
   };
 
   /**
    * checks user is verified or not
    * @param username username
    */
-  verifyUser = async ( username: string ) => {
+  verifyUser = async (username: string) => {
     try {
       await this.provider.query(
-          'UPDATE users SET verified = true WHERE username = $1',
-          [ username ]
+        'UPDATE users SET verified = true WHERE username = $1',
+        [username]
       );
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };
 
-  addPhoneNumberToUser = async( phoneNumber: string, username: string ) => {
+  addPhoneNumberToUser = async (phoneNumber: string, username: string) => {
     try {
       await this.provider.query(
         'UPDATE users SET phone_number = $1 where username = $2',
-        [ phoneNumber, username ]
-      )
-    } catch ( error ) {
-      console.error( error );
+        [phoneNumber, username]
+      );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
-  }
+  };
 
-  updateTwoFactorEnabled = async( isTwoFactorEnabled: boolean, username: string ) => {
+  updateTwoFactorEnabled = async (
+    isTwoFactorEnabled: boolean,
+    username: string
+  ) => {
     try {
       await this.provider.query(
         'UPDATE users set two_factor_enabled = $1 where username = $2',
-        [ isTwoFactorEnabled, username ]
-      )
-    } catch ( error ) {
-      console.error( error );
+        [isTwoFactorEnabled, username]
+      );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
-  }
+  };
 
   /**
    * updates user password by username
    * @param user user
    */
-  updateByUsername = async ( user: User ) => {
+  updateByUsername = async (user: User) => {
     try {
       await this.provider.query(
-          'UPDATE users SET password = $1 WHERE username = $2',
-          [ user.password, user.username ]
+        'UPDATE users SET password = $1 WHERE username = $2',
+        [user.password, user.username]
       );
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };
@@ -152,14 +159,13 @@ export class UserRepository {
    * delete user by username
    * @param username username
    */
-  deleteUserByUsername = async ( username: string ) => {
+  deleteUserByUsername = async (username: string) => {
     try {
-      await this.provider.query(
-          'DELETE FROM users WHERE username = $1',
-          [ username ]
-      );
-    } catch ( error ) {
-      console.error( error );
+      await this.provider.query('DELETE FROM users WHERE username = $1', [
+        username,
+      ]);
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };
@@ -168,48 +174,47 @@ export class UserRepository {
    * checks response has single row
    * @param res res
    */
-  shouldHaveSingleRow = ( res: any ) => {
-    if ( res.rows.length === 0 ) {
-      let e = new Error( 'user not found' ) as HttpError;
+  shouldHaveSingleRow = (res: any) => {
+    if (res.rows.length === 0) {
+      let e = new Error('user not found') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
-    } else if ( res.rows.length > 1 ) {
-      console.error( 'ambiguous token' );
-      let e = new Error( 'internal server error' ) as HttpError;
+    } else if (res.rows.length > 1) {
+      console.error('ambiguous token');
+      let e = new Error('internal server error') as HttpError;
       e.responseCode = ResponseCode.INTERNAL_SERVER_ERROR;
       throw e;
     }
   };
 
-  findVerifiedPhoneNumberByUsername = async ( username: string ) => {
+  findVerifiedPhoneNumberByUsername = async (username: string) => {
     let res;
     try {
       res = await this.provider.query(
-          'SELECT phone_number FROM users WHERE username = $1',
-          [ username ]
+        'SELECT phone_number FROM users WHERE username = $1',
+        [username]
       );
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
-    } 
-    
-    return res.rows
-  }
+    }
 
-  deletedSubmittedPhoneNumberByUsername = async ( username: string ) => {
+    return res.rows;
+  };
+
+  deletedSubmittedPhoneNumberByUsername = async (username: string) => {
     try {
       await this.provider.query(
-          'UPDATE users SET phone_number = null WHERE username = $1',
-          [ username ]
+        'UPDATE users SET phone_number = null WHERE username = $1',
+        [username]
       );
 
       await this.provider.query(
         'UPDATE users SET two_factor_enabled = false WHERE username = $1',
-        [ username ]
+        [username]
       );
-
-    } catch ( error ) {
-      console.error( error );
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };

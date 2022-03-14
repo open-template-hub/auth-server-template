@@ -15,6 +15,7 @@ import {
   ResponseCode,
   TokenUtil,
   User,
+  UserRole,
 } from '@open-template-hub/common';
 import bcrypt from 'bcrypt';
 import { Environment } from '../../environment';
@@ -54,6 +55,7 @@ export class AuthController {
     await userRepository.insertUser({
       username: user.username,
       password: hashedPassword,
+      role: UserRole.DEFAULT,
       email: user.email,
     } as User);
 
@@ -82,9 +84,9 @@ export class AuthController {
           mailType: {
             verifyAccount: {
               params: verificationParams,
-            }
+            },
           },
-          language: languageCode
+          language: languageCode,
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -100,8 +102,12 @@ export class AuthController {
    * @param db database
    * @param user user
    */
-  login = async (db: PostgreSqlProvider, messageQueueProvider: MessageQueueProvider, user: User, skipTwoFactorControl: boolean = false) => {
-
+  login = async (
+    db: PostgreSqlProvider,
+    messageQueueProvider: MessageQueueProvider,
+    user: User,
+    skipTwoFactorControl: boolean = false
+  ) => {
     if (!(user.username || user.email)) {
       let e = new Error('username or email required') as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
@@ -132,49 +138,55 @@ export class AuthController {
       throw e;
     }
 
-    if( !skipTwoFactorControl && dbUser.two_factor_enabled ) {
+    if (!skipTwoFactorControl && dbUser.two_factor_enabled) {
       const environment = new Environment();
-      const tokenUtil = new TokenUtil( environment.args() );
+      const tokenUtil = new TokenUtil(environment.args());
       const twoFactorCodeController = new TwoFactorCodeController();
-      
-      const preAuthToken = tokenUtil.generatePreAuthToken( user );
+
+      const preAuthToken = tokenUtil.generatePreAuthToken(user);
 
       const twoFactorCode = {
         username: dbUser.username,
-        phoneNumber: dbUser.phone_number
-      } as TwoFactorCode
+        phoneNumber: dbUser.phone_number,
+      } as TwoFactorCode;
 
-      const twoFactorRequestResponse = await twoFactorCodeController.request( db, messageQueueProvider, twoFactorCode );
+      const twoFactorRequestResponse = await twoFactorCodeController.request(
+        db,
+        messageQueueProvider,
+        twoFactorCode
+      );
 
       return {
         preAuthToken,
         expiry: twoFactorRequestResponse.expire,
-        maskedPhoneNumber: this.maskPhoneNumber( dbUser.phone_number )
+        maskedPhoneNumber: this.maskPhoneNumber(dbUser.phone_number),
       };
     } else {
       const tokenRepository = new TokenRepository(db);
-      const genereateTokenResponse = await tokenRepository.generateTokens(dbUser);
+      const genereateTokenResponse = await tokenRepository.generateTokens(
+        dbUser
+      );
       return {
         accessToken: genereateTokenResponse.accessToken,
-        refreshToken: genereateTokenResponse.refreshToken
+        refreshToken: genereateTokenResponse.refreshToken,
       };
     }
   };
 
-  twoFactorVerifiedLogin = async ( db: PostgreSqlProvider, user: any ) => {
-    const tokenRepository = new TokenRepository( db );
-    const genereateTokenResponse = await tokenRepository.generateTokens( user );
+  twoFactorVerifiedLogin = async (db: PostgreSqlProvider, user: any) => {
+    const tokenRepository = new TokenRepository(db);
+    const genereateTokenResponse = await tokenRepository.generateTokens(user);
     return {
       accessToken: genereateTokenResponse.accessToken,
-      refreshToken: genereateTokenResponse.refreshToken
+      refreshToken: genereateTokenResponse.refreshToken,
     };
-  }
+  };
 
-  private maskPhoneNumber( number: string ): string {
+  private maskPhoneNumber(number: string): string {
     let maskedNumber = '';
-    for(let i = 0; i < number.length; i++) {
-      if( i > number.length - 3 ) {
-        maskedNumber += number.charAt( i );
+    for (let i = 0; i < number.length; i++) {
+      if (i > number.length - 3) {
+        maskedNumber += number.charAt(i);
       } else {
         maskedNumber += '*';
       }
@@ -209,7 +221,11 @@ export class AuthController {
    * @param db database
    * @param token token
    */
-  verify = async (db: PostgreSqlProvider, token: string, languageCode?: string) => {
+  verify = async (
+    db: PostgreSqlProvider,
+    token: string,
+    languageCode?: string
+  ) => {
     const user: any = this.tokenUtil.verifyVerificationToken(token);
 
     const userRepository = new UserRepository(db);
@@ -251,9 +267,9 @@ export class AuthController {
           mailType: {
             forgetPassword: {
               params: forgetPasswordParams,
-            }
+            },
           },
-          language: languageCode
+          language: languageCode,
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
@@ -320,22 +336,26 @@ export class AuthController {
     username: string
   ) => {
     const userRepository = new UserRepository(db);
-    const phoneNumberResponse = await userRepository.findVerifiedPhoneNumberByUsername( username );
+    const phoneNumberResponse =
+      await userRepository.findVerifiedPhoneNumberByUsername(username);
 
     let phoneNumber;
-    if( phoneNumberResponse?.length > 0 && phoneNumberResponse[0].phone_number ) {
-      phoneNumber = this.maskPhoneNumber( phoneNumberResponse[0].phone_number );
+    if (
+      phoneNumberResponse?.length > 0 &&
+      phoneNumberResponse[0].phone_number
+    ) {
+      phoneNumber = this.maskPhoneNumber(phoneNumberResponse[0].phone_number);
     }
 
-    return phoneNumber
-  }
+    return phoneNumber;
+  };
 
-deleteSubmittedPhoneNumber = async (
-  db: PostgreSqlProvider,
-  username: string
-) => {
-  const userRepository = new UserRepository(db);
+  deleteSubmittedPhoneNumber = async (
+    db: PostgreSqlProvider,
+    username: string
+  ) => {
+    const userRepository = new UserRepository(db);
 
-  await userRepository.deletedSubmittedPhoneNumberByUsername( username );
-};
+    await userRepository.deletedSubmittedPhoneNumberByUsername(username);
+  };
 }

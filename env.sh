@@ -38,8 +38,10 @@ if [ ! -f .env ]; then
 
     echo "RESPONSE_ENCRYPTION_SECRET={Response Encryption Secret}"
 
+    echo "PREAUTH_TOKEN_SECRET={Pre Auth Token Secret}"
+
     echo "TWO_FACTOR_EXPIRE=90"
-    echo "TWO_FACTOR_CODE_LENGTH=5" 
+    echo "TWO_FACTOR_CODE_LENGTH=5"
     echo "TWO_FACTOR_CODE_TYPE=numeric"
   } >>.env
 else

@@ -1,7 +1,20 @@
-import { AuthActionType } from '@open-template-hub/common';
+import {
+  AuthActionType,
+  ContextArgs,
+  QueueConsumer,
+} from '@open-template-hub/common';
 
-export class AuthQueueConsumer {
-  constructor(private channel: any) {}
+export class AuthQueueConsumer implements QueueConsumer {
+  private channel: any;
+  private ctxArgs: ContextArgs = {} as ContextArgs;
+
+  constructor() {}
+
+  init = (channel: string, ctxArgs: ContextArgs) => {
+    this.channel = channel;
+    this.ctxArgs = ctxArgs;
+    return this;
+  };
 
   onMessage = async (msg: any) => {
     if (msg !== null) {
