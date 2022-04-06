@@ -24,37 +24,37 @@ export const router = Router();
 
 const socialLoginController = new SocialLoginController();
 
-router.post(subRoutes.loginUrl, async (req: Request, res: Response) => {
+router.post( subRoutes.loginUrl, async ( req: Request, res: Response ) => {
   // gets social login url
   const context = res.locals.ctx;
   const response = await socialLoginController.loginUrl(
-    context.postgresql_provider,
-    req.body
+      context.postgresql_provider,
+      req.body
   );
-  res.status(ResponseCode.OK).json({ loginUrl: response });
-});
+  res.status( ResponseCode.OK ).json( { loginUrl: response } );
+} );
 
-router.post(subRoutes.login, async (req: Request, res: Response) => {
+router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   // social login
   const context = res.locals.ctx;
   const response = await socialLoginController.login(
-    context.postgresql_provider,
-    context.message_queue_provider,
-    req.body
-  );
-  res.status(ResponseCode.OK).json(response);
-});
-
-router.post(
-  subRoutes.loginWithAccessToken,
-  async (req: Request, res: Response) => {
-    // login with access token
-    const context = res.locals.ctx;
-    const response = await socialLoginController.loginWithAccessToken(
       context.postgresql_provider,
       context.message_queue_provider,
       req.body
-    );
-    res.status(ResponseCode.OK).json(response);
-  }
+  );
+  res.status( ResponseCode.OK ).json( response );
+} );
+
+router.post(
+    subRoutes.loginWithAccessToken,
+    async ( req: Request, res: Response ) => {
+      // login with access token
+      const context = res.locals.ctx;
+      const response = await socialLoginController.loginWithAccessToken(
+          context.postgresql_provider,
+          context.message_queue_provider,
+          req.body
+      );
+      res.status( ResponseCode.OK ).json( response );
+    }
 );
