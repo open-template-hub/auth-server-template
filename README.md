@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v3
+Open Template Hub - Auth Server Template v4
 </h1>
 
 [![License](https://img.shields.io/github/license/open-template-hub/auth-server-template?color=43b043&style=for-the-badge)](LICENSE)
@@ -101,9 +101,13 @@ TWO_FACTOR_CODE_TYPE=numeric
 
 To be able to use social login mechanism, refer to **[SOCIAL_LOGIN.md](docs/SOCIAL_LOGIN.md)** file.
 
-## Regression Tests
+<br/>
 
-To be able to run regression tests, refer to **[REGRESSION_TESTS.md](docs/REGRESSION_TESTS.md)** file.
+## Postman Regression Tests
+
+To be able to configure regression tests, refer to **[REGRESSION_TESTS.md](docs/REGRESSION_TESTS.md)** file.
+
+<br/>
 
 ## Http Requests
 

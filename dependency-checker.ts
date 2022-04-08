@@ -14,7 +14,7 @@ console.log(
     '\n' +
     '\n' +
     '<h1 align="center">\n' +
-    'Open Template Hub - Auth Server Template v3\n' +
+    'Open Template Hub - Auth Server Template v4\n' +
     '  <br/>\n' +
     '(outdated packages)\n' +
     '</h1>\n' +
@@ -26,21 +26,21 @@ for ( const line of lines ) {
   if ( line.length === 0 ) {
     continue;
   }
-  
+
   if ( lines.indexOf( line ) === 0 ) {
     columnIndexes[ 0 ] = line.indexOf( 'Current' );
     columnIndexes[ 1 ] = line.indexOf( 'Wanted' ) + 3;
     columnIndexes[ 2 ] = line.indexOf( 'Latest' ) + 6;
     columnIndexes[ 3 ] = line.indexOf( 'Location' ) + 9;
   }
-  
+
   let modifiedLine = '';
-  
+
   if ( columnIndexes [ 0 ] >= 0 ) {
     const stringParts = line.split( /(\s+)/ );
-    
+
     modifiedLine += '| ';
-    
+
     for ( let part of stringParts ) {
       if ( part.match( /\s+/ ) ) {
         modifiedLine += ' | ';
@@ -48,14 +48,14 @@ for ( const line of lines ) {
         modifiedLine += part;
       }
     }
-    
+
     modifiedLine += ' |';
-    
+
     console.log( modifiedLine );
   } else {
     console.log( modifiedLine );
   }
-  
+
   if ( lines.indexOf( line ) === 0 ) {
     console.log( '| --- | --- | --- | --- | --- |' );
   }

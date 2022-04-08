@@ -1,7 +1,7 @@
 {
   "name": "auth-server-template",
   "description": "Auth Server Template is a generic open-source authentication server that has a simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third-party companies (like Google, Facebook, Twitter, or LinkedIn). It also supports a basic username-password authentication system.",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "auth-server.main.ts",
   "scripts": {
