@@ -6,7 +6,7 @@
 
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v3
+Open Template Hub - Auth Server Template v4
   <br/>
 (outdated packages)
 </h1>

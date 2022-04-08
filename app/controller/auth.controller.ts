@@ -4,7 +4,6 @@
 
 import {
   AccountVerificationMailActionParams,
-  AuthUtil,
   ForgetPasswordMailActionParams,
   HttpError,
   MailActionType,
@@ -26,56 +25,58 @@ import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
   constructor(
-    private environment = new Environment(),
-    private tokenUtil: TokenUtil = new TokenUtil(environment.args())
-  ) {}
+      private environment = new Environment(),
+      private tokenUtil: TokenUtil = new TokenUtil( environment.args() )
+  ) {
+  }
 
   /**
    * sign up user
    * @param db database
    * @param message_queue_provider message queue
    * @param user user
+   * @param languageCode
    */
   signup = async (
-    db: PostgreSqlProvider,
-    message_queue_provider: MessageQueueProvider,
-    user: User,
-    languageCode?: string
+      db: PostgreSqlProvider,
+      message_queue_provider: MessageQueueProvider,
+      user: User,
+      languageCode?: string
   ) => {
-    if (!user.password || !user.username || !user.email) {
-      let e = new Error('username, password and email required') as HttpError;
+    if ( !user.password || !user.username || !user.email ) {
+      let e = new Error( 'username, password and email required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
-      console.error(e);
+      console.error( e );
       throw e;
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    const userRepository = new UserRepository(db);
+    const hashedPassword = await bcrypt.hash( user.password, 10 );
+    const userRepository = new UserRepository( db );
 
-    await userRepository.insertUser({
+    await userRepository.insertUser( {
       username: user.username,
       password: hashedPassword,
       role: UserRole.DEFAULT,
       email: user.email,
-    } as User);
+    } as User );
 
-    const tokenUtil = new TokenUtil(this.environment.args());
-    const verificationToken = tokenUtil.generateVerificationToken(user);
+    const tokenUtil = new TokenUtil( this.environment.args() );
+    const verificationToken = tokenUtil.generateVerificationToken( user );
 
     const isAutoVerify = process.env.AUTO_VERIFY === 'true';
 
-    if (isAutoVerify) {
-      await this.verify(db, verificationToken);
-      return this.login(db, message_queue_provider, user);
+    if ( isAutoVerify ) {
+      await this.verify( db, verificationToken );
+      return this.login( db, message_queue_provider, user );
     } else {
       const orchestrationChannelTag =
-        this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
+          this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
       const verificationParams = {
         user: user.username,
         email: user.email,
         accountVerificationToken: verificationToken,
         clientVerificationSuccessUrl:
-          this.environment.args().extendedArgs?.clientVerificationSuccessUrl,
+        this.environment.args().extendedArgs?.clientVerificationSuccessUrl,
       } as AccountVerificationMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
@@ -90,8 +91,8 @@ export class AuthController {
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
-        message,
-        orchestrationChannelTag as string
+          message,
+          orchestrationChannelTag as string
       );
       return { email: user.email };
     }
@@ -103,47 +104,47 @@ export class AuthController {
    * @param user user
    */
   login = async (
-    db: PostgreSqlProvider,
-    messageQueueProvider: MessageQueueProvider,
-    user: User,
-    skipTwoFactorControl: boolean = false
+      db: PostgreSqlProvider,
+      messageQueueProvider: MessageQueueProvider,
+      user: User,
+      skipTwoFactorControl: boolean = false
   ) => {
-    if (!(user.username || user.email)) {
-      let e = new Error('username or email required') as HttpError;
+    if ( !( user.username || user.email ) ) {
+      let e = new Error( 'username or email required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
     }
 
-    if (!user.password) {
-      let e = new Error('password required') as HttpError;
+    if ( !user.password ) {
+      let e = new Error( 'password required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
     }
 
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
 
     const username = user.username || user.email;
 
-    let dbUser = await userRepository.findUserByUsernameOrEmail(username);
+    let dbUser = await userRepository.findUserByUsernameOrEmail( username );
 
-    if (!(await bcrypt.compare(user.password, dbUser.password))) {
-      let e = new Error('Bad credentials') as HttpError;
+    if ( !( await bcrypt.compare( user.password, dbUser.password ) ) ) {
+      let e = new Error( 'Bad credentials' ) as HttpError;
       e.responseCode = ResponseCode.FORBIDDEN;
       throw e;
     }
 
-    if (!dbUser.verified) {
-      let e = new Error('Account not verified') as HttpError;
+    if ( !dbUser.verified ) {
+      let e = new Error( 'Account not verified' ) as HttpError;
       e.responseCode = ResponseCode.FORBIDDEN;
       throw e;
     }
 
-    if (!skipTwoFactorControl && dbUser.two_factor_enabled) {
+    if ( !skipTwoFactorControl && dbUser.two_factor_enabled ) {
       const environment = new Environment();
-      const tokenUtil = new TokenUtil(environment.args());
+      const tokenUtil = new TokenUtil( environment.args() );
       const twoFactorCodeController = new TwoFactorCodeController();
 
-      const preAuthToken = tokenUtil.generatePreAuthToken(user);
+      const preAuthToken = tokenUtil.generatePreAuthToken( user );
 
       const twoFactorCode = {
         username: dbUser.username,
@@ -151,20 +152,20 @@ export class AuthController {
       } as TwoFactorCode;
 
       const twoFactorRequestResponse = await twoFactorCodeController.request(
-        db,
-        messageQueueProvider,
-        twoFactorCode
+          db,
+          messageQueueProvider,
+          twoFactorCode
       );
 
       return {
         preAuthToken,
         expiry: twoFactorRequestResponse.expire,
-        maskedPhoneNumber: this.maskPhoneNumber(dbUser.phone_number),
+        maskedPhoneNumber: this.maskPhoneNumber( dbUser.phone_number ),
       };
     } else {
-      const tokenRepository = new TokenRepository(db);
+      const tokenRepository = new TokenRepository( db );
       const genereateTokenResponse = await tokenRepository.generateTokens(
-        dbUser
+          dbUser
       );
       return {
         accessToken: genereateTokenResponse.accessToken,
@@ -173,35 +174,23 @@ export class AuthController {
     }
   };
 
-  twoFactorVerifiedLogin = async (db: PostgreSqlProvider, user: any) => {
-    const tokenRepository = new TokenRepository(db);
-    const genereateTokenResponse = await tokenRepository.generateTokens(user);
+  twoFactorVerifiedLogin = async ( db: PostgreSqlProvider, user: any ) => {
+    const tokenRepository = new TokenRepository( db );
+    const genereateTokenResponse = await tokenRepository.generateTokens( user );
     return {
       accessToken: genereateTokenResponse.accessToken,
       refreshToken: genereateTokenResponse.refreshToken,
     };
   };
 
-  private maskPhoneNumber(number: string): string {
-    let maskedNumber = '';
-    for (let i = 0; i < number.length; i++) {
-      if (i > number.length - 3) {
-        maskedNumber += number.charAt(i);
-      } else {
-        maskedNumber += '*';
-      }
-    }
-    return maskedNumber;
-  }
-
   /**
    * logout user
    * @param db database
    * @param token token
    */
-  logout = async (db: PostgreSqlProvider, token: string) => {
-    const tokenRepository = new TokenRepository(db);
-    await tokenRepository.deleteToken(token);
+  logout = async ( db: PostgreSqlProvider, token: string ) => {
+    const tokenRepository = new TokenRepository( db );
+    await tokenRepository.deleteToken( token );
   };
 
   /**
@@ -209,11 +198,11 @@ export class AuthController {
    * @param db database
    * @param token token
    */
-  token = async (db: PostgreSqlProvider, token: string) => {
-    const tokenRepository = new TokenRepository(db);
-    await tokenRepository.findToken(token);
-    const user: any = this.tokenUtil.verifyRefreshToken(token);
-    return this.tokenUtil.generateAccessToken(user);
+  token = async ( db: PostgreSqlProvider, token: string ) => {
+    const tokenRepository = new TokenRepository( db );
+    await tokenRepository.findToken( token );
+    const user: any = this.tokenUtil.verifyRefreshToken( token );
+    return this.tokenUtil.generateAccessToken( user );
   };
 
   /**
@@ -222,43 +211,44 @@ export class AuthController {
    * @param token token
    */
   verify = async (
-    db: PostgreSqlProvider,
-    token: string,
-    languageCode?: string
+      db: PostgreSqlProvider,
+      token: string,
+      languageCode?: string
   ) => {
-    const user: any = this.tokenUtil.verifyVerificationToken(token);
+    const user: any = this.tokenUtil.verifyVerificationToken( token );
 
-    const userRepository = new UserRepository(db);
-    await userRepository.verifyUser(user.username);
+    const userRepository = new UserRepository( db );
+    await userRepository.verifyUser( user.username );
   };
 
   /**
    * sends password reset mail
    * @param db database
+   * @param message_queue_provider
    * @param username username
    * @param languageCode language code
    * @param sendEmail don't send email if false
    */
   forgetPassword = async (
-    db: PostgreSqlProvider,
-    message_queue_provider: MessageQueueProvider,
-    username: string,
-    languageCode?: string,
-    sendEmail: boolean = true
+      db: PostgreSqlProvider,
+      message_queue_provider: MessageQueueProvider,
+      username: string,
+      languageCode?: string,
+      sendEmail: boolean = true
   ) => {
-    const userRepository = new UserRepository(db);
-    const user = await userRepository.findEmailAndPasswordByUsername(username);
-    const passwordResetToken = this.tokenUtil.generatePasswordResetToken(user);
+    const userRepository = new UserRepository( db );
+    const user = await userRepository.findEmailAndPasswordByUsername( username );
+    const passwordResetToken = this.tokenUtil.generatePasswordResetToken( user );
 
-    if (sendEmail) {
+    if ( sendEmail ) {
       const orchestrationChannelTag =
-        this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
+          this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
       const forgetPasswordParams = {
         user: user.username,
         email: user.email,
         passwordResetToken,
         clientResetPasswordUrl:
-          this.environment.args().extendedArgs?.clientResetPasswordUrl,
+        this.environment.args().extendedArgs?.clientResetPasswordUrl,
       } as ForgetPasswordMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
@@ -273,8 +263,8 @@ export class AuthController {
         } as MailActionType,
       } as QueueMessage;
       await message_queue_provider.publish(
-        message,
-        orchestrationChannelTag as string
+          message,
+          orchestrationChannelTag as string
       );
     }
 
@@ -287,22 +277,22 @@ export class AuthController {
    * @param user user
    * @param token token
    */
-  resetPassword = async (db: PostgreSqlProvider, user: User, token: string) => {
-    if (!user.password || !user.username) {
-      let e = new Error('username and password required') as HttpError;
+  resetPassword = async ( db: PostgreSqlProvider, user: User, token: string ) => {
+    if ( !user.password || !user.username ) {
+      let e = new Error( 'username and password required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
     }
 
-    user.password = await bcrypt.hash(user.password, 10);
+    user.password = await bcrypt.hash( user.password, 10 );
 
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
     const dbUser = await userRepository.findEmailAndPasswordByUsername(
-      user.username
+        user.username
     );
 
-    this.tokenUtil.verifyPasswordResetToken(token, dbUser.password);
-    await userRepository.updateByUsername(user);
+    this.tokenUtil.verifyPasswordResetToken( token, dbUser.password );
+    await userRepository.updateByUsername( user );
   };
 
   /**
@@ -312,50 +302,62 @@ export class AuthController {
    * @param user user
    */
   deleteUser = async (
-    db: PostgreSqlProvider,
-    currentUser: string,
-    user: User
+      db: PostgreSqlProvider,
+      currentUser: string,
+      user: User
   ) => {
-    if (!user.username) {
-      let e = new Error('username required') as HttpError;
+    if ( !user.username ) {
+      let e = new Error( 'username required' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
-    } else if (currentUser === user.username) {
-      let e = new Error('you cannot delete yourself') as HttpError;
+    } else if ( currentUser === user.username ) {
+      let e = new Error( 'you cannot delete yourself' ) as HttpError;
       e.responseCode = ResponseCode.BAD_REQUEST;
       throw e;
     }
 
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
 
-    await userRepository.deleteUserByUsername(user.username);
+    await userRepository.deleteUserByUsername( user.username );
   };
 
   getSubmittedPhoneNumber = async (
-    db: PostgreSqlProvider,
-    username: string
+      db: PostgreSqlProvider,
+      username: string
   ) => {
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
     const phoneNumberResponse =
-      await userRepository.findVerifiedPhoneNumberByUsername(username);
+        await userRepository.findVerifiedPhoneNumberByUsername( username );
 
     let phoneNumber;
     if (
-      phoneNumberResponse?.length > 0 &&
-      phoneNumberResponse[0].phone_number
+        phoneNumberResponse?.length > 0 &&
+        phoneNumberResponse[ 0 ].phone_number
     ) {
-      phoneNumber = this.maskPhoneNumber(phoneNumberResponse[0].phone_number);
+      phoneNumber = this.maskPhoneNumber( phoneNumberResponse[ 0 ].phone_number );
     }
 
     return phoneNumber;
   };
 
   deleteSubmittedPhoneNumber = async (
-    db: PostgreSqlProvider,
-    username: string
+      db: PostgreSqlProvider,
+      username: string
   ) => {
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
 
-    await userRepository.deletedSubmittedPhoneNumberByUsername(username);
+    await userRepository.deletedSubmittedPhoneNumberByUsername( username );
   };
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for ( let i = 0; i < number.length; i++ ) {
+      if ( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 }
