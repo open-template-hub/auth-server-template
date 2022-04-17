@@ -214,4 +214,39 @@ export class UserRepository {
       throw error;
     }
   };
+
+  getAllUsers = async(username: string, offset: number, limit: number) => {    
+    let response;
+
+    try {
+      response = await this.provider.query(
+        "SELECT username FROM users WHERE username LIKE $1 ORDER BY username OFFSET $2 LIMIT $3",
+        ['%' + username + '%', offset, limit]
+      );
+    } catch ( error ) {
+      console.error( error );
+      throw error;
+    }
+
+    return response.rows
+  }
+
+  getAllUsersCount = async(username: string) => {
+    let response;
+
+    username += '%';
+
+    try {
+      response = await this.provider.query(
+        "SELECT COUNT(*) FROM users WHERE username LIKE $1",
+        ['%' + username + '%']
+      );
+      this.shouldHaveSingleRow( response );
+    } catch(error) {
+      console.log(error);
+      throw error;
+    }
+
+    return response.rows[0]
+  }
 }

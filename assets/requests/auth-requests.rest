@@ -60,3 +60,8 @@ Content-Type: application/json
 DELETE http://localhost:4001/auth/user?username=username
 Content-Type: application/json
 Authorization: Bearer token
+
+### Get users
+GET http://localhost:4001/auth/users
+Content-Type: application/json
+Authorization: Bearer token

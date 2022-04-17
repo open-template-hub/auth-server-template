@@ -28,6 +28,7 @@ export class AuthController {
       private environment = new Environment(),
       private tokenUtil: TokenUtil = new TokenUtil( environment.args() )
   ) {
+    /* intentionally blank */
   }
 
   /**
@@ -360,4 +361,27 @@ export class AuthController {
     }
     return maskedNumber;
   }
+
+  getUsers = async (
+    db: PostgreSqlProvider,
+    username?: string,
+    offset?: number,
+    limit?: number
+  ) => {
+    const userRepository = new UserRepository(db);
+
+    if(!offset) {
+      offset = 0;
+    }
+
+    if(!limit) {
+      limit = 20;
+    }
+
+    const users = await userRepository.getAllUsers(username ?? '', offset, limit);
+    const count = +(await userRepository.getAllUsersCount(username ?? '')).count ?? 0;
+
+    return { users, meta: { offset, limit, count } };
+  }
 }
+
