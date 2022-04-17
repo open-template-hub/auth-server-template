@@ -19,7 +19,8 @@ const subRoutes = {
   resetPasswordToken: '/reset-password-token',
   user: '/user',
   submittedPhoneNumber: '/submitted-phone-number',
-};
+  users: '/users'
+}
 
 export const router = Router();
 
@@ -180,3 +181,21 @@ router.delete(
       res.status( ResponseCode.OK ).json( {} );
     }
 );
+
+router.get(
+  subRoutes.users,
+  authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
+  async(req: Request, res: Response) => {
+    const authController = new AuthController();
+    const context = res.locals.ctx;
+    
+    const users = await authController.getUsers(
+      context.postgresql_provider,
+      req.query.username as string,
+      +(req.query.offset as string),
+      +(req.query.limit as string)
+    );
+
+    res.status(ResponseCode.OK).json(users);
+  }
+)
