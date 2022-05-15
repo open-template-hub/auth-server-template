@@ -16,4 +16,9 @@ export class InfoController {
     const userRepository = new UserRepository( db );
     return userRepository.findEmailByUsername( user.username );
   };
+
+  other = async( db: PostgreSqlProvider, username: string ) => {
+    const userRepository = new UserRepository( db );
+    return userRepository.findEmailByUsername( username );
+  }
 }

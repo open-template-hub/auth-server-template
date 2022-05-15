@@ -10,6 +10,7 @@ import { InfoController } from '../controller/info.controller';
 const subRoutes = {
   root: '/',
   me: '/me',
+  other: '/other'
 };
 
 export const router = Router();
@@ -28,3 +29,16 @@ router.get(
       res.status( ResponseCode.OK ).json( response );
     }
 );
+
+router.get(
+  subRoutes.other,
+  authorizedBy( [UserRole.ADMIN ]),
+  async( req: Request, res: Response ) => {
+    const context = res.locals.ctx;
+    const response = await infoController.other(
+      context.postgresql_provider,
+      req.query.username as string
+    );
+    res.status( ResponseCode.OK ).json( response );
+  }
+)

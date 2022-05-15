@@ -31,6 +31,7 @@ router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
   const response = await authController.signup(
       context.postgresql_provider,
       context.message_queue_provider,
+      req.body.origin,
       {
         username: req.body.username,
         password: req.body.password,
@@ -48,6 +49,7 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   const response = await authController.login(
       context.postgresql_provider,
       context.message_queue_provider,
+      req.body.origin,
       {
         username: req.body.username,
         password: req.body.password,
@@ -191,6 +193,10 @@ router.get(
     
     const users = await authController.getUsers(
       context.postgresql_provider,
+      req.query.role as string,
+      req.query.verified as string,
+      req.query.oauth as string,
+      req.query.twoFA as string,
       req.query.username as string,
       +(req.query.offset as string),
       +(req.query.limit as string)
