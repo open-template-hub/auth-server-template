@@ -146,3 +146,4 @@ Refer to **[CODE_OF_CONDUCT.md](https://github.com/open-template-hub/.github/blo
 ## LICENSE
 
 The source code for this project is released under the [MIT License](LICENSE).
+
