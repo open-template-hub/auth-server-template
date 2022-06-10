@@ -6,7 +6,7 @@
       <script value="postmanLocal" />
     </scripts>
     <arguments value="--adminAuthToken=admin-auth-token=${OTH_ADMIN_AUTH_TOKEN} --responseEncryptionSecret=response-encryption-secret=${OTH_RESPONSE_ENCRYPTION_SECRET}" />
-    <node-interpreter value="project" />
+    <node-interpreter value="/usr/local/bin/node" />
     <envs />
     <method v="2" />
   </configuration>

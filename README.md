@@ -63,6 +63,7 @@ MODULE=AuthServer
 ENVIRONMENT=Local
 
 CLIENT_URL=http://localhost:4200
+ADMIN_CLIENT_URLS="http://localhost:4202"
 CLIENT_RESET_PASSWORD_URL=http://localhost:4200/reset-password
 CLIENT_VERIFICATION_SUCCESS_URL=http://localhost:4200/verify-account
 
@@ -145,3 +146,4 @@ Refer to **[CODE_OF_CONDUCT.md](https://github.com/open-template-hub/.github/blo
 ## LICENSE
 
 The source code for this project is released under the [MIT License](LICENSE).
+

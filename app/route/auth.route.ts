@@ -19,7 +19,8 @@ const subRoutes = {
   resetPasswordToken: '/reset-password-token',
   user: '/user',
   submittedPhoneNumber: '/submitted-phone-number',
-};
+  users: '/users'
+}
 
 export const router = Router();
 
@@ -30,6 +31,7 @@ router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
   const response = await authController.signup(
       context.postgresql_provider,
       context.message_queue_provider,
+      req.body.origin,
       {
         username: req.body.username,
         password: req.body.password,
@@ -47,6 +49,7 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   const response = await authController.login(
       context.postgresql_provider,
       context.message_queue_provider,
+      req.body.origin,
       {
         username: req.body.username,
         password: req.body.password,
@@ -180,3 +183,25 @@ router.delete(
       res.status( ResponseCode.OK ).json( {} );
     }
 );
+
+router.get(
+  subRoutes.users,
+  authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
+  async(req: Request, res: Response) => {
+    const authController = new AuthController();
+    const context = res.locals.ctx;
+    
+    const users = await authController.getUsers(
+      context.postgresql_provider,
+      req.query.role as string,
+      req.query.verified as string,
+      req.query.oauth as string,
+      req.query.twoFA as string,
+      req.query.username as string,
+      +(req.query.offset as string),
+      +(req.query.limit as string)
+    );
+
+    res.status(ResponseCode.OK).json(users);
+  }
+)

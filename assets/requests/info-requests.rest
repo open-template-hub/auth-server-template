@@ -2,3 +2,8 @@
 GET http://localhost:4001/info/me
 Content-Type: application/json
 Authorization: Bearer token
+
+### Get other user info (ADMIN)
+GET http://localhost:4001/info/other?username=mert
+Content-Type: application/json
+Authorization: Bearer token

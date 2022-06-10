@@ -2,7 +2,7 @@
   <configuration default="false" name="update" type="js.build_tools.npm">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="update" />
-    <node-interpreter value="project" />
+    <node-interpreter value="/usr/local/bin/node" />
     <envs />
     <method v="2" />
   </configuration>

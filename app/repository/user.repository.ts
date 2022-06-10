@@ -214,4 +214,89 @@ export class UserRepository {
       throw error;
     }
   };
+
+  getAllUsers = async(role: string, verified: boolean | undefined, twoFA: boolean | undefined, oauth: string | undefined, username: string, offset: number, limit: number) => {    
+    let response;
+
+    try {
+      let whereQueryString = "WHERE role ILIKE $3 and (users.username LIKE $4 or email LIKE $5)"
+      let whereQueryParams: Array<any> = ['%' + role + '%', '%' + username + '%', '%' + username + '%']
+
+      let paramCounter = 6;
+
+      if(verified !== undefined) {
+        whereQueryString += ` and verified = $${paramCounter}`
+        paramCounter += 1
+        whereQueryParams.push(verified)
+      }
+
+      if(twoFA !== undefined) {
+        whereQueryString += ` and two_factor_enabled = $${paramCounter}`
+        paramCounter += 1
+        whereQueryParams.push(twoFA)
+      }
+
+      if(oauth !== undefined) {
+        if(oauth === 'exclude') {
+          whereQueryString += ` and social_login_mappings.social_login_key IS NULL`
+        } else {
+          whereQueryString += ` and social_login_mappings.social_login_key = $${paramCounter}`
+          whereQueryParams.push(oauth)
+        }
+      }
+
+      response = await this.provider.query(
+        `SELECT users.username, users.email, users.verified, users.phone_number as phoneNumber, users.two_factor_enabled as twoFactorEnabled, social_login_mappings.external_user_email, social_login_mappings.social_login_key FROM users LEFT JOIN social_login_mappings ON users.username = social_login_mappings.username ${whereQueryString} ORDER BY users.username OFFSET $1 LIMIT $2`,
+        [offset, limit, ...whereQueryParams]
+      );
+    } catch ( error ) {
+      console.error( error );
+      throw error;
+    }
+
+    return response.rows
+  }
+
+  getAllUsersCount = async(role: string, verified: boolean | undefined, twoFA: boolean | undefined, oauth: string | undefined, username: string) => {
+    let response;
+    try {
+
+      let whereQueryString = "WHERE role ILIKE $1 and users.username LIKE $2"
+      let whereQueryParams: any[] = ['%' + role + '%', '%' + username + '%']
+
+      let paramCounter = 3
+
+      if(verified !== undefined) {
+        whereQueryString += ` and verified = $${paramCounter}`
+        paramCounter += 1
+        whereQueryParams.push(verified) 
+      }
+
+      if(twoFA !== undefined) {
+        whereQueryString += ` and two_factor_enabled = $${paramCounter}`;
+        paramCounter += 1
+        whereQueryParams.push(twoFA)
+      }
+
+      if(oauth !== undefined) {
+        if(oauth === 'exclude') {
+          whereQueryString += ` and social_login_mappings.social_login_key IS NULL`
+        } else {
+          whereQueryString += ` and social_login_mappings.social_login_key = $${paramCounter}`
+          whereQueryParams.push(oauth)  
+        }
+      } 
+
+      response = await this.provider.query(
+       `SELECT COUNT(*) FROM users LEFT JOIN social_login_mappings ON users.username = social_login_mappings.username ${whereQueryString}`,
+        [...whereQueryParams]
+      );
+      this.shouldHaveSingleRow( response );
+    } catch(error) {
+      console.log(error);
+      throw error;
+    }
+
+    return response.rows[0]
+  }
 }
