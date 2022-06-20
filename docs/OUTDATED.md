@@ -1,12 +1,12 @@
 <p align="center">
   <a href="https://opentemplatehub.com">
-    <img src="https://raw.githubusercontent.com/open-template-hub/open-template-hub.github.io/master/assets/logo/server/auth-server-logo.png" alt="Logo" width=200>
+    <img src="https://raw.githubusercontent.com/open-template-hub/open-template-hub.github.io/master/assets/logo/ui/web-ui-logo.png" alt="Logo" width=200>
   </a>
 </p>
 
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v4
+Open Template Hub - Company Profile UI Template v4
   <br/>
 (outdated packages)
 </h1>
