@@ -19,7 +19,7 @@ const infoController = new InfoController();
 router.get(
     subRoutes.me,
     authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ),
-    async ( req: Request, res: Response ) => {
+    async ( _req: Request, res: Response ) => {
       // gets user info
       const context = res.locals.ctx;
       const response = await infoController.me(

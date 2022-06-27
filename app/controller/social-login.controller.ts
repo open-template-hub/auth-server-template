@@ -29,13 +29,19 @@ import { UserRepository } from '../repository/user.repository';
 import { TwoFactorCodeController } from './two-factor.controller';
 
 export class SocialLoginController {
-  constructor(
-      private builder = new BuilderUtil(),
-      private parser = new ParserUtil(),
-      private environment = new Environment(),
-      private encryptionUtil = new EncryptionUtil( environment.args() ),
-      private tokenUtil: TokenUtil = new TokenUtil( environment.args() )
-  ) {
+
+  builder: BuilderUtil;
+  parser: ParserUtil;
+  environment: Environment;
+  encryptionUtil: EncryptionUtil;
+  tokenUtil: TokenUtil;
+
+  constructor() {
+    this.builder = new BuilderUtil();
+    this.parser = new ParserUtil();
+    this.environment = new Environment();
+    this.encryptionUtil = new EncryptionUtil( this.environment.args() );
+    this.tokenUtil = new TokenUtil( this.environment.args() );
   }
 
   /**

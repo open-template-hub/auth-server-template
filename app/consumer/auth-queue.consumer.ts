@@ -4,9 +4,6 @@ export class AuthQueueConsumer implements QueueConsumer {
   private channel: any;
   private ctxArgs: ContextArgs = {} as ContextArgs;
 
-  constructor() {
-  }
-
   init = ( channel: string, ctxArgs: ContextArgs ) => {
     this.channel = channel;
     this.ctxArgs = ctxArgs;
