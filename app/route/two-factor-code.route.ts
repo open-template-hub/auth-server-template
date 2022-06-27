@@ -57,7 +57,6 @@ router.post( subRoutes.loginVerify, async ( req: Request, res: Response ) => {
 
   const loginVerifyResponse = await twoFactorCodeController.loginVerify(
       context.postgresql_provider,
-      context.message_queue_provider,
       req.body.code,
       req.body.preAuthToken
   );

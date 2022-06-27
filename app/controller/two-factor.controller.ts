@@ -8,7 +8,6 @@ import {
   SmsActionType,
   TokenUtil,
   TwoFactorCodeRequestParams,
-  User
 } from '@open-template-hub/common';
 import crypto from 'crypto';
 import { Environment } from '../../environment';
@@ -18,10 +17,10 @@ import { UserRepository } from '../repository/user.repository';
 import { AuthController } from './auth.controller';
 
 export class TwoFactorCodeController {
-  constructor(
-      private environment = new Environment()
-  ) {
-    // intentionally blank
+
+  environment: Environment;
+  constructor() {
+    this.environment = new Environment();
   }
 
   request = async (
@@ -94,7 +93,6 @@ export class TwoFactorCodeController {
 
   loginVerify = async (
       db: PostgreSqlProvider,
-      messageQueueProvider: MessageQueueProvider,
       code: string,
       preAuthToken: string
   ) => {
@@ -114,11 +112,6 @@ export class TwoFactorCodeController {
 
     const userRepository = new UserRepository( db );
     let dbUser = await userRepository.findUserByUsernameOrEmail( decrpytedPreAuthToken.username as string );
-
-    const user = {
-      username: dbUser.username,
-      password: dbUser.password,
-    } as User;
 
     const authController = new AuthController();
     return authController.twoFactorVerifiedLogin( db, dbUser );

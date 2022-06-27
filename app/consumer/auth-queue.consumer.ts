@@ -4,9 +4,6 @@ export class AuthQueueConsumer implements QueueConsumer {
   private channel: any;
   private ctxArgs: ContextArgs = {} as ContextArgs;
 
-  constructor() {
-  }
-
   init = ( channel: string, ctxArgs: ContextArgs ) => {
     this.channel = channel;
     this.ctxArgs = ctxArgs;
@@ -24,7 +21,7 @@ export class AuthQueueConsumer implements QueueConsumer {
       let requeue = false;
 
       if ( message.example ) {
-        var exampleHook = async () => {
+        const exampleHook = async () => {
           console.log( 'Auth server example' );
         };
 

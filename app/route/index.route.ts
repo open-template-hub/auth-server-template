@@ -39,7 +39,7 @@ export namespace Routes {
       applicationName: 'AuthServer',
     } as MountAssets;
 
-    var routes: Array<Route> = [];
+    const routes: Array<Route> = [];
 
     routes.push( { name: subRoutes.auth, router: authRouter } );
     routes.push( { name: subRoutes.info, router: infoRouter } );

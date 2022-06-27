@@ -24,11 +24,13 @@ import { UserRepository } from '../repository/user.repository';
 import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
-  constructor(
-      private environment = new Environment(),
-      private tokenUtil: TokenUtil = new TokenUtil( environment.args() )
-  ) {
-    /* intentionally blank */
+
+  environment: Environment;
+  tokenUtil: TokenUtil;
+
+  constructor() {
+    this.environment = new Environment();
+    this.tokenUtil = new TokenUtil( this.environment.args() );
   }
 
   /**
@@ -131,8 +133,8 @@ export class AuthController {
     let dbUser = await userRepository.findUserByUsernameOrEmail( username );
 
     // if user is not admin and origin is related with admin clients, do not permit to process
-    if(dbUser?.role && dbUser.role !== UserRole.ADMIN && process.env.ADMIN_CLIENT_URLS?.includes(origin)) {
-      let e = new Error("Bad Credentials") as HttpError;
+    if ( dbUser?.role && dbUser.role !== UserRole.ADMIN && process.env.ADMIN_CLIENT_URLS?.includes( origin ) ) {
+      let e = new Error( 'Bad Credentials' ) as HttpError;
       e.responseCode = ResponseCode.FORBIDDEN;
       throw e;
     }
@@ -223,7 +225,6 @@ export class AuthController {
   verify = async (
       db: PostgreSqlProvider,
       token: string,
-      languageCode?: string
   ) => {
     const user: any = this.tokenUtil.verifyVerificationToken( token );
 
@@ -372,48 +373,48 @@ export class AuthController {
   }
 
   getUsers = async (
-    db: PostgreSqlProvider,
-    role?: string,
-    verified?: any,
-    oauth?: any,
-    twoFA?: any,
-    username?: string,
-    offset?: number,
-    limit?: number
+      db: PostgreSqlProvider,
+      role?: string,
+      verified?: any,
+      oauth?: any,
+      twoFA?: any,
+      username?: string,
+      offset?: number,
+      limit?: number
   ) => {
-    const userRepository = new UserRepository(db);
+    const userRepository = new UserRepository( db );
 
-    if(role === 'All') {
+    if ( role === 'All' ) {
       role = '';
     }
 
-    if(verified === 'true') {
-      verified = true
-    } else if(verified === 'false') {
-      verified = false
+    if ( verified === 'true' ) {
+      verified = true;
+    } else if ( verified === 'false' ) {
+      verified = false;
     }
 
-    if(twoFA === 'true') {
-      twoFA = true
-    } else if(twoFA === 'false') {
-      twoFA = false
+    if ( twoFA === 'true' ) {
+      twoFA = true;
+    } else if ( twoFA === 'false' ) {
+      twoFA = false;
     }
 
-    if(!offset) {
+    if ( !offset ) {
       offset = 0;
     }
 
-    if(!limit) {
+    if ( !limit ) {
       limit = 20;
     }
 
-    let users: any[] = []
+    let users: any[] = [];
     let count: any;
 
-    users = await userRepository.getAllUsers(role ?? '', verified, twoFA, oauth, username ?? '', offset, limit);
-    count = +(await userRepository.getAllUsersCount(role ?? '', verified, twoFA, oauth, username ?? '')).count ?? 0;
+    users = await userRepository.getAllUsers( role ?? '', verified, twoFA, oauth, username ?? '', offset, limit );
+    count = +( await userRepository.getAllUsersCount( role ?? '', verified, twoFA, oauth, username ?? '' ) ).count ?? 0;
 
     return { users, meta: { offset, limit, count } };
-  }
+  };
 }
 

@@ -159,7 +159,7 @@ router.delete(
 router.get(
     subRoutes.submittedPhoneNumber,
     authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ),
-    async ( req: Request, res: Response ) => {
+    async ( _req: Request, res: Response ) => {
       const authController = new AuthController();
       const context = res.locals.ctx;
       const submittedPhoneNumber = await authController.getSubmittedPhoneNumber(
@@ -173,7 +173,7 @@ router.get(
 router.delete(
     subRoutes.submittedPhoneNumber,
     authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ),
-    async ( req: Request, res: Response ) => {
+    async ( _req: Request, res: Response ) => {
       const authController = new AuthController();
       const context = res.locals.ctx;
       await authController.deleteSubmittedPhoneNumber(
@@ -187,10 +187,10 @@ router.delete(
 router.get(
   subRoutes.users,
   authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
-  async(req: Request, res: Response) => {
+  async(req: Request, res: Response) => {
     const authController = new AuthController();
     const context = res.locals.ctx;
-    
+
     const users = await authController.getUsers(
       context.postgresql_provider,
       req.query.role as string,
