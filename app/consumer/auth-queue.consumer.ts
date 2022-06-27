@@ -21,7 +21,7 @@ export class AuthQueueConsumer implements QueueConsumer {
       let requeue = false;
 
       if ( message.example ) {
-        var exampleHook = async () => {
+        const exampleHook = async () => {
           console.log( 'Auth server example' );
         };
 
