@@ -1,22 +1,23 @@
 {
   "name": "auth-server-template",
   "description": "Auth Server Template is a generic open-source authentication server that has a simple yet powerful design to connect your business with all OAuth 2.0 and OAuth supporting third-party companies (like Google, Facebook, Twitter, or LinkedIn). It also supports a basic username-password authentication system.",
-  "version": "4.1.1",
+  "version": "4.0.1",
   "license": "MIT",
   "main": "auth-server.main.ts",
   "scripts": {
     "start": "node version-generator.ts > ./version.ts && ts-node auth-server.main.ts",
     "startLocal": "nodemon --exec DEBUG=* ts-node auth-server.main.ts",
-    "postmanLocal": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/auth-server-regression.postman_collection.json -e assets/tests/regression-tests/postman/auth-server-regression.postman_environment_local.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
-    "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/auth-server-regression.postman_collection.json -e assets/tests/regression-tests/postman/auth-server-regression.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
+    "postmanLocal": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_local.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
+    "postmanDevelop": "mkdir -p -- ./assets/test-results && touch ./assets/test-results/postman-dark.html && touch ./assets/test-results/postman.html && newman run assets/tests/regression-tests/postman/regression-test.postman_collection.json -e assets/tests/regression-tests/postman/regression-test.postman_environment_develop.json -r htmlextra --reporter-htmlextra-export ./assets/test-results/postman.html --reporter-htmlextra-darkTheme  > ./assets/test-results/postman-dark.html --env-var $npm_config_adminAuthToken --env-var $npm_config_responseEncryptionSecret",
     "outdated": "node dependency-checker.ts > docs/OUTDATED.md"
   },
   "dependencies": {
-    "@open-template-hub/common": "^4.0.2",
+    "@open-template-hub/common": "file:~/common",
     "@types/bcrypt": "^5.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.9",
     "@types/express": "^4.17.6",
+    "@types/mongoose": "^5.11.97",
     "@types/uuid": "^8.3.4",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.0",
@@ -27,9 +28,10 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-promise-router": "^4.1.1",
+    "mongoose": "^6.3.6",
     "oauth-1.0a": "^2.2.6",
-    "ts-node": "^10.8.1",
-    "typescript": "^4.7.3",
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

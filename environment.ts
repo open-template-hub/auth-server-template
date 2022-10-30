@@ -25,6 +25,9 @@ export class Environment {
     } as TokenArgs;
 
     const dbArgs = {
+      mongoDbConnectionLimit: process.env.MONGODB_CONNECTION_LIMIT,
+      mongoDbUri: process.env.MONGODB_URI,
+
       postgresqlUri: process.env.DATABASE_URL,
       postgresqlConnectionLimit: process.env.POSTGRESQL_CONNECTION_LIMIT,
     } as DbArgs;

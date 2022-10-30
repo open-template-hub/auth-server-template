@@ -1,0 +1,6 @@
+### Team Create
+POST http://localhost:4001/team
+Content-Type: application/json
+
+{
+}

@@ -9,6 +9,7 @@ import {
   MailActionType,
   MessageQueueChannelType,
   MessageQueueProvider,
+  MongoDbProvider,
   PostgreSqlProvider,
   QueueMessage,
   ResponseCode,
@@ -21,6 +22,7 @@ import { Environment } from '../../environment';
 import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { TeamController } from './team.controller';
 import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
@@ -42,6 +44,7 @@ export class AuthController {
    */
   signup = async (
       db: PostgreSqlProvider,
+      mongodb_provider: MongoDbProvider,
       message_queue_provider: MessageQueueProvider,
       origin: string,
       user: User,
@@ -71,7 +74,7 @@ export class AuthController {
 
     if ( isAutoVerify ) {
       await this.verify( db, verificationToken );
-      return this.login( db, message_queue_provider, origin, user );
+      return this.login(db, mongodb_provider, message_queue_provider, origin, user)
     } else {
       const orchestrationChannelTag =
           this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
@@ -109,6 +112,7 @@ export class AuthController {
    */
   login = async (
       db: PostgreSqlProvider,
+      mongoDbProvider: MongoDbProvider,
       messageQueueProvider: MessageQueueProvider,
       origin: string,
       user: User,
@@ -176,8 +180,20 @@ export class AuthController {
       };
     } else {
       const tokenRepository = new TokenRepository( db );
+
+      const userTeams: any[] = await TeamController.getTeams(mongoDbProvider, user.username);
+
+      let userTeamIDs: string[] = []
+
+      if(userTeams) {
+        for(const userTeam of userTeams) {
+          userTeamIDs.push(userTeam._id);
+        }
+      }
+      user.teamIDs = userTeamIDs;
+
       const genereateTokenResponse = await tokenRepository.generateTokens(
-          dbUser
+          dbUser,
       );
       return {
         accessToken: genereateTokenResponse.accessToken,
