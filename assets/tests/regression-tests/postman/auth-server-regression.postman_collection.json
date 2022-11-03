@@ -671,7 +671,7 @@
 					"name": "Delete",
 					"item": [
 						{
-							"name": "Get Reset Password Token Success [200] Copy",
+							"name": "Delete User",
 							"event": [
 								{
 									"listen": "test",
