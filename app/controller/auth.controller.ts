@@ -10,6 +10,7 @@ import {
   MessageQueueChannelType,
   MessageQueueProvider,
   PostgreSqlProvider,
+  QueryFilters,
   QueueMessage,
   ResponseCode,
   TokenUtil,
@@ -379,8 +380,7 @@ export class AuthController {
       oauth?: any,
       twoFA?: any,
       username?: string,
-      offset?: number,
-      limit?: number
+      filters?: QueryFilters,
   ) => {
     const userRepository = new UserRepository( db );
 
@@ -400,12 +400,17 @@ export class AuthController {
       twoFA = false;
     }
 
-    if ( !offset ) {
-      offset = 0;
-    }
+    let offset = 0;
+    let limit = 20;
 
-    if ( !limit ) {
-      limit = 20;
+    if ( filters ) {
+      if ( filters.offset ) {
+        offset = filters.offset;
+      }
+
+      if ( filters.limit ) {
+        limit = filters.limit;
+      }
     }
 
     let users: any[] = [];
