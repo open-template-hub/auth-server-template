@@ -20,7 +20,7 @@ const subRoutes = {
   user: '/user',
   submittedPhoneNumber: '/submitted-phone-number',
   users: '/users'
-}
+};
 
 export const router = Router();
 
@@ -185,23 +185,25 @@ router.delete(
 );
 
 router.get(
-  subRoutes.users,
-  authorizedBy([UserRole.ADMIN, UserRole.DEFAULT]),
-  async(req: Request, res: Response) => {
-    const authController = new AuthController();
-    const context = res.locals.ctx;
+    subRoutes.users,
+    authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ),
+    async ( req: Request, res: Response ) => {
+      const authController = new AuthController();
+      const context = res.locals.ctx;
 
-    const users = await authController.getUsers(
-      context.postgresql_provider,
-      req.query.role as string,
-      req.query.verified as string,
-      req.query.oauth as string,
-      req.query.twoFA as string,
-      req.query.username as string,
-      +(req.query.offset as string),
-      +(req.query.limit as string)
-    );
+      const users = await authController.getUsers(
+          context.postgresql_provider,
+          req.query.role as string,
+          req.query.verified as string,
+          req.query.oauth as string,
+          req.query.twoFA as string,
+          req.query.username as string,
+          {
+            offset: +( req.query.offset as string ),
+            limit: +( req.query.limit as string )
+          },
+      );
 
-    res.status(ResponseCode.OK).json(users);
-  }
-)
+      res.status( ResponseCode.OK ).json( users );
+    }
+);
