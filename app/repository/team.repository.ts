@@ -8,10 +8,10 @@ export class TeamRepository {
         return this;
     };
 
-    create = async(creator: string) => {
+    create = async(creator: string, name: string) => {
         try {
             return await this.dataModel.create({
-                creator
+                creator, name
             });
         } catch(error) {
             console.error( '> createTeam error: ', error );
@@ -161,6 +161,9 @@ export class TeamRepository {
                     setQueryKey: true
                 }}
             )
+        } catch(error) {
+            console.error( '> verifyTeam error: ', error );
+            throw error;
         }
     }
 

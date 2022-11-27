@@ -15,7 +15,7 @@ import {
   ResponseCode,
   TokenUtil,
   User,
-  UserRole,
+  UserRole
 } from '@open-template-hub/common';
 import bcrypt from 'bcrypt';
 import { Environment } from '../../environment';
@@ -182,15 +182,9 @@ export class AuthController {
       const tokenRepository = new TokenRepository( db );
 
       const userTeams: any[] = await TeamController.getTeams(mongoDbProvider, user.username);
-
-      let userTeamIDs: string[] = []
-
-      if(userTeams) {
-        for(const userTeam of userTeams) {
-          userTeamIDs.push(userTeam._id);
-        }
-      }
-      user.teamIDs = userTeamIDs;
+      dbUser.teams = userTeams.map( team => {
+        return team._doc
+      })
 
       const genereateTokenResponse = await tokenRepository.generateTokens(
           dbUser,

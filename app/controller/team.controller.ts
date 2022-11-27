@@ -1,4 +1,5 @@
 import { Context, JoinTeamMailActionParams, MessageQueueChannelType, MongoDbProvider, TokenUtil } from "@open-template-hub/common";
+import { TeamRole } from "@open-template-hub/common/lib/enum/team-role.enum";
 import { Environment } from "../../environment";
 import { TeamRepository } from "../repository/team.repository";
 
@@ -11,25 +12,28 @@ export class TeamController {
     }
 
     create = async(
-        context: Context
+        context: Context,
+        name: string
     ) => {
         const teamRepository = await new TeamRepository().initialize(
             context.mongodb_provider.getConnection()
         );
 
         const team = await teamRepository.create(
-            context.username
+            context.username,
+            name
         );
 
         const environment = new Environment();
         const tokenUtil = new TokenUtil( environment.args() );
-        const token = tokenUtil.addTeamToToken(context.token, team._id);
+        const tokens = tokenUtil.addTeamToToken(context.token, team._doc);
 
-        return { team, token }
+        return { tokens }
     }
 
     addWriter = async(
         context: Context,
+        teamId: string,
         writerUsername: string,
         writerEmail: string,
         isVerified: boolean
@@ -49,13 +53,13 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUsername, team._id, "writers");
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUsername, {id: team._id, role: TeamRole.creator }); // TODO: key uppercase
 
         const joinTeamParams = {
             user: writerUsername,
             email: writerEmail,
             joinTeamToken,
-            teamId: team._id
+            team: team
         } as JoinTeamMailActionParams
 
         const message = {
@@ -97,13 +101,13 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUsername, team._id, "readers")
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUsername, { id: team._id, role: TeamRole.reader } )
 
         const joinTeamParams = {
             user: readerUsername,
             email: readerEmail,
             joinTeamToken,
-            teamId: team._id
+            team: team
         } as JoinTeamMailActionParams
 
         const message = {

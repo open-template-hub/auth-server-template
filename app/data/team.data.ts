@@ -22,6 +22,10 @@ export class TeamDataModel {
          * This schema should be edited with feature necessities
          */
         const schema: mongoose.SchemaDefinition = {
+            name: {
+                type: String,
+                required: true
+            },
             creator: {
                 type: String,
                 required: true
