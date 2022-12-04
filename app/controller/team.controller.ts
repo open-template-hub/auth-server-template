@@ -1,5 +1,4 @@
-import { Context, JoinTeamMailActionParams, MessageQueueChannelType, MongoDbProvider, TokenUtil } from "@open-template-hub/common";
-import { TeamRole } from "@open-template-hub/common/lib/enum/team-role.enum";
+import { Context, JoinTeamMailActionParams, MessageQueueChannelType, MongoDbProvider, TokenUtil, TeamRole } from "@open-template-hub/common";
 import { StringLiteral } from "typescript";
 import { Environment } from "../../environment";
 import { TeamRepository } from "../repository/team.repository";
