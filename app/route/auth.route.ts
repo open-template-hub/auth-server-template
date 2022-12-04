@@ -30,6 +30,7 @@ router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
   const response = await authController.signup(
       context.postgresql_provider,
+      context.mongodb_provider,
       context.message_queue_provider,
       req.body.origin,
       {
@@ -48,6 +49,7 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
   const response = await authController.login(
       context.postgresql_provider,
+      context.mongodb_provider,
       context.message_queue_provider,
       req.body.origin,
       {
