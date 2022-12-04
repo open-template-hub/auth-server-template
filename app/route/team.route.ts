@@ -1,5 +1,4 @@
-import { ResponseCode, teamAuthorizedBy } from '@open-template-hub/common';
-import { TeamRole } from '@open-template-hub/common/lib/enum/team-role.enum';
+import { ResponseCode, teamAuthorizedBy, TeamRole } from '@open-template-hub/common';
 import { Request, Response, Router } from 'express';
 import { TeamController } from '../controller/team.controller';
 
