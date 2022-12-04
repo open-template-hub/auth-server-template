@@ -70,6 +70,9 @@ CLIENT_VERIFICATION_SUCCESS_URL=http://localhost:4200/verify-account
 DATABASE_URL={Database Connection Url}
 POSTGRESQL_CONNECTION_LIMIT={Postgresql Connection Limit}
 
+MONGODB_URI={Database Connection Url}
+MONGODB_CONNECTION_LIMIT={MongoDB Connection Limit}
+
 CLOUDAMQP_APIKEY={MQ Api Key}
 CLOUDAMQP_URL={MQ Connection Url}
 
