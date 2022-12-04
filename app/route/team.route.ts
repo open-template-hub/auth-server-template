@@ -12,15 +12,15 @@ const subRoutes = {
 
 export const router = Router()
 
-router.get(subRoutes.root, teamAuthorizedBy([ TeamRole.CREATOR, TeamRole.READER, TeamRole.WRITER ]), async(req: Request, res: Response) => {
+router.get(subRoutes.root, async(req: Request, res: Response) => {
     const context = res.locals.ctx;
 
-    const team = await TeamController.getTeams(
+    const teams = await TeamController.getTeams(
         context.mongodb_provider,
         context.username
     );
 
-    res.status(ResponseCode.OK).json(team);
+    res.status(ResponseCode.OK).json(teams);
 });
 
 router.post(subRoutes.root, async(req: Request, res: Response) => {
@@ -50,9 +50,7 @@ router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req:
     await teamController.addWriter(
         res.locals.ctx,
         req.body.teamId,
-        req.body.writerUsername as string,
-        req.body.writerEmail as string,
-        req.body.isVerified as boolean
+        req.body.writerEmail as string
     )
 
     res.status(ResponseCode.OK);

@@ -13,6 +13,8 @@ export class Environment {
       accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
       refreshTokenExpire: process.env.REFRESH_TOKEN_EXPIRE,
       refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
+      joinTeamTokenSecretExpire: process.env.JOIN_TEAM_TOKEN_EXPIRE,
+      joinTeamTokenSecret: process.env.JOIN_TEAM_TOKEN_SECRET,
 
       resetPasswordTokenExpire: process.env.RESET_PASSWORD_TOKEN_EXPIRE,
       resetPasswordTokenSecret: process.env.RESET_PASSWORD_TOKEN_SECRET,

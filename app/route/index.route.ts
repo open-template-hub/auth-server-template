@@ -31,7 +31,7 @@ export namespace Routes {
       providerAvailability: {
         mongo_enabled: true,
         postgre_enabled: true,
-        mq_enabled: false,
+        mq_enabled: true,
       },
     } as ContextArgs;
 
