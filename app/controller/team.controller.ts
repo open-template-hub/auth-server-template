@@ -53,7 +53,7 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUsername, {id: team._id, role: TeamRole.creator }); // TODO: key uppercase
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUsername, {id: team._id, role: TeamRole.CREATOR });
 
         const joinTeamParams = {
             user: writerUsername,
@@ -101,7 +101,7 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUsername, { id: team._id, role: TeamRole.reader } )
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUsername, { id: team._id, role: TeamRole.READER } )
 
         const joinTeamParams = {
             user: readerUsername,

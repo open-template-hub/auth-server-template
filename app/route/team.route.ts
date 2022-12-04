@@ -12,7 +12,7 @@ const subRoutes = {
 
 export const router = Router()
 
-router.get(subRoutes.root, teamAuthorizedBy([ TeamRole.creator, TeamRole.reader, TeamRole.writer ]), async(req: Request, res: Response) => {
+router.get(subRoutes.root, teamAuthorizedBy([ TeamRole.CREATOR, TeamRole.READER, TeamRole.WRITER ]), async(req: Request, res: Response) => {
     const context = res.locals.ctx;
 
     const team = await TeamController.getTeams(
@@ -34,17 +34,17 @@ router.post(subRoutes.root, async(req: Request, res: Response) => {
     res.status(ResponseCode.OK).json(teamCreateResponse);
 });
 
-router.delete(subRoutes.root, teamAuthorizedBy([ TeamRole.creator, TeamRole.reader, TeamRole.writer ]), async(req: Request, res: Response) => {
+router.delete(subRoutes.root, teamAuthorizedBy([ TeamRole.CREATOR, TeamRole.READER, TeamRole.WRITER ]), async(req: Request, res: Response) => {
     const teamController = new TeamController();
 
-    const team = await teamController.deleteTeam(
+    await teamController.deleteTeam(
         res.locals.ctx
     );
 
     res.status(ResponseCode.OK);
 })
 
-router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.creator ]), async(req: Request, res: Response) => {
+router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.addWriter(
@@ -58,7 +58,7 @@ router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.creator ]), async(req:
     res.status(ResponseCode.OK);
 })
 
-router.get( subRoutes.verify, teamAuthorizedBy([ TeamRole.creator ]), async ( req: Request, res: Response ) => {
+router.get( subRoutes.verify, teamAuthorizedBy([ TeamRole.CREATOR ]), async ( req: Request, res: Response ) => {
     const teamController = new TeamController();
     const context = res.locals.ctx;
     await teamController.verify(
