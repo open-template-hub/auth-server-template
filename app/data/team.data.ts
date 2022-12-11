@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose, Types } from "mongoose";
 
 export class TeamDataModel {
     private readonly collectionName: string = "team";
@@ -22,10 +22,18 @@ export class TeamDataModel {
          * This schema should be edited with feature necessities
          */
         const schema: mongoose.SchemaDefinition = {
+            team_id: {
+                type: String,
+                unique: true,
+                required: true,
+                dropDups: true,
+                default: new mongoose.Types.ObjectId().toString()
+            },
             name: {
                 type: String,
                 required: true
             },
+            imageId: { type: String },
             creator: {
                 type: String,
                 required: true

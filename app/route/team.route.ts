@@ -27,7 +27,8 @@ router.post(subRoutes.root, async(req: Request, res: Response) => {
 
     const teamCreateResponse = await teamController.create(
         res.locals.ctx,
-        req.body.name
+        req.body.name,
+        req.body.imageId
     );
 
     res.status(ResponseCode.OK).json(teamCreateResponse);
@@ -55,12 +56,13 @@ router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req:
     res.status(ResponseCode.OK);
 })
 
-router.get( subRoutes.verify, teamAuthorizedBy([ TeamRole.CREATOR ]), async ( req: Request, res: Response ) => {
+router.post( subRoutes.verify, async ( req: Request, res: Response ) => {
     const teamController = new TeamController();
     const context = res.locals.ctx;
+
     await teamController.verify(
-        context.postgresql_provider,
-        req.query.token as string
+        context.mongodb_provider,
+        req.body.verifyToken as string
     );
-    res.status( ResponseCode.NO_CONTENT ).json( {} );
+    res.status( ResponseCode.OK );
   } );

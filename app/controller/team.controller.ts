@@ -1,5 +1,4 @@
-import { Context, JoinTeamMailActionParams, MessageQueueChannelType, MongoDbProvider, TokenUtil, TeamRole } from "@open-template-hub/common";
-import { StringLiteral } from "typescript";
+import { Context, TeamRole, MongoDbProvider, TokenUtil } from "@open-template-hub/common";
 import { Environment } from "../../environment";
 import { TeamRepository } from "../repository/team.repository";
 import { UserRepository } from "../repository/user.repository";
@@ -14,7 +13,8 @@ export class TeamController {
 
     create = async(
         context: Context,
-        name: string
+        name: string,
+        imageId: string | undefined
     ) => {
         const teamRepository = await new TeamRepository().initialize(
             context.mongodb_provider.getConnection()
@@ -22,7 +22,8 @@ export class TeamController {
 
         const team = await teamRepository.create(
             context.username,
-            name
+            name,
+            imageId
         );
 
         const environment = new Environment();
@@ -59,8 +60,11 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUser.username, {id: team._id, role: TeamRole.CREATOR });
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUser.username, {id: team.team_id, role: TeamRole.WRITER });
 
+        console.log("joinTeamToken: ", joinTeamToken);
+
+        /*
         const joinTeamParams = {
             user: writerUser.username,
             email: writerEmail,
@@ -83,7 +87,7 @@ export class TeamController {
         await context.message_queue_provider.publish(
             message,
             orchestrationChannelTag as string
-        );
+        );*/
     }
 
     addReader = async(
@@ -109,9 +113,10 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUser.username, { id: team._id, role: TeamRole.READER } )
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUser.username, { id: team.team_id, role: TeamRole.READER } )
+        console.log("joinTeamToken: ", joinTeamToken);
 
-        const joinTeamParams = {
+        /*const joinTeamParams = {
             user: readerUser.username,
             email: readerEmail,
             joinTeamToken,
@@ -133,7 +138,7 @@ export class TeamController {
         await context.message_queue_provider.publish(
             message,
             orchestrationChannelTag as string
-        );
+        );*/
     }
 
     removeWriter = async(
@@ -189,11 +194,13 @@ export class TeamController {
             mongodb_provider.getConnection()
         );
 
-        teamRepository.verify(
+        const teamRepositoryResponse = await teamRepository.verify(
             decodedToken.username,
-            decodedToken.teamId,
-            decodedToken.role
+            decodedToken.team.id,
+            decodedToken.team.role
         );
+
+        console.log(teamRepositoryResponse);
     }
 
     deleteTeam = async(

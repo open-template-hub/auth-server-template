@@ -8,10 +8,10 @@ export class TeamRepository {
         return this;
     };
 
-    create = async(creator: string, name: string) => {
+    create = async(creator: string, name: string, imageId: string | undefined) => {
         try {
             return await this.dataModel.create({
-                creator, name
+                creator, name, imageId
             });
         } catch(error) {
             console.error( '> createTeam error: ', error );
@@ -152,15 +152,23 @@ export class TeamRepository {
         role: "writers" | "readers"
     ) => {
         try {
-            const roleQueryKey = `${role}.username`;
-            const setQueryKey = `${role}.$.isVerified`;
-
-            return await this.dataModel.updateOne(
-                { _id: teamId, roleQueryKey: username },
-                { $set: {
-                    setQueryKey: true
-                }}
-            )
+            if(role === "writers") {
+                return await this.dataModel.updateOne(
+                    { team_id: teamId, "writers.username": username },
+                    { $set: {
+                        "writers.$.isVerified": true
+                    }}
+                )
+            }
+            else if(role === "readers") {
+                return await this.dataModel.updateOne(
+                    { team_id: teamId, "readers.username": username },
+                    { $set: {
+                        "readers.$.isVerified": true
+                    } }
+                )
+            }
+            
         } catch(error) {
             console.error( '> verifyTeam error: ', error );
             throw error;
