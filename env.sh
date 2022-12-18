@@ -14,6 +14,7 @@ if [ ! -f .env ]; then
     echo "ADMIN_CLIENT_URLS=http://localhost:4202"
     echo "CLIENT_RESET_PASSWORD_URL=http://localhost:4200/reset-password"
     echo "CLIENT_VERIFICATION_SUCCESS_URL=http://localhost:4200/verify-account"
+    echo "JOIN_TEAM_URL=http://localhost:4200/join-team"
 
     echo "MONGODB_URI={Database Connection Url}"
     echo "MONGODB_CONNECTION_LIMIT={MongoDB Connection Limit}"

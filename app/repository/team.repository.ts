@@ -20,7 +20,7 @@ export class TeamRepository {
     }
 
     addWriter = async(
-        creator: string,
+        teamId: string,
         writer: {
             username: string,
             email: string,
@@ -30,10 +30,10 @@ export class TeamRepository {
         try {
             return await this.dataModel.findOneAndUpdate(
                 {
-                    creator
+                    team_id: teamId
                 },
                 {
-                    $push: {
+                    $addToSet: {
                         writers: writer
                     }
                 }
@@ -45,7 +45,7 @@ export class TeamRepository {
     }
 
     addReader = async(
-        creator: string,
+        teamId: string,
         reader: {
             username: string,
             email: string,
@@ -55,7 +55,7 @@ export class TeamRepository {
         try {
             return await this.dataModel.findOneAndUpdate(
                 {
-                    creator
+                    team_id: teamId
                 },
                 {
                     $push: {
@@ -70,20 +70,18 @@ export class TeamRepository {
     }
 
     removeFromWriters = async(
-        creator: string,
-        writerUsername: string
+        teamId: string,
+        writerEmail: string
     ) => {
         try {
-            return await this.dataModel.findOneAndUpdate(
+            return await this.dataModel.updateOne(
                 {
-                    creator
+                    team_id: teamId
                 },
                 {
                     $pull: {
                         writers: {
-                            $elemMatch: {
-                                username: writerUsername
-                            }
+                            email: writerEmail
                         }
                     }
                 }
@@ -95,20 +93,18 @@ export class TeamRepository {
     }
 
     removeFromReaders = async(
-        creator: string,
-        readerUsername: string
+        teamId: string,
+        readerEmail: string
     ) => {
         try {
-            return await this.dataModel.findOneAndUpdate(
+            return await this.dataModel.updateOne(
                 {
-                    creator
+                    team_id: teamId
                 },
                 {
                     $pull: {
                         readers: {
-                            $elemMatch: {
-                                username: readerUsername
-                            }
+                            email: readerEmail
                         }
                     }
                 }

@@ -38,6 +38,7 @@ export class Environment {
       clientResetPasswordUrl: process.env.CLIENT_RESET_PASSWORD_URL,
       clientUrl: process.env.CLIENT_URL,
       clientVerificationSuccessUrl: process.env.CLIENT_VERIFICATION_SUCCESS_URL,
+      joinTeamUrl: process.env.JOIN_TEAM_URL
     } as ExtendedArgs;
 
     const mqArgs = {

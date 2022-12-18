@@ -56,6 +56,42 @@ router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req:
     res.status(ResponseCode.OK);
 })
 
+router.post(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+    const teamController = new TeamController();
+
+    await teamController.addReader(
+        res.locals.ctx,
+        req.body.teamId,
+        req.body.readerEmail as string
+    )
+
+    res.status(ResponseCode.OK);
+})
+
+router.delete(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+    const teamController = new TeamController();
+
+    await teamController.removeWriter(
+        res.locals.ctx,
+        req.query.teamId as string,
+        req.query.writerEmail as string
+    )
+
+    res.status(ResponseCode.OK);
+})
+
+router.delete(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+    const teamController = new TeamController();
+
+    await teamController.removeReader(
+        res.locals.ctx,
+        req.query.teamId as string,
+        req.body.readerEmail as string
+    )
+
+    res.status(ResponseCode.OK);
+})
+
 router.post( subRoutes.verify, async ( req: Request, res: Response ) => {
     const teamController = new TeamController();
     const context = res.locals.ctx;
