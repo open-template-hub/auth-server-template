@@ -11,7 +11,7 @@ const subRoutes = {
 
 export const router = Router()
 
-router.get(subRoutes.root, async(req: Request, res: Response) => {
+router.get(subRoutes.root, async (req: Request, res: Response) => {
     const context = res.locals.ctx;
 
     const teams = await TeamController.getTeams(
@@ -22,7 +22,7 @@ router.get(subRoutes.root, async(req: Request, res: Response) => {
     res.status(ResponseCode.OK).json(teams);
 });
 
-router.post(subRoutes.root, async(req: Request, res: Response) => {
+router.post(subRoutes.root, async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     const teamCreateResponse = await teamController.create(
@@ -34,7 +34,7 @@ router.post(subRoutes.root, async(req: Request, res: Response) => {
     res.status(ResponseCode.OK).json(teamCreateResponse);
 });
 
-router.delete(subRoutes.root, teamAuthorizedBy([ TeamRole.CREATOR, TeamRole.READER, TeamRole.WRITER ]), async(req: Request, res: Response) => {
+router.delete(subRoutes.root, teamAuthorizedBy([TeamRole.CREATOR, TeamRole.READER, TeamRole.WRITER]), async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.deleteTeam(
@@ -44,11 +44,12 @@ router.delete(subRoutes.root, teamAuthorizedBy([ TeamRole.CREATOR, TeamRole.READ
     res.status(ResponseCode.OK);
 })
 
-router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+router.post(subRoutes.writer, teamAuthorizedBy([TeamRole.CREATOR]), async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.addWriter(
         res.locals.ctx,
+        req.body.origin,
         req.body.teamId,
         req.body.writerEmail as string
     )
@@ -56,11 +57,12 @@ router.post(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req:
     res.status(ResponseCode.OK);
 })
 
-router.post(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+router.post(subRoutes.reader, teamAuthorizedBy([TeamRole.CREATOR]), async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.addReader(
         res.locals.ctx,
+        req.body.origin,
         req.body.teamId,
         req.body.readerEmail as string
     )
@@ -68,7 +70,7 @@ router.post(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req:
     res.status(ResponseCode.OK);
 })
 
-router.delete(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+router.delete(subRoutes.writer, teamAuthorizedBy([TeamRole.CREATOR]), async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.removeWriter(
@@ -80,7 +82,7 @@ router.delete(subRoutes.writer, teamAuthorizedBy([ TeamRole.CREATOR ]), async(re
     res.status(ResponseCode.OK);
 })
 
-router.delete(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(req: Request, res: Response) => {
+router.delete(subRoutes.reader, teamAuthorizedBy([TeamRole.CREATOR]), async (req: Request, res: Response) => {
     const teamController = new TeamController();
 
     await teamController.removeReader(
@@ -92,7 +94,7 @@ router.delete(subRoutes.reader, teamAuthorizedBy([ TeamRole.CREATOR ]), async(re
     res.status(ResponseCode.OK);
 })
 
-router.post( subRoutes.verify, async ( req: Request, res: Response ) => {
+router.post(subRoutes.verify, async (req: Request, res: Response) => {
     const teamController = new TeamController();
     const context = res.locals.ctx;
 
@@ -100,5 +102,5 @@ router.post( subRoutes.verify, async ( req: Request, res: Response ) => {
         context.mongodb_provider,
         req.body.verifyToken as string
     );
-    res.status( ResponseCode.OK );
-  } );
+    res.status(ResponseCode.OK);
+});

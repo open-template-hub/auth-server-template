@@ -11,7 +11,7 @@ export class TeamController {
         /** intentionally blank */
     }
 
-    create = async(
+    create = async (
         context: Context,
         name: string,
         imageId: string | undefined
@@ -27,14 +27,15 @@ export class TeamController {
         );
 
         const environment = new Environment();
-        const tokenUtil = new TokenUtil( environment.args() );
+        const tokenUtil = new TokenUtil(environment.args());
         const tokens = tokenUtil.addTeamToToken(context.token, team._doc);
 
         return { tokens }
     }
 
-    addWriter = async(
+    addWriter = async (
         context: Context,
+        origin: string,
         teamId: string,
         writerEmail: string
     ) => {
@@ -42,10 +43,10 @@ export class TeamController {
             context.mongodb_provider.getConnection()
         );
 
-        const userRepository = new UserRepository( context.postgresql_provider );
-        const writerUser = await userRepository.findUserByUsernameOrEmail( writerEmail );
-        
-        if(!writerUser) {
+        const userRepository = new UserRepository(context.postgresql_provider);
+        const writerUser = await userRepository.findUserByUsernameOrEmail(writerEmail);
+
+        if (!writerUser) {
             throw new Error("user not found");
         }
 
@@ -60,7 +61,7 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUser.username, {id: team.team_id, role: TeamRole.WRITER });
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(writerUser.username, { id: team.team_id, role: TeamRole.WRITER });
         console.log("joinTeamToken: ", joinTeamToken);
 
         const joinTeamParams = {
@@ -69,7 +70,7 @@ export class TeamController {
             joinTeamToken,
             teamId: team.team_id,
             teamName: team.name,
-            joinTeamUrl: this.environment.args().extendedArgs?.joinTeamUrl ?? ""
+            joinTeamUrl: origin + "/join-team"
         } as JoinTeamMailActionParams
 
         const message = {
@@ -90,8 +91,9 @@ export class TeamController {
         );
     }
 
-    addReader = async(
+    addReader = async (
         context: Context,
+        origin: string,
         teamId: string,
         readerEmail: string
     ) => {
@@ -99,8 +101,8 @@ export class TeamController {
             context.mongodb_provider.getConnection()
         );
 
-        const userRepository = new UserRepository( context.postgresql_provider );
-        const readerUser = await userRepository.findUserByUsernameOrEmail( readerEmail );
+        const userRepository = new UserRepository(context.postgresql_provider);
+        const readerUser = await userRepository.findUserByUsernameOrEmail(readerEmail);
 
         const team = await teamRepository.addReader(
             teamId,
@@ -113,8 +115,7 @@ export class TeamController {
 
         const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
 
-        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUser.username, { id: team.team_id, role: TeamRole.READER } )
-        console.log("joinTeamToken: ", joinTeamToken);
+        const joinTeamToken = this.tokenUtil.generateJoinTeamToken(readerUser.username, { id: team.team_id, role: TeamRole.READER })
 
         const joinTeamParams = {
             user: readerUser.username,
@@ -122,7 +123,7 @@ export class TeamController {
             joinTeamToken,
             teamId: team.team_id,
             teamName: team.name,
-            joinTeamUrl: this.environment.args().extendedArgs?.joinTeamUrl ?? ""
+            joinTeamUrl: origin + "/join-team"
         } as JoinTeamMailActionParams
 
         const message = {
@@ -143,7 +144,7 @@ export class TeamController {
         );
     }
 
-    removeWriter = async(
+    removeWriter = async (
         context: Context,
         teamId: string,
         writerEmail: string
@@ -158,7 +159,7 @@ export class TeamController {
         )
     }
 
-    removeReader = async(
+    removeReader = async (
         context: Context,
         teamId: string,
         readerEmail: string
@@ -173,7 +174,7 @@ export class TeamController {
         )
     }
 
-    static getTeams = async(
+    static getTeams = async (
         mongodb_provider: MongoDbProvider,
         username: string
     ) => {
@@ -186,12 +187,12 @@ export class TeamController {
         );
     }
 
-    verify = async(
+    verify = async (
         mongodb_provider: MongoDbProvider,
         token: string
     ) => {
         const environment = new Environment();
-        const tokenUtil = new TokenUtil( environment.args() );
+        const tokenUtil = new TokenUtil(environment.args());
         const decodedToken = tokenUtil.verifyTeamToken(token) as any;
 
         const teamRepository = await new TeamRepository().initialize(
@@ -207,7 +208,7 @@ export class TeamController {
         console.log(teamRepositoryResponse);
     }
 
-    deleteTeam = async(
+    deleteTeam = async (
         context: Context
     ) => {
         const teamRepository = await new TeamRepository().initialize(
