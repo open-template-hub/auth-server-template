@@ -1,4 +1,4 @@
-import { Context, TeamRole, MongoDbProvider, TokenUtil, JoinTeamMailActionParams, MessageQueueChannelType } from "@open-template-hub/common";
+import { Context, TeamRole, MongoDbProvider, TokenUtil, JoinTeamMailActionParams, MessageQueueChannelType, MessageQueueProvider, NotificationParams, BusinessLogicActionType, QueueMessage } from "@open-template-hub/common";
 import { Environment } from "../../environment";
 import { TeamRepository } from "../repository/team.repository";
 import { UserRepository } from "../repository/user.repository";
@@ -89,6 +89,17 @@ export class TeamController {
             message,
             orchestrationChannelTag as string
         );
+
+        const notificationParams = {
+            timestamp: new Date().getTime(),
+            username: writerUser.username,
+            message: "Join request from " + team.name
+        } as NotificationParams;
+
+        await this.sendJoinTeamRequestNotificationToQueue(
+            context.message_queue_provider,
+            notificationParams
+        )
     }
 
     addReader = async (
@@ -142,6 +153,17 @@ export class TeamController {
             message,
             orchestrationChannelTag as string
         );
+
+        const notificationParams = {
+            timestamp: new Date().getTime(),
+            username: readerUser.username,
+            message: "Join request from " + team.name
+        } as NotificationParams;
+
+        await this.sendJoinTeamRequestNotificationToQueue(
+            context.message_queue_provider,
+            notificationParams
+        )
     }
 
     removeWriter = async (
@@ -199,13 +221,11 @@ export class TeamController {
             mongodb_provider.getConnection()
         );
 
-        const teamRepositoryResponse = await teamRepository.verify(
+        await teamRepository.verify(
             decodedToken.username,
             decodedToken.team.id,
             decodedToken.team.role
         );
-
-        console.log(teamRepositoryResponse);
     }
 
     deleteTeam = async (
@@ -218,5 +238,27 @@ export class TeamController {
         await teamRepository.deleteTeam(
             context.username
         );
+    }
+
+    private async sendJoinTeamRequestNotificationToQueue(
+        messageQueueProvider: MessageQueueProvider,
+        notificationParams: NotificationParams
+    ) {
+        const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel
+
+        const message = {
+            sender: MessageQueueChannelType.AUTH,
+            receiver: MessageQueueChannelType.BUSINESS_LOGIC,
+            message: {
+                notification: {
+                    params: notificationParams
+                }
+            } as BusinessLogicActionType
+        } as QueueMessage
+
+        await messageQueueProvider.publish(
+            message,
+            orchestrationChannelTag as string
+        )
     }
 }
