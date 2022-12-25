@@ -54,7 +54,7 @@ export class TeamController {
             teamId,
             {
                 username: writerUser.username,
-                email: writerEmail,
+                email: writerUser.email,
                 isVerified: false
             }
         );
@@ -119,7 +119,7 @@ export class TeamController {
             teamId,
             {
                 username: readerUser.username,
-                email: readerEmail,
+                email: readerUser.email,
                 isVerified: false
             }
         );
