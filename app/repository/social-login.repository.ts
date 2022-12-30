@@ -93,43 +93,43 @@ export class SocialLoginRepository {
     }
   };
 
-  getAllUsersByKey = async(
-    username: string,
-    socialLoginKey: string,
-    offset: number,
-    limit: number
+  getAllUsersByKey = async (
+      username: string,
+      socialLoginKey: string,
+      offset: number,
+      limit: number
   ) => {
     let response;
 
     try {
       response = await this.provider.query(
-         'SELECT social_login_key, username, external_user_email, social_login_mappings.social_login_key FROM social_login_mappings WHERE social_login_key = $1 and (username LIKE $2 or external_user_email LIKE $3) ORDER BY username OFFSET $4 LIMIT $5',
-         [socialLoginKey, '%' + username + '%', '%' + username + '%', offset, limit]
+          'SELECT social_login_key, username, external_user_email, social_login_mappings.social_login_key FROM social_login_mappings WHERE social_login_key = $1 and (username LIKE $2 or external_user_email LIKE $3) ORDER BY username OFFSET $4 LIMIT $5',
+          [ socialLoginKey, '%' + username + '%', '%' + username + '%', offset, limit ]
       );
-    } catch(error) {
-      console.error(error);
+    } catch ( error ) {
+      console.error( error );
       throw error;
     }
 
     return response.rows;
-  }
+  };
 
-  getAllUsersByKeyCount = async(
-    username: string,
-    socialLoginKey: string
+  getAllUsersByKeyCount = async (
+      username: string,
+      socialLoginKey: string
   ) => {
     let response;
 
     try {
       response = await this.provider.query(
-        'SELECT COUNT(*) FROM social_login_mappings WHERE social_login_key = $1 and (username LIKE $2 or external_user_email LIKE $3)',
-        [socialLoginKey, '%' + username + '%', '%' + username + '%']
-      )
-    } catch(error) {
-      console.error(error);
+          'SELECT COUNT(*) FROM social_login_mappings WHERE social_login_key = $1 and (username LIKE $2 or external_user_email LIKE $3)',
+          [ socialLoginKey, '%' + username + '%', '%' + username + '%' ]
+      );
+    } catch ( error ) {
+      console.error( error );
       throw error;
     }
 
     return response.rows;
-  }
+  };
 }

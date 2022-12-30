@@ -9,8 +9,8 @@ import { router as authRouter } from './auth.route';
 import { router as infoRouter } from './info.route';
 import { router as monitorRouter } from './monitor.route';
 import { router as socialLoginRouter } from './social-login.route';
-import { router as twoFactorCodeRouter } from './two-factor-code.route';
 import { router as teamRouter } from './team.route';
+import { router as twoFactorCodeRouter } from './two-factor-code.route';
 
 const subRoutes = {
   root: '/',
@@ -48,7 +48,7 @@ export namespace Routes {
     routes.push( { name: subRoutes.monitor, router: monitorRouter } );
     routes.push( { name: subRoutes.social, router: socialLoginRouter } );
     routes.push( { name: subRoutes.twoFactorCode, router: twoFactorCodeRouter } );
-    routes.push( { name: subRoutes.team, router: teamRouter });
+    routes.push( { name: subRoutes.team, router: teamRouter } );
 
 
     const routeArgs = { routes } as RouteArgs;

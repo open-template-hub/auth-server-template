@@ -31,14 +31,14 @@ router.get(
 );
 
 router.get(
-  subRoutes.other,
-  authorizedBy( [UserRole.ADMIN ]),
-  async( req: Request, res: Response ) => {
-    const context = res.locals.ctx;
-    const response = await infoController.other(
-      context.postgresql_provider,
-      req.query.username as string
-    );
-    res.status( ResponseCode.OK ).json( response );
-  }
-)
+    subRoutes.other,
+    authorizedBy( [ UserRole.ADMIN ] ),
+    async ( req: Request, res: Response ) => {
+      const context = res.locals.ctx;
+      const response = await infoController.other(
+          context.postgresql_provider,
+          req.query.username as string
+      );
+      res.status( ResponseCode.OK ).json( response );
+    }
+);
