@@ -1,8 +1,13 @@
 ### Team Create
 POST http://localhost:4001/team
 Content-Type: application/json
+Authorization: Bearer token
 
 {
+  "name": "Test",
+  "payload": {
+    "website": "https://opentemplatehub.com"
+  }
 }
 
 ### Verify team

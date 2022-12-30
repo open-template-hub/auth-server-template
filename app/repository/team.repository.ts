@@ -8,10 +8,10 @@ export class TeamRepository {
     return this;
   };
 
-  create = async ( creator: string, name: string, imageId: string | undefined ) => {
+  create = async ( creator: string, name: string, payload: any ) => {
     try {
       return await this.dataModel.create( {
-        creator, name, imageId
+        creator, name, payload
       } );
     } catch ( error ) {
       console.error( '> createTeam error: ', error );

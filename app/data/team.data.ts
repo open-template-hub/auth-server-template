@@ -33,7 +33,7 @@ export class TeamDataModel {
         type: String,
         required: true
       },
-      imageId: { type: String },
+      payload: { type: Object },
       creator: {
         type: String,
         required: true

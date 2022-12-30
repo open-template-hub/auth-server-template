@@ -25,7 +25,7 @@ export class TeamController {
   create = async (
       context: Context,
       name: string,
-      imageId: string | undefined
+      payload: any
   ) => {
     const teamRepository = await new TeamRepository().initialize(
         context.mongodb_provider.getConnection()
@@ -34,7 +34,7 @@ export class TeamController {
     const team = await teamRepository.create(
         context.username,
         name,
-        imageId
+        payload
     );
 
     const environment = new Environment();

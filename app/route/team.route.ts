@@ -28,7 +28,7 @@ router.post( subRoutes.root, async ( req: Request, res: Response ) => {
   const teamCreateResponse = await teamController.create(
       res.locals.ctx,
       req.body.name,
-      req.body.imageId
+      req.body.payload
   );
 
   res.status( ResponseCode.OK ).json( teamCreateResponse );
