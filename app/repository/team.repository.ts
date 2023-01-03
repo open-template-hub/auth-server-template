@@ -24,7 +24,8 @@ export class TeamRepository {
       writer: {
         username: string,
         email: string,
-        isVerified: boolean
+        isVerified: boolean,
+        payload: any
       }
   ) => {
     try {
@@ -49,7 +50,8 @@ export class TeamRepository {
       reader: {
         username: string,
         email: string,
-        isVerified: boolean
+        isVerified: boolean,
+        payload: any
       }
   ) => {
     try {

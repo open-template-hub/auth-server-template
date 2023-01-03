@@ -7,15 +7,17 @@ export class TeamDataModel {
   constructor() {
 
     const writerSchema: mongoose.SchemaDefinition = {
-      username: String,
-      email: String,
-      isVerified: Boolean
+      username: { type: String, required: true },
+      email: { type: String, required: true },
+      isVerified: { type: Boolean, required: true },
+      payload: { type: Object }
     };
 
     const readerSchema: mongoose.SchemaDefinition = {
-      username: String,
-      email: String,
-      isVerified: Boolean
+      username: { type: String, required: true },
+      email: { type: String, required: true },
+      isVerified: { type: Boolean, required: true },
+      payload: { type: Object }
     };
 
     /**

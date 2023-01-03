@@ -66,7 +66,8 @@ export class TeamController {
         {
           username: writerUser.username,
           email: writerUser.email,
-          isVerified: false
+          isVerified: false,
+          payload: { invitationDate: Date.now() }
         }
     );
 
@@ -133,7 +134,8 @@ export class TeamController {
         {
           username: readerUser.username,
           email: readerUser.email,
-          isVerified: false
+          isVerified: false,
+          payload: { invitationDate: Date.now() }
         }
     );
 
