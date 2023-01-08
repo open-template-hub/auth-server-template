@@ -28,14 +28,16 @@ export class UserRepository {
    * gets user by username or email
    * @param username username
    */
-  findUserByUsernameOrEmail = async ( username: string ) => {
+  findUserByUsernameOrEmail = async ( username: string, throwError: boolean = true ) => {
     let res;
     try {
       res = await this.provider.query(
           'SELECT username, password, verified, role, phone_number, two_factor_enabled, email FROM users WHERE username = $1 or email = $1',
           [ username ]
       );
-      this.shouldHaveSingleRow( res );
+      if ( throwError ) {
+        this.shouldHaveSingleRow( res );
+      }
     } catch ( error ) {
       console.error( error );
       throw error;

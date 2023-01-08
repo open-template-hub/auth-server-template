@@ -1,5 +1,6 @@
 import { ResponseCode, teamAuthorizedBy, TeamRole } from '@open-template-hub/common';
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
+import Router from 'express-promise-router';
 import { TeamController } from '../controller/team.controller';
 
 const subRoutes = {
@@ -47,27 +48,29 @@ router.delete( subRoutes.root, teamAuthorizedBy( [ TeamRole.CREATOR, TeamRole.RE
 router.post( subRoutes.writer, teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  await teamController.addWriter(
+  const addWriterResponse = await teamController.addWriter(
       res.locals.ctx,
-      req.body.origin,
+      req.query.origin as string,
       req.body.teamId,
-      req.body.writerEmail as string
+      req.body.writerEmail as string | undefined,
+      req.body.writerUsername as string | undefined
   );
 
-  res.status( ResponseCode.OK );
+  res.status( ResponseCode.OK ).json( addWriterResponse );
 } );
 
 router.post( subRoutes.reader, teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  await teamController.addReader(
+  const addReaderResponse = await teamController.addReader(
       res.locals.ctx,
-      req.body.origin,
+      req.query.origin as string,
       req.body.teamId,
-      req.body.readerEmail as string
+      req.body.readerEmail as string | undefined,
+      req.body.readerUsername as string | undefined
   );
 
-  res.status( ResponseCode.OK );
+  res.status( ResponseCode.OK ).json( addReaderResponse );
 } );
 
 router.delete( subRoutes.writer, teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
@@ -99,7 +102,7 @@ router.post( subRoutes.verify, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
 
   await teamController.verify(
-      context.mongodb_provider,
+      context,
       req.body.verifyToken as string
   );
   res.status( ResponseCode.OK );
