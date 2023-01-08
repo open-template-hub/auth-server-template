@@ -22,7 +22,7 @@ export class TeamRepository {
   addWriter = async (
       teamId: string,
       writer: {
-        username: string,
+        username: string | undefined,
         email: string,
         isVerified: boolean,
         payload: any
@@ -31,7 +31,10 @@ export class TeamRepository {
     try {
       return await this.dataModel.findOneAndUpdate(
           {
-            team_id: teamId
+            team_id: teamId,
+            "writers.email": { $ne: writer.email },
+            "readers.email": { $ne: writer.email },
+            "creator": { $ne: writer.username }
           },
           {
             $addToSet: {
@@ -48,7 +51,7 @@ export class TeamRepository {
   addReader = async (
       teamId: string,
       reader: {
-        username: string,
+        username: string | undefined,
         email: string,
         isVerified: boolean,
         payload: any
@@ -57,7 +60,10 @@ export class TeamRepository {
     try {
       return await this.dataModel.findOneAndUpdate(
           {
-            team_id: teamId
+            team_id: teamId,
+            "writers.email": { $ne: reader.email },
+            "readers.email": { $ne: reader.email },
+            "creator": { $ne: reader.username }
           },
           {
             $addToSet: {
@@ -150,24 +156,28 @@ export class TeamRepository {
 
   verify = async (
       username: string,
+      email: string,
       teamId: string,
       role: 'writers' | 'readers'
   ) => {
+    // email should be written 
     try {
       if ( role === 'writers' ) {
         return await this.dataModel.updateOne(
-            { team_id: teamId, 'writers.username': username },
+            { team_id: teamId, 'writers.email': email },
             {
               $set: {
+                'writers.$.username': username,
                 'writers.$.isVerified': true
               }
             }
         );
       } else if ( role === 'readers' ) {
         return await this.dataModel.updateOne(
-            { team_id: teamId, 'readers.username': username },
+            { team_id: teamId, 'readers.email': email },
             {
               $set: {
+                'readers.$.username': username,
                 'readers.$.isVerified': true
               }
             }
