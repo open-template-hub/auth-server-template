@@ -51,11 +51,7 @@ export class AuthQueueConsumer implements QueueConsumer {
           msgObj
       );
     } catch ( e ) {
-      console.log(
-          'Error with processing deliveryTag: ' + msg.fields.deliveryTag,
-          msgObj,
-          e
-      );
+      console.log( 'Error with processing deliveryTag: ' + msg.fields.deliveryTag, msgObj, e );
 
       this.channel.nack( msg, false, requeue );
     }
