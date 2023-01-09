@@ -30,8 +30,9 @@ router.post( subRoutes.signup, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
   const response = await authController.signup(
       context.postgresql_provider,
+      context.mongodb_provider,
       context.message_queue_provider,
-      req.body.origin,
+      req.query.origin as string,
       {
         username: req.body.username,
         password: req.body.password,
@@ -48,8 +49,9 @@ router.post( subRoutes.login, async ( req: Request, res: Response ) => {
   const context = res.locals.ctx;
   const response = await authController.login(
       context.postgresql_provider,
+      context.mongodb_provider,
       context.message_queue_provider,
-      req.body.origin,
+      req.query.origin as string,
       {
         username: req.body.username,
         password: req.body.password,
@@ -99,6 +101,7 @@ router.post( subRoutes.forgetPassword, async ( req: Request, res: Response ) => 
   await authController.forgetPassword(
       context.postgresql_provider,
       context.message_queue_provider,
+      req.query.origin as string,
       req.body.username,
       req.body.languageCode
   );
@@ -115,6 +118,7 @@ router.get(
       const resetPasswordToken = await authController.forgetPassword(
           context.postgresql_provider,
           context.message_queue_provider,
+          req.query.origin as string,
           req.query.username as string,
           undefined,
           true

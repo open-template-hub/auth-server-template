@@ -1,0 +1,40 @@
+### Team Create
+POST http://localhost:4001/team
+Content-Type: application/json
+Authorization: Bearer token
+
+{
+  "name": "Test",
+  "payload": {
+    "website": "https://opentemplatehub.com"
+  }
+}
+
+### Verify team
+POST  http://localhost:4001/team/verify
+Content-Type: application/json
+Authorization: Bearer token
+
+{
+  "verifyToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lcnQyIiwidGVhbSI6eyJpZCI6IjYzOTVjZGIzZjFhMGQ1ZjFhNzMzYTc4OSIsInJvbGUiOiJ3cml0ZXJzIn0sImlhdCI6MTY3MDc2MjAzNCwiZXhwIjoxNjcxNjI2MDM0fQ.mR9H3kFxvqa8h-FBkh89Q6qgfehlnfzNcM26DpH1Q50"
+}
+
+### Add Writer
+POST http://localhost:4001/team/writer
+Content-Type: application/json
+Authorization: Bearer token
+
+{
+  "teamId": "63af30427f9b8d434b24ccce",
+  "writerEmail": "test"
+}
+
+### Add Reader
+POST http://localhost:4001/team/reader
+Content-Type: application/json
+Authorization: Bearer token
+
+{
+  "teamId": "63af30427f9b8d434b24ccce",
+  "readerEmail": "test"
+}

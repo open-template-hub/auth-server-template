@@ -1,1 +1,1 @@
-console.log( 'export const version = \'' + require( './package.json' ).version + '\';' )
+console.log( 'export const version = \'' + require( './package.json' ).version + '\';' );

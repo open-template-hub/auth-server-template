@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">
-Open Template Hub - Auth Server Template v4
+Open Template Hub - Auth Server Template v5
 </h1>
 
 [![License](https://img.shields.io/github/license/open-template-hub/auth-server-template?color=43b043&style=for-the-badge)](LICENSE)
@@ -64,11 +64,12 @@ ENVIRONMENT=Local
 
 CLIENT_URL=http://localhost:4200
 ADMIN_CLIENT_URLS="http://localhost:4202"
-CLIENT_RESET_PASSWORD_URL=http://localhost:4200/reset-password
-CLIENT_VERIFICATION_SUCCESS_URL=http://localhost:4200/verify-account
 
 DATABASE_URL={Database Connection Url}
 POSTGRESQL_CONNECTION_LIMIT={Postgresql Connection Limit}
+
+MONGODB_URI={Database Connection Url}
+MONGODB_CONNECTION_LIMIT={MongoDB Connection Limit}
 
 CLOUDAMQP_APIKEY={MQ Api Key}
 CLOUDAMQP_URL={MQ Connection Url}

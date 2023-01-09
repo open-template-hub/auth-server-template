@@ -1,7 +1,7 @@
 ### Request
 POST http://localhost:4001/2fa/request
 Content-Type: application/json
-Authorization: Bearer token 
+Authorization: Bearer token
 
 {
   "phoneNumber": "+1111111",

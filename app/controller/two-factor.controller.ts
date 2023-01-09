@@ -19,6 +19,7 @@ import { AuthController } from './auth.controller';
 export class TwoFactorCodeController {
 
   environment: Environment;
+
   constructor() {
     this.environment = new Environment();
   }

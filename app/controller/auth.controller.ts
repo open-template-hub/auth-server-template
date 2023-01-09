@@ -9,19 +9,21 @@ import {
   MailActionType,
   MessageQueueChannelType,
   MessageQueueProvider,
+  MongoDbProvider,
   PostgreSqlProvider,
   QueryFilters,
   QueueMessage,
   ResponseCode,
   TokenUtil,
   User,
-  UserRole,
+  UserRole
 } from '@open-template-hub/common';
 import bcrypt from 'bcrypt';
 import { Environment } from '../../environment';
 import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
+import { TeamController } from './team.controller';
 import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
@@ -43,6 +45,7 @@ export class AuthController {
    */
   signup = async (
       db: PostgreSqlProvider,
+      mongodb_provider: MongoDbProvider,
       message_queue_provider: MessageQueueProvider,
       origin: string,
       user: User,
@@ -72,7 +75,7 @@ export class AuthController {
 
     if ( isAutoVerify ) {
       await this.verify( db, verificationToken );
-      return this.login( db, message_queue_provider, origin, user );
+      return this.login( db, mongodb_provider, message_queue_provider, origin, user );
     } else {
       const orchestrationChannelTag =
           this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
@@ -80,8 +83,7 @@ export class AuthController {
         user: user.username,
         email: user.email,
         accountVerificationToken: verificationToken,
-        clientVerificationSuccessUrl:
-        this.environment.args().extendedArgs?.clientVerificationSuccessUrl,
+        clientVerificationSuccessUrl: origin + '/verify-account'
       } as AccountVerificationMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
@@ -110,6 +112,7 @@ export class AuthController {
    */
   login = async (
       db: PostgreSqlProvider,
+      mongoDbProvider: MongoDbProvider,
       messageQueueProvider: MessageQueueProvider,
       origin: string,
       user: User,
@@ -177,8 +180,14 @@ export class AuthController {
       };
     } else {
       const tokenRepository = new TokenRepository( db );
+
+      const userTeams: any[] = await TeamController.getTeams( mongoDbProvider, user.username );
+      dbUser.teams = userTeams.map( team => {
+        return team._doc;
+      } );
+
       const genereateTokenResponse = await tokenRepository.generateTokens(
-          dbUser
+          dbUser,
       );
       return {
         accessToken: genereateTokenResponse.accessToken,
@@ -244,6 +253,7 @@ export class AuthController {
   forgetPassword = async (
       db: PostgreSqlProvider,
       message_queue_provider: MessageQueueProvider,
+      origin: string,
       username: string,
       languageCode?: string,
       sendEmail: boolean = true
@@ -259,8 +269,7 @@ export class AuthController {
         user: user.username,
         email: user.email,
         passwordResetToken,
-        clientResetPasswordUrl:
-        this.environment.args().extendedArgs?.clientResetPasswordUrl,
+        clientResetPasswordUrl: origin + '/reset-password'
       } as ForgetPasswordMailActionParams;
       const message = {
         sender: MessageQueueChannelType.AUTH,
@@ -361,18 +370,6 @@ export class AuthController {
     await userRepository.deletedSubmittedPhoneNumberByUsername( username );
   };
 
-  private maskPhoneNumber( number: string ): string {
-    let maskedNumber = '';
-    for ( let i = 0; i < number.length; i++ ) {
-      if ( i > number.length - 3 ) {
-        maskedNumber += number.charAt( i );
-      } else {
-        maskedNumber += '*';
-      }
-    }
-    return maskedNumber;
-  }
-
   getUsers = async (
       db: PostgreSqlProvider,
       role?: string,
@@ -421,5 +418,17 @@ export class AuthController {
 
     return { users, meta: { offset, limit, count } };
   };
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for ( let i = 0; i < number.length; i++ ) {
+      if ( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 }
 

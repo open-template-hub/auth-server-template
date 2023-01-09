@@ -9,6 +9,7 @@ import { router as authRouter } from './auth.route';
 import { router as infoRouter } from './info.route';
 import { router as monitorRouter } from './monitor.route';
 import { router as socialLoginRouter } from './social-login.route';
+import { router as teamRouter } from './team.route';
 import { router as twoFactorCodeRouter } from './two-factor-code.route';
 
 const subRoutes = {
@@ -18,6 +19,7 @@ const subRoutes = {
   social: '/social',
   info: '/info',
   twoFactorCode: '/2fa',
+  team: '/team'
 };
 
 export namespace Routes {
@@ -27,7 +29,7 @@ export namespace Routes {
     const ctxArgs = {
       envArgs,
       providerAvailability: {
-        mongo_enabled: false,
+        mongo_enabled: true,
         postgre_enabled: true,
         mq_enabled: true,
       },
@@ -46,6 +48,8 @@ export namespace Routes {
     routes.push( { name: subRoutes.monitor, router: monitorRouter } );
     routes.push( { name: subRoutes.social, router: socialLoginRouter } );
     routes.push( { name: subRoutes.twoFactorCode, router: twoFactorCodeRouter } );
+    routes.push( { name: subRoutes.team, router: teamRouter } );
+
 
     const routeArgs = { routes } as RouteArgs;
 
