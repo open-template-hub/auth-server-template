@@ -32,9 +32,9 @@ export class TeamRepository {
       return await this.dataModel.findOneAndUpdate(
           {
             team_id: teamId,
-            "writers.email": { $ne: writer.email },
-            "readers.email": { $ne: writer.email },
-            "creator": { $ne: writer.username }
+            'writers.email': { $ne: writer.email },
+            'readers.email': { $ne: writer.email },
+            'creator': { $ne: writer.username }
           },
           {
             $addToSet: {
@@ -61,9 +61,9 @@ export class TeamRepository {
       return await this.dataModel.findOneAndUpdate(
           {
             team_id: teamId,
-            "writers.email": { $ne: reader.email },
-            "readers.email": { $ne: reader.email },
-            "creator": { $ne: reader.username }
+            'writers.email': { $ne: reader.email },
+            'readers.email': { $ne: reader.email },
+            'creator': { $ne: reader.username }
           },
           {
             $addToSet: {

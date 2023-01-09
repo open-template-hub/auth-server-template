@@ -22,6 +22,19 @@ export class TeamController {
     /** intentionally blank */
   }
 
+  static getTeams = async (
+      mongodb_provider: MongoDbProvider,
+      username: string
+  ) => {
+    const teamRepository = await new TeamRepository().initialize(
+        mongodb_provider.getConnection()
+    );
+
+    return teamRepository.getTeams(
+        username
+    );
+  };
+
   create = async (
       context: Context,
       name: string,
@@ -44,53 +57,6 @@ export class TeamController {
     return { tokens };
   };
 
-  private sendTeamEmail = async (
-    messageQueueProvider: MessageQueueProvider,
-    origin: string,
-    targetUser: {
-      username: string | undefined,
-      email: string
-    },
-    targetTeam: {
-      teamId: string,
-      teamRole: TeamRole,
-      teamName: string
-    }
-  ) => {
-    const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
-
-    const joinTeamToken = this.tokenUtil.generateJoinTeamToken( targetUser.email, {
-      id: targetTeam.teamId,
-      role: targetTeam.teamRole
-    } );
-
-    const joinTeamParams = {
-      user: targetUser.username,
-      email: targetUser.email,
-      joinTeamToken,
-      teamId: targetTeam.teamId,
-      teamName: targetTeam.teamName,
-      joinTeamUrl: origin + '/join-team'
-    } as JoinTeamMailActionParams;
-
-    const message = {
-      sender: MessageQueueChannelType.BUSINESS_LOGIC,
-      receiver: MessageQueueChannelType.MAIL,
-      message: {
-        mailType: {
-          joinTeam: {
-            params: joinTeamParams
-          }
-        }
-      }
-    };
-
-    await messageQueueProvider.publish(
-        message,
-        orchestrationChannelTag as string
-    );
-  }
-
   addWriter = async (
       context: Context,
       origin: string,
@@ -100,7 +66,7 @@ export class TeamController {
   ) => {
     // check pre conditions
     if ( ( writerEmail && writerUsername ) || ( !writerEmail && !writerUsername ) ) {
-      throw new Error("Either username or email should be given.")
+      throw new Error( 'Either username or email should be given.' );
     }
 
     // init repositorires
@@ -112,23 +78,23 @@ export class TeamController {
     const registeredUser = await userRepository.findUserByUsernameOrEmail( writerEmail ?? writerUsername as string, false );
 
     // if username is given, user must be registered
-    if ( writerUsername && !registeredUser) {
+    if ( writerUsername && !registeredUser ) {
       throw new Error( `User not found with given username: ${ writerUsername }` );
     }
 
     // if the user is not be registered, email can not be null
     if ( !registeredUser && !writerEmail ) {
-      throw new Error( `Email must be given for non registered users`)
+      throw new Error( `Email must be given for non registered users` );
     }
 
     // overwrite email or username if user is already registered
     if ( registeredUser ) {
       if ( !writerEmail ) {
-        writerEmail = registeredUser.email
+        writerEmail = registeredUser.email;
       }
 
       if ( !writerUsername ) {
-        writerUsername = registeredUser.username
+        writerUsername = registeredUser.username;
       }
     }
 
@@ -146,37 +112,37 @@ export class TeamController {
     );
 
     if ( !team ) {
-      throw new Error(`Can not find the team with given teamId: ${ teamId } or user is already in the team`)
+      throw new Error( `Can not find the team with given teamId: ${ teamId } or user is already in the team` );
     }
 
     await this.sendTeamEmail(
-      context.message_queue_provider,
-      origin,
-      {
-        username: writerUsername,
-        email: writerEmail
-      },
-      {
-        teamId: team.team_id,
-        teamRole: TeamRole.WRITER,
-        teamName: team.name
-      }
-    )
+        context.message_queue_provider,
+        origin,
+        {
+          username: writerUsername,
+          email: writerEmail
+        },
+        {
+          teamId: team.team_id,
+          teamRole: TeamRole.WRITER,
+          teamName: team.name
+        }
+    );
 
     if ( writerUsername ) {
       await this.sendJoinTeamRequestNotificationToQueue(
-        context.message_queue_provider,
-        {
-          timestamp: new Date().getTime(),
-          username: writerUsername,
-          message: `${context.username} invited you to join ${team.name} as writer.`,
-          sender: context.username,
-          category: 'Team'
-        }
-      ); 
+          context.message_queue_provider,
+          {
+            timestamp: new Date().getTime(),
+            username: writerUsername,
+            message: `${ context.username } invited you to join ${ team.name } as writer.`,
+            sender: context.username,
+            category: 'Team'
+          }
+      );
     }
-    
-    return { writerUsername, writerEmail }
+
+    return { writerUsername, writerEmail };
   };
 
   addReader = async (
@@ -188,7 +154,7 @@ export class TeamController {
   ) => {
     // check pre conditions
     if ( ( readerEmail && readerUsername ) || ( !readerEmail && !readerUsername ) ) {
-      throw new Error("Either username or email should be given.")
+      throw new Error( 'Either username or email should be given.' );
     }
 
     // init repositorires
@@ -200,23 +166,23 @@ export class TeamController {
     const registeredUser = await userRepository.findUserByUsernameOrEmail( readerEmail ?? readerUsername as string, false );
 
     // if username is given, user must be registered
-    if ( readerUsername && !registeredUser) {
+    if ( readerUsername && !registeredUser ) {
       throw new Error( `User not found with given username: ${ readerUsername }` );
     }
 
     // if the user is not be registered, email can not be null
     if ( !registeredUser && !readerEmail ) {
-      throw new Error( `Email must be given for non registered users`)
+      throw new Error( `Email must be given for non registered users` );
     }
 
     // overwrite email or username if user is already registered
     if ( registeredUser ) {
       if ( !readerEmail ) {
-        readerEmail = registeredUser.email
+        readerEmail = registeredUser.email;
       }
 
       if ( !readerUsername ) {
-        readerUsername = registeredUser.username
+        readerUsername = registeredUser.username;
       }
     }
 
@@ -234,37 +200,37 @@ export class TeamController {
     );
 
     if ( !team ) {
-      throw new Error(`Can not find the team with given teamId: ${ teamId } or user is already in the team`)
+      throw new Error( `Can not find the team with given teamId: ${ teamId } or user is already in the team` );
     }
 
     await this.sendTeamEmail(
-      context.message_queue_provider,
-      origin,
-      {
-        username: readerUsername,
-        email: readerEmail
-      },
-      {
-        teamId: team.team_id,
-        teamRole: TeamRole.READER,
-        teamName: team.name
-      }
-    )
+        context.message_queue_provider,
+        origin,
+        {
+          username: readerUsername,
+          email: readerEmail
+        },
+        {
+          teamId: team.team_id,
+          teamRole: TeamRole.READER,
+          teamName: team.name
+        }
+    );
 
     if ( readerUsername ) {
       await this.sendJoinTeamRequestNotificationToQueue(
-        context.message_queue_provider,
-        {
-          timestamp: new Date().getTime(),
-          username: readerUsername,
-          message: `${context.username} invited you to join ${team.name} as reader.`,
-          sender: context.username,
-          category: 'Team'
-        }
-      ); 
+          context.message_queue_provider,
+          {
+            timestamp: new Date().getTime(),
+            username: readerUsername,
+            message: `${ context.username } invited you to join ${ team.name } as reader.`,
+            sender: context.username,
+            category: 'Team'
+          }
+      );
     }
-    
-    return { readerUsername, readerEmail }
+
+    return { readerUsername, readerEmail };
   };
 
   removeWriter = async (
@@ -297,22 +263,9 @@ export class TeamController {
     );
   };
 
-  static getTeams = async (
-      mongodb_provider: MongoDbProvider,
-      username: string
-  ) => {
-    const teamRepository = await new TeamRepository().initialize(
-        mongodb_provider.getConnection()
-    );
-
-    return teamRepository.getTeams(
-        username
-    );
-  };
-
   verify = async (
-    context: Context,
-    token: string
+      context: Context,
+      token: string
   ) => {
     // decode token
     const environment = new Environment();
@@ -322,10 +275,10 @@ export class TeamController {
     // get user from username
     const userRepository = new UserRepository( context.postgresql_provider );
     const tokenUser = await userRepository.findUserByUsernameOrEmail( context.username );
-    
+
     // todo mert after common update change decodedToken.username with decodedToken.email
     if ( tokenUser.email !== decodedToken.username ) {
-      throw new Error("Permisson denied")
+      throw new Error( 'Permisson denied' );
     }
 
     // verify
@@ -350,6 +303,53 @@ export class TeamController {
 
     await teamRepository.deleteTeam(
         context.username
+    );
+  };
+
+  private sendTeamEmail = async (
+      messageQueueProvider: MessageQueueProvider,
+      origin: string,
+      targetUser: {
+        username: string | undefined,
+        email: string
+      },
+      targetTeam: {
+        teamId: string,
+        teamRole: TeamRole,
+        teamName: string
+      }
+  ) => {
+    const orchestrationChannelTag = this.environment.args().mqArgs?.orchestrationServerMessageQueueChannel;
+
+    const joinTeamToken = this.tokenUtil.generateJoinTeamToken( targetUser.email, {
+      id: targetTeam.teamId,
+      role: targetTeam.teamRole
+    } );
+
+    const joinTeamParams = {
+      user: targetUser.username,
+      email: targetUser.email,
+      joinTeamToken,
+      teamId: targetTeam.teamId,
+      teamName: targetTeam.teamName,
+      joinTeamUrl: origin + '/join-team'
+    } as JoinTeamMailActionParams;
+
+    const message = {
+      sender: MessageQueueChannelType.BUSINESS_LOGIC,
+      receiver: MessageQueueChannelType.MAIL,
+      message: {
+        mailType: {
+          joinTeam: {
+            params: joinTeamParams
+          }
+        }
+      }
+    };
+
+    await messageQueueProvider.publish(
+        message,
+        orchestrationChannelTag as string
     );
   };
 

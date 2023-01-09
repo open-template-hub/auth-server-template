@@ -370,18 +370,6 @@ export class AuthController {
     await userRepository.deletedSubmittedPhoneNumberByUsername( username );
   };
 
-  private maskPhoneNumber( number: string ): string {
-    let maskedNumber = '';
-    for ( let i = 0; i < number.length; i++ ) {
-      if ( i > number.length - 3 ) {
-        maskedNumber += number.charAt( i );
-      } else {
-        maskedNumber += '*';
-      }
-    }
-    return maskedNumber;
-  }
-
   getUsers = async (
       db: PostgreSqlProvider,
       role?: string,
@@ -430,5 +418,17 @@ export class AuthController {
 
     return { users, meta: { offset, limit, count } };
   };
+
+  private maskPhoneNumber( number: string ): string {
+    let maskedNumber = '';
+    for ( let i = 0; i < number.length; i++ ) {
+      if ( i > number.length - 3 ) {
+        maskedNumber += number.charAt( i );
+      } else {
+        maskedNumber += '*';
+      }
+    }
+    return maskedNumber;
+  }
 }
 
