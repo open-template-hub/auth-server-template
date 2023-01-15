@@ -1,3 +1,4 @@
+import { TeamRole } from '@open-template-hub/common';
 import { TeamDataModel } from '../data/team.data';
 
 export class TeamRepository {
@@ -19,27 +20,38 @@ export class TeamRepository {
     }
   };
 
-  addWriter = async (
-      teamId: string,
-      writer: {
-        username: string | undefined,
-        email: string,
-        isVerified: boolean,
-        payload: any
-      }
+  addMember = async (
+    teamId: string,
+    member: {
+      username: string | undefined,
+      email: string,
+      isVerified: boolean,
+      payload: any
+    },
+    teamRole: TeamRole.READER | TeamRole.WRITER
   ) => {
     try {
+      let targetTeamArray: { writers: any } | { readers: any };
+
+      if ( teamRole === TeamRole.READER ) {
+        targetTeamArray = { readers: member }
+      }
+      else {
+        targetTeamArray = { writers: member }
+      }
+
       return await this.dataModel.findOneAndUpdate(
           {
             team_id: teamId,
-            'writers.email': { $ne: writer.email },
-            'readers.email': { $ne: writer.email },
-            'creator': { $ne: writer.username }
+            'writers.email': { $ne: member.email },
+            'readers.email': { $ne: member.email },
+            'creator': { $ne: member.username }
           },
           {
-            $addToSet: {
-              writers: writer
-            }
+            $addToSet: targetTeamArray
+          },
+          {
+            returnOriginal: false
           }
       );
     } catch ( error ) {
@@ -48,80 +60,37 @@ export class TeamRepository {
     }
   };
 
-  addReader = async (
-      teamId: string,
-      reader: {
-        username: string | undefined,
-        email: string,
-        isVerified: boolean,
-        payload: any
+  removeMember = async (
+    teamId: string,
+    email: string,
+    teamRole: TeamRole.READER | TeamRole.WRITER
+  ) => {
+    try {
+      let targetTeamArray: { writers: any } | { readers: any };
+
+      if ( teamRole === TeamRole.READER) {
+        targetTeamArray = { readers: { email } }
       }
-  ) => {
-    try {
+      else {
+        targetTeamArray = { writers: { email } }
+      }
+
       return await this.dataModel.findOneAndUpdate(
-          {
-            team_id: teamId,
-            'writers.email': { $ne: reader.email },
-            'readers.email': { $ne: reader.email },
-            'creator': { $ne: reader.username }
-          },
-          {
-            $addToSet: {
-              readers: reader
-            }
-          }
-      );
+        {
+          team_id: teamId
+        },
+        {
+          $pull: targetTeamArray
+        },
+        {
+          returnOriginal: false
+        }
+      )
     } catch ( error ) {
-      console.error( '> addReader error: ', error );
+      console.error( '> removeMember error: ', error );
       throw error;
     }
-  };
-
-  removeFromWriters = async (
-      teamId: string,
-      writerEmail: string
-  ) => {
-    try {
-      return await this.dataModel.updateOne(
-          {
-            team_id: teamId
-          },
-          {
-            $pull: {
-              writers: {
-                email: writerEmail
-              }
-            }
-          }
-      );
-    } catch ( error ) {
-      console.error( '> removeFromWriters error: ', error );
-      throw error;
-    }
-  };
-
-  removeFromReaders = async (
-      teamId: string,
-      readerEmail: string
-  ) => {
-    try {
-      return await this.dataModel.updateOne(
-          {
-            team_id: teamId
-          },
-          {
-            $pull: {
-              readers: {
-                email: readerEmail
-              }
-            }
-          }
-      );
-    } catch ( error ) {
-      console.error( '> removeFromReaders error: ', error );
-      throw error;
-    }
-  };
+  }
 
   getTeams = async (
       username: string
@@ -163,23 +132,29 @@ export class TeamRepository {
     // email should be written 
     try {
       if ( role === 'writers' ) {
-        return await this.dataModel.updateOne(
+        return await this.dataModel.findOneAndUpdate(
             { team_id: teamId, 'writers.email': email },
             {
               $set: {
                 'writers.$.username': username,
                 'writers.$.isVerified': true
               }
+            },
+            {
+              returnOriginal: false
             }
         );
       } else if ( role === 'readers' ) {
-        return await this.dataModel.updateOne(
+        return await this.dataModel.findOneAndUpdate(
             { team_id: teamId, 'readers.email': email },
             {
               $set: {
                 'readers.$.username': username,
                 'readers.$.isVerified': true
               }
+            },
+            {
+              returnOriginal: false
             }
         );
       }
@@ -191,11 +166,11 @@ export class TeamRepository {
   };
 
   deleteTeam = async (
-      creator: string
+      teamId: string
   ) => {
     try {
       return await this.dataModel.findOneAndDelete(
-          { creator }
+          { team_id: teamId }
       );
     } catch ( error ) {
       console.error( '> deleteTeam error: ', error );

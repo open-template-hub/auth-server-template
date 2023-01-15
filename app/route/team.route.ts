@@ -38,22 +38,24 @@ router.post( subRoutes.root, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] 
 router.delete( subRoutes.root, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  await teamController.deleteTeam(
-      res.locals.ctx
+  const response = await teamController.deleteTeam(
+      res.locals.ctx,
+      req.query.teamId as string
   );
 
-  res.status( ResponseCode.OK );
+  res.status( ResponseCode.OK ).json( response );
 } );
 
 router.post( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  const addWriterResponse = await teamController.addWriter(
+  const addWriterResponse = await teamController.addMember(
       res.locals.ctx,
       req.query.origin as string,
       req.body.teamId,
-      req.body.writerEmail as string | undefined,
-      req.body.writerUsername as string | undefined
+      req.body.email as string | undefined,
+      req.body.username as string | undefined,
+      TeamRole.WRITER
   );
 
   res.status( ResponseCode.OK ).json( addWriterResponse );
@@ -62,12 +64,13 @@ router.post( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT 
 router.post( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  const addReaderResponse = await teamController.addReader(
+  const addReaderResponse = await teamController.addMember(
       res.locals.ctx,
       req.query.origin as string,
       req.body.teamId,
-      req.body.readerEmail as string | undefined,
-      req.body.readerUsername as string | undefined
+      req.body.email as string | undefined,
+      req.body.username as string | undefined,
+      TeamRole.READER
   );
 
   res.status( ResponseCode.OK ).json( addReaderResponse );
@@ -76,34 +79,38 @@ router.post( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT 
 router.delete( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  await teamController.removeWriter(
+  const response = await teamController.removeMember(
       res.locals.ctx,
       req.query.teamId as string,
-      req.query.writerEmail as string
+      req.query.email as string,
+      TeamRole.WRITER
   );
 
-  res.status( ResponseCode.OK );
+  res.status( ResponseCode.OK ).json( response );
 } );
 
 router.delete( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
-  await teamController.removeReader(
+  const response = await teamController.removeMember(
       res.locals.ctx,
       req.query.teamId as string,
-      req.body.readerEmail as string
+      req.body.email as string,
+      TeamRole.READER
   );
 
-  res.status( ResponseCode.OK );
+  res.status( ResponseCode.OK ).json( response );
 } );
 
 router.post( subRoutes.verify, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
   const context = res.locals.ctx;
 
-  await teamController.verify(
-      context,
-      req.body.verifyToken as string
-  );
-  res.status( ResponseCode.OK );
+  const verifyResponse = await teamController.verifyTeamRequest(
+    context,
+    req.body.teamId,
+    req.body.teamRole as TeamRole.WRITER | TeamRole.READER
+  )
+
+  res.status( ResponseCode.OK ).json( verifyResponse );
 } );
