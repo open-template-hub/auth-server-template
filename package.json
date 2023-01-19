@@ -12,7 +12,7 @@
     "outdated": "node dependency-checker.ts > docs/OUTDATED.md"
   },
   "dependencies": {
-    "@open-template-hub/common": "5.0.4",
+    "@open-template-hub/common": "5.0.6",
     "@types/bcrypt": "^5.0.0",
     "@types/capitalize": "^2.0.0",
     "@types/cors": "^2.8.13",
