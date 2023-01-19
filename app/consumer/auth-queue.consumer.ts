@@ -1,14 +1,19 @@
 import {
+  AbstractQueueConsumer,
   AuthActionType,
   ContextArgs,
   MessageQueueChannelType,
   QueueConsumer,
-  QueueMessage,
 } from '@open-template-hub/common';
 
-export class AuthQueueConsumer implements QueueConsumer {
-  private channel: any;
-  private ctxArgs: ContextArgs = {} as ContextArgs;
+export class AuthQueueConsumer
+  extends AbstractQueueConsumer
+  implements QueueConsumer
+{
+  constructor() {
+    super();
+    this.ownerChannelType = MessageQueueChannelType.AUTH;
+  }
 
   init = (channel: string, ctxArgs: ContextArgs) => {
     this.channel = channel;
@@ -36,60 +41,6 @@ export class AuthQueueConsumer implements QueueConsumer {
         console.log('Message will be rejected: ', msgObj);
         this.channel.reject(msg, false);
       }
-    }
-  };
-
-  private operate = async (
-    msg: any,
-    msgObj: any,
-    requeue: boolean,
-    hook: Function
-  ) => {
-    try {
-      console.log(
-        'Message Received with deliveryTag: ' + msg.fields.deliveryTag,
-        msgObj
-      );
-      await hook();
-      await this.channel.ack(msg);
-      console.log(
-        'Message Processed with deliveryTag: ' + msg.fields.deliveryTag,
-        msgObj
-      );
-    } catch (e) {
-      console.log(
-        'Error with processing deliveryTag: ' + msg.fields.deliveryTag,
-        msgObj,
-        e
-      );
-
-      await this.moveToDLQ(msg, requeue);
-    }
-  };
-
-  private moveToDLQ = async (msg: any, requeue: boolean) => {
-    try {
-      const orchestrationChannelTag =
-        this.ctxArgs.envArgs.mqArgs?.orchestrationServerMessageQueueChannel;
-
-      const message = {
-        sender: MessageQueueChannelType.AUTH,
-        receiver: MessageQueueChannelType.DLQ,
-        message: {
-          owner: MessageQueueChannelType.AUTH,
-          msg,
-        },
-      } as QueueMessage;
-
-      await this.ctxArgs.message_queue_provider?.publish(
-        message,
-        orchestrationChannelTag as string
-      );
-
-      this.channel.reject(msg, false);
-    } catch (e) {
-      console.log('Error while moving message to DLQ: ', msg);
-      this.channel.nack(msg, false, requeue);
     }
   };
 }
