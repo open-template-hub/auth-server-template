@@ -20,6 +20,24 @@ export class TeamRepository {
     }
   };
 
+  update = async( teamId: string, payload: any ) => {
+    try {
+      return await this.dataModel.findOneAndUpdate(
+        {
+          team_id: teamId
+        },
+        {
+          payload
+        },
+        {
+          returnOriginal: false
+        }
+      )
+    } catch ( error ) {
+      console.error( '> updateTeam error ', error );
+    }
+  }
+
   addMember = async (
     teamId: string,
     member: {
@@ -62,17 +80,17 @@ export class TeamRepository {
 
   removeMember = async (
     teamId: string,
-    email: string,
+    username: string,
     teamRole: TeamRole.READER | TeamRole.WRITER
   ) => {
     try {
       let targetTeamArray: { writers: any } | { readers: any };
 
       if ( teamRole === TeamRole.READER) {
-        targetTeamArray = { readers: { email } }
+        targetTeamArray = { readers: { username } }
       }
       else {
-        targetTeamArray = { writers: { email } }
+        targetTeamArray = { writers: { username } }
       }
 
       return await this.dataModel.findOneAndUpdate(

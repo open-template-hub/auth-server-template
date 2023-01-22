@@ -7,7 +7,8 @@ const subRoutes = {
   root: '/',
   writer: '/writer',
   reader: '/reader',
-  verify: '/verify'
+  verify: '/verify',
+  leave: '/leave'
 };
 
 export const router = Router();
@@ -33,6 +34,18 @@ router.post( subRoutes.root, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] 
   );
 
   res.status( ResponseCode.OK ).json( teamCreateResponse );
+} );
+
+router.put( subRoutes.root, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR, TeamRole.WRITER ] ), async ( req: Request, res: Response) => {
+  const teamController = new TeamController();
+
+  const teamUpdateResponse = await teamController.update(
+    res.locals.ctx,
+    req.body.teamId,
+    req.body.payload
+  );
+  
+  res.status( ResponseCode.OK ).json( teamUpdateResponse );
 } );
 
 router.delete( subRoutes.root, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
@@ -76,7 +89,7 @@ router.post( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT 
   res.status( ResponseCode.OK ).json( addReaderResponse );
 } );
 
-router.delete( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
+router.delete( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
   const response = await teamController.removeMember(
@@ -89,7 +102,7 @@ router.delete( subRoutes.writer, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAUL
   res.status( ResponseCode.OK ).json( response );
 } );
 
-router.delete( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), teamAuthorizedBy( [ TeamRole.CREATOR ] ), async ( req: Request, res: Response ) => {
+router.delete( subRoutes.reader, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), async ( req: Request, res: Response ) => {
   const teamController = new TeamController();
 
   const response = await teamController.removeMember(
@@ -114,3 +127,16 @@ router.post( subRoutes.verify, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT 
 
   res.status( ResponseCode.OK ).json( verifyResponse );
 } );
+
+router.post( subRoutes.leave, authorizedBy( [ UserRole.ADMIN, UserRole.DEFAULT ] ), async ( req: Request, res: Response ) => {
+  const teamController = new TeamController();
+  const context = res.locals.ctx;
+
+  const leaveResponse = await teamController.leaveTeam(
+    context,
+    req.body.teamId,
+    req.body.teamRole as TeamRole.WRITER | TeamRole.READER
+  );
+
+  res.status( ResponseCode.OK ).json( leaveResponse );
+})

@@ -57,6 +57,23 @@ export class TeamController {
     return { tokens };
   };
 
+  update = async(
+    context: Context,
+    teamId: string,
+    payload: any
+  ) => {
+    const teamRepository = await new TeamRepository().initialize(
+      context.mongodb_provider.getConnection()
+    );
+
+    const team = await teamRepository.update(
+      teamId,
+      payload
+    );
+
+    return { team };
+  }
+
   addMember = async (
     context: Context,
     origin: string,
@@ -160,7 +177,7 @@ export class TeamController {
   removeMember = async (
     context: Context,
     teamId: string,
-    email: string,
+    username: string,
     teamRole: TeamRole.READER | TeamRole.WRITER
   ) => {
     const teamRepository = await new TeamRepository().initialize(
@@ -169,13 +186,32 @@ export class TeamController {
 
     const response = await teamRepository.removeMember(
       teamId,
-      email,
+      username,
       teamRole
     );
 
     return response;
   }
 
+  leaveTeam = async (
+    context: Context,
+    teamId: string,
+    teamRole: TeamRole.READER | TeamRole.WRITER
+  ) => {
+    const teamRepository = await new TeamRepository().initialize(
+      context.mongodb_provider.getConnection()
+    );
+
+    const team = await teamRepository.removeMember(
+      teamId,
+      context.username,
+      teamRole
+    );
+
+    return { team };
+  }
+
+  // todo: (mert) deprecated remove later, use verifyTeamRequest instead
   verify = async (
       context: Context,
       token: string
@@ -199,7 +235,7 @@ export class TeamController {
         context.mongodb_provider.getConnection()
     );
 
-    await teamRepository.verify(
+    const verifyTeamResponse = await teamRepository.verify(
         tokenUser.username,
         tokenUser.email,
         decodedToken.team.id,
