@@ -36,6 +36,9 @@ if [ ! -f .env ]; then
     echo "REFRESH_TOKEN_EXPIRE=30days"
     echo "REFRESH_TOKEN_SECRET={Refresh Token Secret}"
 
+    echo "JOIN_TEAM_TOKEN_EXPIRE=10days"
+    echo "JOIN_TEAM_TOKEN_SECRET={Join Team Token Secret}"
+
     echo "RESET_PASSWORD_TOKEN_EXPIRE=1day"
     echo "RESET_PASSWORD_TOKEN_SECRET={Reset Token Secret}"
 
