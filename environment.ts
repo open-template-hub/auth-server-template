@@ -1,7 +1,13 @@
-import { DbArgs, EnvArgs, ExtendedArgs, TokenArgs, TwoFactorArgs, } from '@open-template-hub/common';
+import {
+  DbArgs,
+  EnvArgs,
+  ExtendedArgs,
+  TokenArgs,
+  TwoFactorArgs,
+} from '@open-template-hub/common';
 
 export class Environment {
-  constructor( private _args: EnvArgs = {} as EnvArgs ) {
+  constructor(private _args: EnvArgs = {} as EnvArgs) {
     const tokenArgs = {
       accessTokenExpire: process.env.ACCESS_TOKEN_EXPIRE,
       accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
@@ -26,6 +32,9 @@ export class Environment {
 
       postgresqlUri: process.env.DATABASE_URL,
       postgresqlConnectionLimit: process.env.POSTGRESQL_CONNECTION_LIMIT,
+
+      redisUri: process.env.REDISCLOUD_URL,
+      redisConnectionLimit: process.env.REDIS_CONNECTION_LIMIT,
     } as DbArgs;
 
     const extendedArgs = {
@@ -36,13 +45,13 @@ export class Environment {
       messageQueueConnectionUrl: process.env.CLOUDAMQP_URL,
       authServerMessageQueueChannel: process.env.AUTH_SERVER_QUEUE_CHANNEL,
       orchestrationServerMessageQueueChannel:
-      process.env.ORCHESTRATION_SERVER_QUEUE_CHANNEL,
+        process.env.ORCHESTRATION_SERVER_QUEUE_CHANNEL,
     };
 
     const twoFactorCodeArgs = {
       twoFactorCodeExpire: process.env.TWO_FACTOR_EXPIRE,
       twoFactorCodeLength: process.env.TWO_FACTOR_CODE_LENGTH,
-      twoFactorCodeType: process.env.TWO_FACTOR_CODE_TYPE
+      twoFactorCodeType: process.env.TWO_FACTOR_CODE_TYPE,
     } as TwoFactorArgs;
 
     this._args = {
@@ -50,7 +59,7 @@ export class Environment {
       dbArgs,
       mqArgs,
       extendedArgs,
-      twoFactorCodeArgs
+      twoFactorCodeArgs,
     } as EnvArgs;
   }
 
