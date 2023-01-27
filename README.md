@@ -77,6 +77,9 @@ CLOUDAMQP_URL={MQ Connection Url}
 AUTH_SERVER_QUEUE_CHANNEL=oth_auth_queue
 ORCHESTRATION_SERVER_QUEUE_CHANNEL=oth_orchestration_queue
 
+REDISCLOUD_URL={Redis Connection Url}
+REDIS_CONNECTION_LIMIT={Redis Connection Limit}
+
 AUTO_VERIFY=false
 
 ACCESS_TOKEN_EXPIRE=1hour

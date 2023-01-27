@@ -2,7 +2,14 @@
  * @description holds index routes
  */
 
-import { ContextArgs, mount as mountApp, MountArgs, MountAssets, Route, RouteArgs, } from '@open-template-hub/common';
+import {
+  ContextArgs,
+  mount as mountApp,
+  MountArgs,
+  MountAssets,
+  Route,
+  RouteArgs,
+} from '@open-template-hub/common';
 import { Environment } from '../../environment';
 import { AuthQueueConsumer } from '../consumer/auth-queue.consumer';
 import { router as authRouter } from './auth.route';
@@ -19,11 +26,11 @@ const subRoutes = {
   social: '/social',
   info: '/info',
   twoFactorCode: '/2fa',
-  team: '/team'
+  team: '/team',
 };
 
 export namespace Routes {
-  export function mount( app: any ) {
+  export function mount(app: any) {
     const envArgs = new Environment().args();
 
     const ctxArgs = {
@@ -32,6 +39,7 @@ export namespace Routes {
         mongo_enabled: true,
         postgre_enabled: true,
         mq_enabled: true,
+        redis_enabled: false,
       },
     } as ContextArgs;
 
@@ -43,13 +51,12 @@ export namespace Routes {
 
     const routes: Array<Route> = [];
 
-    routes.push( { name: subRoutes.auth, router: authRouter } );
-    routes.push( { name: subRoutes.info, router: infoRouter } );
-    routes.push( { name: subRoutes.monitor, router: monitorRouter } );
-    routes.push( { name: subRoutes.social, router: socialLoginRouter } );
-    routes.push( { name: subRoutes.twoFactorCode, router: twoFactorCodeRouter } );
-    routes.push( { name: subRoutes.team, router: teamRouter } );
-
+    routes.push({ name: subRoutes.auth, router: authRouter });
+    routes.push({ name: subRoutes.info, router: infoRouter });
+    routes.push({ name: subRoutes.monitor, router: monitorRouter });
+    routes.push({ name: subRoutes.social, router: socialLoginRouter });
+    routes.push({ name: subRoutes.twoFactorCode, router: twoFactorCodeRouter });
+    routes.push({ name: subRoutes.team, router: teamRouter });
 
     const routeArgs = { routes } as RouteArgs;
 
@@ -60,6 +67,6 @@ export namespace Routes {
       assets,
     } as MountArgs;
 
-    mountApp( args );
+    mountApp(args);
   }
 }

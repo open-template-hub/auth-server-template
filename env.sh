@@ -25,6 +25,9 @@ if [ ! -f .env ]; then
     echo "AUTH_SERVER_QUEUE_CHANNEL=oth_auth_queue"
     echo "ORCHESTRATION_SERVER_QUEUE_CHANNEL=oth_orchestration_queue"
 
+    echo "REDISCLOUD_URL={Redis Connection Url}"
+    echo "REDIS_CONNECTION_LIMIT={Redis Connection Limit}"
+
     echo "AUTO_VERIFY=false"
 
     echo "ACCESS_TOKEN_EXPIRE=1hour"
