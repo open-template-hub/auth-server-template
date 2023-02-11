@@ -100,10 +100,13 @@ export class UserRepository {
    */
   verifyUser = async ( username: string ) => {
     try {
-      await this.provider.query(
-          'UPDATE users SET verified = true WHERE username = $1',
+      const response = await this.provider.query(
+          'UPDATE users SET verified = true WHERE username = $1 RETURNING *',
           [ username ]
       );
+
+      this.shouldHaveSingleRow(response);
+      return response.rows[0];
     } catch ( error ) {
       console.error( error );
       throw error;

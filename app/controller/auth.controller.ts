@@ -23,7 +23,6 @@ import { Environment } from '../../environment';
 import { TwoFactorCode } from '../interface/two-factor-code.interface';
 import { TokenRepository } from '../repository/token.repository';
 import { UserRepository } from '../repository/user.repository';
-import { TeamController } from './team.controller';
 import { TwoFactorCodeController } from './two-factor.controller';
 
 export class AuthController {
@@ -181,11 +180,6 @@ export class AuthController {
     } else {
       const tokenRepository = new TokenRepository( db );
 
-      const userTeams: any[] = await TeamController.getTeams( mongoDbProvider, user.username );
-      dbUser.teams = userTeams.map( team => {
-        return team._doc;
-      } );
-
       const genereateTokenResponse = await tokenRepository.generateTokens(
           dbUser,
       );
@@ -239,7 +233,7 @@ export class AuthController {
     const user: any = this.tokenUtil.verifyVerificationToken( token );
 
     const userRepository = new UserRepository( db );
-    await userRepository.verifyUser( user.username );
+    return await userRepository.verifyUser( user.username );
   };
 
   /**

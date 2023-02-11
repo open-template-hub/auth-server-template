@@ -87,11 +87,12 @@ router.get( subRoutes.verify, async ( req: Request, res: Response ) => {
   // verify token
   const authController = new AuthController();
   const context = res.locals.ctx;
-  await authController.verify(
+  const verifyResponse = await authController.verify(
       context.postgresql_provider,
       req.query.token as string
   );
-  res.status( ResponseCode.NO_CONTENT ).json( {} );
+
+  res.status( ResponseCode.OK ).json( verifyResponse );
 } );
 
 router.post( subRoutes.forgetPassword, async ( req: Request, res: Response ) => {

@@ -16,7 +16,6 @@ import { router as authRouter } from './auth.route';
 import { router as infoRouter } from './info.route';
 import { router as monitorRouter } from './monitor.route';
 import { router as socialLoginRouter } from './social-login.route';
-import { router as teamRouter } from './team.route';
 import { router as twoFactorCodeRouter } from './two-factor-code.route';
 
 const subRoutes = {
@@ -25,8 +24,7 @@ const subRoutes = {
   auth: '/auth',
   social: '/social',
   info: '/info',
-  twoFactorCode: '/2fa',
-  team: '/team',
+  twoFactorCode: '/2fa'
 };
 
 export namespace Routes {
@@ -36,7 +34,7 @@ export namespace Routes {
     const ctxArgs = {
       envArgs,
       providerAvailability: {
-        mongo_enabled: true,
+        mongo_enabled: false,
         postgre_enabled: true,
         mq_enabled: true,
         redis_enabled: false,
@@ -51,12 +49,11 @@ export namespace Routes {
 
     const routes: Array<Route> = [];
 
-    routes.push({ name: subRoutes.auth, router: authRouter });
-    routes.push({ name: subRoutes.info, router: infoRouter });
-    routes.push({ name: subRoutes.monitor, router: monitorRouter });
-    routes.push({ name: subRoutes.social, router: socialLoginRouter });
-    routes.push({ name: subRoutes.twoFactorCode, router: twoFactorCodeRouter });
-    routes.push({ name: subRoutes.team, router: teamRouter });
+    routes.push( { name: subRoutes.auth, router: authRouter } );
+    routes.push( { name: subRoutes.info, router: infoRouter } );
+    routes.push( { name: subRoutes.monitor, router: monitorRouter } );
+    routes.push( { name: subRoutes.social, router: socialLoginRouter } );
+    routes.push( { name: subRoutes.twoFactorCode, router: twoFactorCodeRouter } );
 
     const routeArgs = { routes } as RouteArgs;
 
