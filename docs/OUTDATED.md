@@ -15,7 +15,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 
 | Package | Current | Wanted | Latest | Location |
 | --- | --- | --- | --- | --- |
-| @open-template-hub/common | 5.0.10 | 5.0.10 | 5.0.12 | node_modules/@open-template-hub/common |
+| @open-template-hub/common | 5.0.10 | 5.0.10 | 5.0.14 | node_modules/@open-template-hub/common |
 
 <table align="right"><tr><td><a href="https://opentemplatehub.com"><img src="https://raw.githubusercontent.com/open-template-hub/open-template-hub.github.io/master/assets/logo/brand-logo.png" width="50px" alt="oth"/></a></td><td><b>Open Template Hub © 2023</b></td></tr></table>
 
