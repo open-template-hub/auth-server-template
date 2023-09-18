@@ -16,7 +16,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | Package | Current | Wanted | Latest | Location |
 | --- | --- | --- | --- | --- |
 | @open-template-hub/common | 5.0.10 | 5.0.10 | 5.0.18 | node_modules/@open-template-hub/common |
-| mongoose | 6.12.0 | 6.12.0 | 7.5.0 | node_modules/mongoose |
+| mongoose | 6.12.0 | 6.12.0 | 7.5.2 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.0.1 | node_modules/nodemon |
 | typescript | 4.9.5 | 4.9.5 | 5.2.2 | node_modules/typescript |
 
