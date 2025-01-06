@@ -18,10 +18,10 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | @open-template-hub/common | 5.0.10 | 5.0.10 | 5.0.18 | node_modules/@open-template-hub/common |
 | @types/express | 4.17.21 | 4.17.21 | 5.0.0 | node_modules/@types/express |
 | @types/uuid | 9.0.8 | 9.0.8 | 10.0.0 | node_modules/@types/uuid |
-| mongoose | 6.13.5 | 6.13.5 | 8.9.2 | node_modules/mongoose |
+| mongoose | 6.13.5 | 6.13.5 | 8.9.3 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.1.9 | node_modules/nodemon |
 | typescript | 4.9.5 | 4.9.5 | 5.7.2 | node_modules/typescript |
-| uuid | 9.0.1 | 9.0.1 | 11.0.3 | node_modules/uuid |
+| uuid | 9.0.1 | 9.0.1 | 11.0.4 | node_modules/uuid |
 
 <table align="right"><tr><td><a href="https://opentemplatehub.com"><img src="https://raw.githubusercontent.com/open-template-hub/open-template-hub.github.io/master/assets/logo/brand-logo.png" width="50px" alt="oth"/></a></td><td><b>Open Template Hub © 2023</b></td></tr></table>
 
