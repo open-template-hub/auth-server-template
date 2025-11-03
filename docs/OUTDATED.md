@@ -17,7 +17,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | --- | --- | --- | --- | --- |
 | @open-template-hub/common | 5.0.10 | 5.0.10 | 5.0.18 | node_modules/@open-template-hub/common |
 | @types/bcrypt | 5.0.2 | 5.0.2 | 6.0.0 | node_modules/@types/bcrypt |
-| @types/express | 4.17.24 | 4.17.24 | 5.0.4 | node_modules/@types/express |
+| @types/express | 4.17.25 | 4.17.25 | 5.0.5 | node_modules/@types/express |
 | @types/uuid | 9.0.8 | 9.0.8 | 11.0.0 | node_modules/@types/uuid |
 | bcrypt | 5.1.1 | 5.1.1 | 6.0.0 | node_modules/bcrypt |
 | body-parser | 1.20.3 | 1.20.3 | 2.2.0 | node_modules/body-parser |
