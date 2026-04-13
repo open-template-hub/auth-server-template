@@ -21,7 +21,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | @types/uuid | 9.0.8 | 9.0.8 | 11.0.0 | node_modules/@types/uuid |
 | bcrypt | 5.1.1 | 5.1.1 | 6.0.0 | node_modules/bcrypt |
 | body-parser | 1.20.4 | 1.20.4 | 2.2.2 | node_modules/body-parser |
-| dotenv | 16.6.1 | 16.6.1 | 17.4.1 | node_modules/dotenv |
+| dotenv | 16.6.1 | 16.6.1 | 17.4.2 | node_modules/dotenv |
 | express | 4.22.1 | 4.22.1 | 5.2.1 | node_modules/express |
 | mongoose | 6.13.9 | 6.13.9 | 9.4.1 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.1.14 | node_modules/nodemon |
