@@ -22,7 +22,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | bcrypt | 5.1.1 | 5.1.1 | 6.0.0 | node_modules/bcrypt |
 | body-parser | 1.20.5 | 1.20.5 | 2.2.2 | node_modules/body-parser |
 | dotenv | 16.6.1 | 16.6.1 | 17.4.2 | node_modules/dotenv |
-| express | 4.22.1 | 4.22.1 | 5.2.1 | node_modules/express |
+| express | 4.22.2 | 4.22.2 | 5.2.1 | node_modules/express |
 | mongoose | 6.13.9 | 6.13.9 | 9.6.2 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.1.14 | node_modules/nodemon |
 | typescript | 4.9.5 | 4.9.5 | 6.0.3 | node_modules/typescript |
