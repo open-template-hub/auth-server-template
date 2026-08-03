@@ -23,7 +23,7 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | body-parser | 1.20.6 | 1.20.6 | 2.3.0 | node_modules/body-parser |
 | dotenv | 16.6.1 | 16.6.1 | 17.4.2 | node_modules/dotenv |
 | express | 4.22.2 | 4.22.2 | 5.2.1 | node_modules/express |
-| mongoose | 6.13.10 | 6.13.10 | 9.8.0 | node_modules/mongoose |
+| mongoose | 6.13.10 | 6.13.10 | 9.9.1 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.1.14 | node_modules/nodemon |
 | typescript | 4.9.5 | 4.9.5 | 7.0.2 | node_modules/typescript |
 | uuid | 9.0.1 | 9.0.1 | 14.0.1 | node_modules/uuid |
