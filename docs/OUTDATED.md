@@ -20,10 +20,10 @@ Following packages are not updated in the develop branch yet. So, if you want to
 | @types/express | 4.17.25 | 4.17.25 | 5.0.6 | node_modules/@types/express |
 | @types/uuid | 9.0.8 | 9.0.8 | 11.0.0 | node_modules/@types/uuid |
 | bcrypt | 5.1.1 | 5.1.1 | 6.0.0 | node_modules/bcrypt |
-| body-parser | 1.20.6 | 1.20.6 | 2.3.0 | node_modules/body-parser |
+| body-parser | 1.20.8 | 1.20.8 | 2.3.0 | node_modules/body-parser |
 | dotenv | 16.6.1 | 16.6.1 | 17.4.2 | node_modules/dotenv |
-| express | 4.22.2 | 4.22.2 | 5.2.1 | node_modules/express |
-| mongoose | 6.13.11 | 6.13.11 | 9.9.5 | node_modules/mongoose |
+| express | 4.22.3 | 4.22.3 | 5.2.1 | node_modules/express |
+| mongoose | 6.13.11 | 6.13.11 | 9.10.0 | node_modules/mongoose |
 | nodemon | 2.0.22 | 2.0.22 | 3.1.14 | node_modules/nodemon |
 | typescript | 4.9.5 | 4.9.5 | 7.0.2 | node_modules/typescript |
 | uuid | 9.0.1 | 9.0.1 | 14.0.2 | node_modules/uuid |
